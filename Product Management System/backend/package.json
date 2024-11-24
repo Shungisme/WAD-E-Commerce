@@ -1,0 +1,18 @@
+{
+  "name": "e-commerce-website",
+  "version": "1.0.0",
+  "description": "An e-commerce site where customers can explore and purchase a wide range of products and services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js" 
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
