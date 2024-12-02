@@ -3,11 +3,22 @@
 @tailwind utilities;
 
 
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Space Grotesk', Arial,sans-serif !important;
+  user-select: none;
+}
+
+html{
+  font-size: 16px;
+ 
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Space Grotesk', Arial,sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -15,4 +26,42 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+.slider-container:hover .prev-arrow,
+.slider-container:hover .next-arrow {
+  opacity: 1 !important;
+}
+
+.container {
+  position: relative;
+}
+
+.page {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+}
+
+.page-enter {
+  opacity: 0;
+  /*transform: scale(1.05);*/
+}
+
+.page-enter-active {
+  opacity: 1;
+  /*transform: scale(1);*/
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-exit {
+  opacity: 1;
+  /*transform: scale(1);*/
+}
+
+.page-exit-active {
+  opacity: 0;
+  /*transform: scale(1.05);*/
+  transition: opacity 300ms, transform 300ms;
 }

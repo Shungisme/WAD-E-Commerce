@@ -1,15 +1,12 @@
-
-
-
-
-
-
-
+import { Box } from "@mui/material";
+import NavigationComponent from "../components/HomeComponent/NavigationComponent";
 
 
 const HomePage = () => {
     return <>
-        Hello HomePage
+        <Box>
+            <NavigationComponent/>
+        </Box>
     
     </>
 }
