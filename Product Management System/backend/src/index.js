@@ -1,13 +1,15 @@
-const express = require('express');
-const dotenv = require('dotenv');
+import express from 'express';
+import dotenv from 'dotenv';
+import config from './configs/database.js';
+import RouterV1 from './apis/v1/routes/index.router.js';
 
-const config = require('./configs/database');
 dotenv.config();
 config.connect();
 
 const app = express();
 const PORT = 3000;
 
+RouterV1(app);
 
 app.get('/', (req, res) => {
 	res.send('Hello World');

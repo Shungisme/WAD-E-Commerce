@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const slug = require("mongoose-slug-updater");
+import mongoose from 'mongoose';
+import slug from 'mongoose-slug-generator';
 
 mongoose.plugin(slug);
 
@@ -54,4 +54,4 @@ const productSchema = new mongoose.Schema({
 	}
 );
 
-exports.default = mongoose.model('Product', productSchema, 'products');
+export default mongoose.model('Product', productSchema, 'products');
