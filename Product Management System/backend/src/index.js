@@ -9,7 +9,10 @@ config.connect();
 const app = express();
 const PORT = 3000;
 
+app.use(express.json());
+
 RouterV1(app);
+
 
 app.get('/', (req, res) => {
 	res.send('Hello World');

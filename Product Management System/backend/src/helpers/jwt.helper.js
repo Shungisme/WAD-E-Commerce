@@ -1,18 +1,18 @@
 import JWT from "jsonwebtoken";
 
 class JWTHelper {
-	static generateToken(payload, secretSignature, tokenLife) {
+	static async generateToken(payload, secretSignature, tokenLife) {
 		try {
 			return JWT.sign(payload, secretSignature, {
 				expiresIn: tokenLife,
 			});
 		}
 		catch (error) {
-			throw new ErrorEvent(error);
+			throw new Error(`Failed to generate token: ${error.message}`);
 		}
 	}
 
-	static verifyToken(token, secretSignature) {
+	static async verifyToken(token, secretSignature) {
 		try {
 			return JWT.verify(token, secretSignature);
 		} catch (error) {
