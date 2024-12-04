@@ -3,8 +3,6 @@ import {
   Box,
   Button,
   IconButton,
-  Tab,
-  Tabs,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -22,6 +20,10 @@ import DropdownComponent from "../DropdownComponent";
 import { headerContentCarousel } from "../../constants/headerContentCarousel";
 import CartDropDownComponent from "./CartDropDownComponent";
 import SearchComponent from "./SearchComponent";
+import useHover from "../../hooks/useHover";
+import MegaMenuDropDownComponent from "./MegaMenuDropDownComponent";
+import { AnimatePresence } from "framer-motion";
+import { CATEGORIES_CONTANT } from "../../constants/categoryContants";
 
 const NavigationComponent = () => {
   //setting carousel
@@ -39,14 +41,11 @@ const NavigationComponent = () => {
   }, []);
 
   //Hooks
-  const [value, setValue] = useState(0);
   const [nameComponent, setNameComponent] = useState<string>("login");
-  
 
   const theme = useTheme();
   const navigate = useNavigate();
-
-
+  const hoverShopTab = useHover();
 
   //render component
   const renderItemInCarouselHeaderContent = () => {
@@ -109,11 +108,6 @@ const NavigationComponent = () => {
     } else if (nameComponent === "forgot") {
       return <ForgotPasswordComponent navigateToComponent={setNameComponent} />;
     }
-  };
-
-  //function handle Event
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
   };
 
   return (
@@ -239,21 +233,104 @@ const NavigationComponent = () => {
                 color="white"
               />
             </IconButton>
-            <Tabs
+
+            <Box
               sx={{
-                "& button": {
-                  textTransform: "capitalize",
-                },
-                display: "inline-block",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 4,
               }}
-              value={value}
-              onChange={handleChange}
             >
-              <Tab label="Trang chủ" />
-              <Tab label="Cửa hàng" />
-              <Tab label="Hỗ trợ" />
-            </Tabs>
+              <Box
+                sx={{
+                  display: "block",
+                  transition: "all ease-in-out 0.1s",
+                  "&::after": {
+                    content: '""',
+                    display: "block",
+                    height: "2px",
+                    width: 0,
+                    backgroundColor: theme.palette.primary.main,
+                    transition: "width 0.5s ease-in-out",
+                  },
+                  "&:hover::after": {
+                    width: "100%",
+                  },
+                }}
+              >
+                <Typography
+                  sx={{
+                    cursor: "pointer",
+                    py: 1.5,
+                  }}
+                >
+                  Trang chủ
+                </Typography>
+              </Box>
+
+              <Box
+                ref={hoverShopTab.ref}
+                sx={{
+                  display: "block",
+                  transition: "all ease-in-out 0.1s",
+                  "&::after": {
+                    content: '""',
+                    display: "block",
+                    height: "2px",
+                    width: 0,
+                    backgroundColor: theme.palette.primary.main,
+                    transition: "width 0.5s ease-in-out",
+                  },
+                  "&:hover::after": {
+                    width: "100%",
+                  },
+                }}
+              >
+                <Typography
+                  sx={{
+                    cursor: "pointer",
+                    py: 1.5,
+                  }}
+                >
+                  Cửa hàng
+                </Typography>
+                <AnimatePresence>
+                  {hoverShopTab.isHover && <MegaMenuDropDownComponent content={CATEGORIES_CONTANT()} />}
+                </AnimatePresence>
+              </Box>
+           
+
+              <Box
+                sx={{
+                  display: "block",
+                  transition: "all ease-in-out 0.1s",
+                  "&::after": {
+                    content: '""',
+                    display: "block",
+                    height: "2px",
+                    width: 0,
+                    backgroundColor: theme.palette.primary.main,
+                    transition: "width 0.5s ease-in-out",
+                  },
+                  "&:hover::after": {
+                    width: "100%",
+                  },
+                }}
+              >
+                <Typography
+                  sx={{
+                    cursor: "pointer",
+                    py: 1.5,
+                  }}
+                >
+                  Hỗ trợ
+                </Typography>
+              </Box>
+            </Box>
+            
           </Box>
+         
 
           <Box
             sx={{
@@ -266,8 +343,8 @@ const NavigationComponent = () => {
             <Box>
               <ThemeToggle />
             </Box>
-            
-            <SearchComponent/>
+
+            <SearchComponent />
 
             <DropdownComponent
               contentDrop={renderComponentAuthentication()}
@@ -278,7 +355,7 @@ const NavigationComponent = () => {
             </DropdownComponent>
 
             <DropdownComponent
-              contentDrop={<CartDropDownComponent/>}
+              contentDrop={<CartDropDownComponent />}
               dropdownKey="cartDropDown"
             >
               <Badge badgeContent={4} color="primary">
