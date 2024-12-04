@@ -19,7 +19,7 @@ const inititalData: ValuesType = {
   logoutAuth: async () => {},
 };
 
-const AuthContext = createContext<ValuesType>(inititalData);
+export const AuthContext = createContext<ValuesType>(inititalData);
 
 const AuthProvider = ({ children }: TProps) => {
   const [user, setUser] = useState<TUser | null>(null);

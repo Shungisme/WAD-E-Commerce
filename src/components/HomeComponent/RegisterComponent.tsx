@@ -1,4 +1,11 @@
-import { CardContent, Typography, Divider, Button, Box } from "@mui/material";
+import {
+  CardContent,
+  Typography,
+  Divider,
+  Button,
+  Box,
+  useTheme,
+} from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -11,10 +18,9 @@ interface RegisterForm {
   confirmPassword: string;
 }
 
-interface TProps{
-    navigateToComponent: React.Dispatch<React.SetStateAction<string>>
-  }
-  
+interface TProps {
+  navigateToComponent: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const schema = yup
   .object({
@@ -38,7 +44,9 @@ const schema = yup
   })
   .required();
 
-const RegisterComponent = ({navigateToComponent}:TProps) => {
+const RegisterComponent = ({ navigateToComponent }: TProps) => {
+  const theme = useTheme();
+
   const {
     handleSubmit,
     formState: { errors },
@@ -80,34 +88,24 @@ const RegisterComponent = ({navigateToComponent}:TProps) => {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <div className="relative">
                     <input
+                      style={{
+                        color: theme.palette.common.black,
+                      }}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
                       id="firstName"
-                      className="
-                                w-full 
-                                outline-none 
-                                px-2
-                                py-3
-                                border-2 
-                                rounded-md
-                                text-[13px]
-                                peer
-                                "
+                      className="w-full  outline-none px-2 py-3 border-2 rounded-md text-[13px] peer"
                     />
                     <label
-                      className={`
-                    absolute
-                    left-[0.55rem]
-                    transition-all
-                    duration-200
-                    ease-in-out
-                ${
-                  value
-                    ? "text-[10px] top-[2px] translate-y-0"
-                    : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
-                }
-                `}
+                      style={{
+                        color: theme.palette.common.black,
+                      }}
+                      className={` absolute left-[0.55rem] transition-all duration-200 ease-in-out ${
+                        value
+                          ? "text-[10px] top-[2px] translate-y-0"
+                          : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
+                      }`}
                       htmlFor="firstName"
                     >
                       Firstname
@@ -136,34 +134,24 @@ const RegisterComponent = ({navigateToComponent}:TProps) => {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <div className="relative">
                     <input
+                      style={{
+                        color: theme.palette.common.black,
+                      }}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
                       id="lastName"
-                      className="
-                                w-full 
-                                outline-none 
-                                px-2
-                                py-3
-                                border-2 
-                                rounded-md
-                                text-[13px]
-                                peer
-                                "
+                      className="w-full outline-none px-2 py-3 border-2 rounded-md text-[13px] peer"
                     />
                     <label
-                      className={`
-                    absolute
-                    left-[0.55rem]
-                    transition-all
-                    duration-200
-                    ease-in-out
-                ${
-                  value
-                    ? "text-[10px] top-[2px] translate-y-0"
-                    : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
-                }
-                `}
+                      style={{
+                        color: theme.palette.common.black,
+                      }}
+                      className={`absolute left-[0.55rem] transition-all duration-200  ease-in-out ${
+                        value
+                          ? "text-[10px] top-[2px] translate-y-0"
+                          : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
+                      }`}
                       htmlFor="lastName"
                     >
                       Lastname
@@ -192,34 +180,24 @@ const RegisterComponent = ({navigateToComponent}:TProps) => {
             render={({ field: { onChange, onBlur, value } }) => (
               <div className="relative mb-3">
                 <input
+                  style={{
+                    color: theme.palette.common.black,
+                  }}
                   onChange={onChange}
                   onBlur={onBlur}
                   value={value}
                   id="email"
-                  className="
-                                w-full 
-                                outline-none 
-                                px-2
-                                py-3
-                                border-2 
-                                rounded-md
-                                text-[13px]
-                                peer
-                                "
+                  className="w-full outline-none px-2 py-3 border-2 rounded-md text-[13px] peer"
                 />
                 <label
-                  className={`
-                    absolute
-                    left-[0.55rem]
-                    transition-all
-                    duration-200
-                    ease-in-out
-                ${
-                  value
-                    ? "text-[10px] top-[2px] translate-y-0"
-                    : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
-                }
-                `}
+                  style={{
+                    color: theme.palette.common.black,
+                  }}
+                  className={`absolute left-[0.55rem] transition-all duration-200 ease-in-out ${
+                    value
+                      ? "text-[10px] top-[2px] translate-y-0"
+                      : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
+                  } `}
                   htmlFor="email"
                 >
                   Email
@@ -251,30 +229,17 @@ const RegisterComponent = ({navigateToComponent}:TProps) => {
                   onBlur={onBlur}
                   value={value}
                   id="password"
-                  className="
-                                w-full 
-                                outline-none 
-                                px-2
-                                py-3
-                                border-2 
-                                rounded-md
-                                text-[13px]
-                                peer
-                                "
+                  className="w-full outline-none px-2 py-3 border-2 rounded-md text-[13px] peer"
                 />
                 <label
-                  className={`
-      absolute
-      left-[0.55rem]
-      transition-all
-      duration-200
-      ease-in-out
-      ${
-        value
-          ? "text-[10px] top-[2px] translate-y-0"
-          : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
-      }
-    `}
+                  style={{
+                    color: theme.palette.common.black,
+                  }}
+                  className={` absolute left-[0.55rem] transition-all duration-200 ease-in-out ${
+                    value
+                      ? "text-[10px] top-[2px] translate-y-0"
+                      : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
+                  }`}
                   htmlFor="password"
                 >
                   Password
@@ -302,34 +267,24 @@ const RegisterComponent = ({navigateToComponent}:TProps) => {
             render={({ field: { onChange, onBlur, value } }) => (
               <div className="relative mb-3">
                 <input
+                  style={{
+                    color: theme.palette.common.black,
+                  }}
                   onChange={onChange}
                   onBlur={onBlur}
                   value={value}
                   id="confirmPassword"
-                  className="
-                            w-full 
-                            outline-none 
-                            px-2
-                            py-3
-                            border-2 
-                            rounded-md
-                            text-[13px]
-                            peer
-                                "
+                  className="w-full outline-none px-2 py-3 border-2 rounded-md text-[13px] peer "
                 />
                 <label
-                  className={`
-                absolute
-                left-[0.55rem]
-                transition-all
-                duration-200
-                ease-in-out
-                ${
-                  value
-                    ? "text-[10px] top-[2px] translate-y-0"
-                    : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
-                }
-                `}
+                  style={{
+                    color: theme.palette.common.black,
+                  }}
+                  className={` absolute left-[0.55rem] transition-all duration-200 ease-in-out ${
+                    value
+                      ? "text-[10px] top-[2px] translate-y-0"
+                      : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
+                  }`}
                   htmlFor="confirmPassword"
                 >
                   Confirm password
@@ -350,10 +305,6 @@ const RegisterComponent = ({navigateToComponent}:TProps) => {
           )}
 
           <Button
-            sx={{
-              backgroundColor: "#ffc107",
-              color: "black",
-            }}
             variant="contained"
             fullWidth
             type="submit"
@@ -364,7 +315,10 @@ const RegisterComponent = ({navigateToComponent}:TProps) => {
         <Box>
           <Typography fontSize={"0.8rem"} textAlign={"left"}>
             Đã có tài khoản ?{" "}
-            <span onClick={() => navigateToComponent("login")} className="font-semibold cursor-pointer">
+            <span
+              onClick={() => navigateToComponent("login")}
+              className="font-semibold cursor-pointer"
+            >
               Quay lại trang đăng nhập
             </span>
           </Typography>

@@ -1,17 +1,25 @@
-import { CardContent, Typography, Divider, Button, Box } from "@mui/material";
+import {
+  CardContent,
+  Typography,
+  Divider,
+  Button,
+  Box,
+  useTheme,
+  IconButton,
+} from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import IconifyIcon from "../iconifyIcon";
 
 interface LoginForm {
   email: string;
   password: string;
 }
 
-interface TProps{
-  navigateToComponent: React.Dispatch<React.SetStateAction<string>>
+interface TProps {
+  navigateToComponent: React.Dispatch<React.SetStateAction<string>>;
 }
-
 
 const schema = yup
   .object({
@@ -24,11 +32,13 @@ const schema = yup
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
         "Phải chứa 8 ký tự, một chữ hoa, một chữ thường, một số và một ký tự đặc biệt"
-      ).required('Vui lòng nhập mật khẩu'),
+      )
+      .required("Vui lòng nhập mật khẩu"),
   })
   .required();
 
-const LoginComponent = ({navigateToComponent} : TProps) => {
+const LoginComponent = ({ navigateToComponent }: TProps) => {
+  const theme = useTheme();
   const {
     handleSubmit,
     formState: { errors },
@@ -67,28 +77,20 @@ const LoginComponent = ({navigateToComponent} : TProps) => {
             render={({ field: { onChange, onBlur, value } }) => (
               <div className="relative mb-3">
                 <input
+                  style={{
+                    color: theme.palette.common.black,
+                  }}
                   onChange={onChange}
                   onBlur={onBlur}
                   value={value}
                   id="email"
-                  className="
-                                w-full 
-                                outline-none 
-                                px-2
-                                py-3
-                                border-2 
-                                rounded-md
-                                text-[13px]
-                                peer
-                                "
+                  className=" w-full outline-none px-2 py-3 border-2 rounded-md text-[13px] peer"
                 />
                 <label
-                  className={`
-                    absolute
-                    left-[0.55rem]
-                    transition-all
-                    duration-200
-                    ease-in-out
+                  style={{
+                    color: theme.palette.common.black,
+                  }}
+                  className={`absolute left-[0.55rem] transition-all duration-200 ease-in-out
                 ${
                   value
                     ? "text-[10px] top-[2px] translate-y-0"
@@ -122,34 +124,24 @@ const LoginComponent = ({navigateToComponent} : TProps) => {
             render={({ field: { onChange, onBlur, value } }) => (
               <div className="relative mb-3">
                 <input
+                  style={{
+                    color: theme.palette.common.black,
+                  }}
                   onChange={onChange}
                   onBlur={onBlur}
                   value={value}
                   id="password"
-                  className="
-                                w-full 
-                                outline-none 
-                                px-2
-                                py-3
-                                border-2 
-                                rounded-md
-                                text-[13px]
-                                peer
-                                "
+                  className=" w-full outline-none px-2 py-3 border-2 rounded-md text-[13px] peer"
                 />
                 <label
-                  className={`
-      absolute
-      left-[0.55rem]
-      transition-all
-      duration-200
-      ease-in-out
-      ${
-        value
-          ? "text-[10px] top-[2px] translate-y-0"
-          : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
-      }
-    `}
+                  style={{
+                    color: theme.palette.common.black,
+                  }}
+                  className={` absolute left-[0.55rem] transition-all duration-200 ease-in-out ${
+                    value
+                      ? "text-[10px] top-[2px] translate-y-0"
+                      : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
+                  }`}
                   htmlFor="password"
                 >
                   Password
@@ -169,29 +161,40 @@ const LoginComponent = ({navigateToComponent} : TProps) => {
             </Typography>
           )}
 
-          <Button
-            sx={{
-              backgroundColor: "#ffc107",
-              color: "black",
-            }}
-            variant="contained"
-            fullWidth
-            type="submit"
-          >
+          <Button variant="contained" fullWidth type="submit">
             Đăng nhập
           </Button>
         </form>
         <Box>
           <Typography fontSize={"0.8rem"} textAlign={"left"}>
             Khách hàng mới ?{" "}
-            <span onClick={() => navigateToComponent("register")} className="font-semibold cursor-pointer">Tạo tại khoản</span>
+            <span
+              onClick={() => navigateToComponent("register")}
+              className="font-semibold cursor-pointer"
+            >
+              Tạo tại khoản
+            </span>
           </Typography>
           <Typography fontSize={"0.8rem"} textAlign={"left"}>
             Quên mật khẩu ?{" "}
-            <span onClick={() => navigateToComponent("forgot")} className="font-semibold cursor-pointer">Khôi phục mật khẩu</span>
+            <span
+              onClick={() => navigateToComponent("forgot")}
+              className="font-semibold cursor-pointer"
+            >
+              Khôi phục mật khẩu
+            </span>
           </Typography>
         </Box>
       </CardContent>
+      <Divider />
+      <Box mt={1}>
+        <Typography component={"div"} fontSize={"0.8rem"}>
+          Đăng nhập bằng
+        </Typography>
+        <IconButton>
+          <IconifyIcon icon={"flat-color-icons:google"} />
+        </IconButton>
+      </Box>
     </>
   );
 };
