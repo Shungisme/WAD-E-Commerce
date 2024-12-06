@@ -10,18 +10,18 @@ import IconifyIcon from "../iconifyIcon";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useMemo, useState } from "react";
-import LoginComponent from "./LoginComponent";
-import RegisterComponent from "./RegisterComponent";
-import ForgotPasswordComponent from "./ForgotPasswordComponent";
+import LoginComponent from "./ForNavigation/LoginComponent";
+import RegisterComponent from "./ForNavigation/RegisterComponent";
+import ForgotPasswordComponent from "./ForNavigation/ForgotPasswordComponent";
 import { useNavigate } from "react-router-dom";
 import ThemeToggle from "../toggleThemeComponent";
 import CarouselComponent from "../CarouselComponent";
 import DropdownComponent from "../DropdownComponent";
 import { headerContentCarousel } from "../../constants/headerContentCarousel";
-import CartDropDownComponent from "./CartDropDownComponent";
-import SearchComponent from "./SearchComponent";
+import CartDropDownComponent from "./ForNavigation/CartDropDownComponent";
+import SearchComponent from "./ForNavigation/SearchComponent";
 import useHover from "../../hooks/useHover";
-import MegaMenuDropDownComponent from "./MegaMenuDropDownComponent";
+import MegaMenuDropDownComponent from "./ForNavigation/MegaMenuDropDownComponent";
 import { AnimatePresence } from "framer-motion";
 import { CATEGORIES_CONTANT } from "../../constants/categoryContants";
 
@@ -46,6 +46,7 @@ const NavigationComponent = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const hoverShopTab = useHover();
+
 
   //render component
   const renderItemInCarouselHeaderContent = () => {
@@ -338,6 +339,7 @@ const NavigationComponent = () => {
               justifyContent: "center",
               alignItems: "center",
               gap: "1rem",
+              
             }}
           >
             <Box>
