@@ -9,7 +9,7 @@ import {
 import IconifyIcon from "../iconifyIcon";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LoginComponent from "./ForNavigation/LoginComponent";
 import RegisterComponent from "./ForNavigation/RegisterComponent";
 import ForgotPasswordComponent from "./ForNavigation/ForgotPasswordComponent";
@@ -24,8 +24,24 @@ import useHover from "../../hooks/useHover";
 import MegaMenuDropDownComponent from "./ForNavigation/MegaMenuDropDownComponent";
 import { AnimatePresence } from "framer-motion";
 import { CATEGORIES_CONTANT } from "../../constants/categoryContants";
+import {motion} from 'framer-motion'
 
 const NavigationComponent = () => {
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsSticky(scrollTop > 100);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   //setting carousel
   const settings = useMemo(() => {
     return {
@@ -46,7 +62,6 @@ const NavigationComponent = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const hoverShopTab = useHover();
-
 
   //render component
   const renderItemInCarouselHeaderContent = () => {
@@ -169,7 +184,6 @@ const NavigationComponent = () => {
                 icon={"ooui:next-rtl"}
                 fontSize={15}
                 fontWeight={"bold"}
-                color="black"
               />
             </IconButton>
 
@@ -204,9 +218,21 @@ const NavigationComponent = () => {
           </div>
         </Box>
       </Box>
-      <Box sx={{ padding: "0.5rem", maxWidth: "90%", margin: "0 auto" }}>
+      <motion.div
+        style={{
+          position: isSticky ? "fixed" : "relative", 
+          top: isSticky ? 0 : "auto",
+          width: "100%",
+          zIndex: 1000,
+          padding: "0.5rem",
+          backgroundColor: theme.palette.common.white,
+          boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+        }}
+      >
         <Box
           sx={{
+            maxWidth: "90%",
+            margin: "0 auto",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -297,10 +323,11 @@ const NavigationComponent = () => {
                   Cửa hàng
                 </Typography>
                 <AnimatePresence>
-                  {hoverShopTab.isHover && <MegaMenuDropDownComponent content={CATEGORIES_CONTANT()} />}
+                  {hoverShopTab.isHover && (
+                    <MegaMenuDropDownComponent content={CATEGORIES_CONTANT()} />
+                  )}
                 </AnimatePresence>
               </Box>
-           
 
               <Box
                 sx={{
@@ -329,9 +356,7 @@ const NavigationComponent = () => {
                 </Typography>
               </Box>
             </Box>
-            
           </Box>
-         
 
           <Box
             sx={{
@@ -339,7 +364,6 @@ const NavigationComponent = () => {
               justifyContent: "center",
               alignItems: "center",
               gap: "1rem",
-              
             }}
           >
             <Box>
@@ -367,7 +391,7 @@ const NavigationComponent = () => {
             </DropdownComponent>
           </Box>
         </Box>
-      </Box>
+      </motion.div>
     </>
   );
 };

@@ -52,6 +52,7 @@ const MainCarousel = () => {
       return (
         <div>
           <Box
+            key={index}
             onClick={() => navigate(item.link)}
             className="cursor-pointer relative w-screen h-[42rem]"
           >
@@ -90,7 +91,7 @@ const MainCarousel = () => {
   return (
     <Box
       sx={{
-        maxWidth: "100vw",
+        maxWidth: "98.9vw",
         position: "relative",
         "&:hover .prev-arrow, &:hover .next-arrow": {
           opacity: 1,

@@ -11,10 +11,10 @@ const MegaMenuDropDownComponent = ({ content }: TProps) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const renderComponet = () => {
-    return content.map((item) => {
+    return content.map((item,index) => {
       return (
         <>
-          <Box>
+          <Box key={index}>
             <Typography
               sx={{
                 cursor: "pointer",
@@ -77,7 +77,7 @@ const MegaMenuDropDownComponent = ({ content }: TProps) => {
         style={{
           position: "absolute",
           left: 0,
-          width: "100vw",
+          width: "98.9vw",
           transform: "translateY(100%)",
           zIndex:2
         }}
