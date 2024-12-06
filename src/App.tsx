@@ -4,7 +4,8 @@ import "slick-carousel/slick/slick-theme.css";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { ThemeProviderWrapper } from "./contexts/themeContext";
 import AppContent from "./AppContent";
-
+import NavigationComponent from "./components/HomeComponent/NavigationComponent";
+import FooterComponent from "./components/HomeComponent/FooterComponent";
 
 const App = () => {
   return (
@@ -13,7 +14,13 @@ const App = () => {
         router={createBrowserRouter([
           {
             path: "*",
-            element: <AppContent />,
+            element: (
+              <>
+                <NavigationComponent />
+                <AppContent />
+                <FooterComponent/>
+              </>
+            ),
           },
         ])}
       />
