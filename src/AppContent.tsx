@@ -6,6 +6,7 @@ import ErrorPage from "./pages/ErrorPage";
 import HomePage from "./pages/HomePage";
 import { ROUTES_CONSTANT } from "./constants/routesConstants";
 import CartPage from "./pages/CartPage";
+import DetailPage from "./pages/DetailPage";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -21,6 +22,7 @@ const AppContent: React.FC = () => {
         <Route index path={ROUTES_CONSTANT.HOME_PAGE} element={<HomePage />} />
         <Route path={ROUTES_CONSTANT.CART_PAGE} element={<CartPage/>}/>
         <Route path={ROUTES_CONSTANT.ERROR_PAGE} element={<ErrorPage />} />
+        <Route path={ROUTES_CONSTANT.DETAIL_PRODUCT_PAGE} element={<DetailPage/>}/>
       </Routes>
     </motion.div>
   );

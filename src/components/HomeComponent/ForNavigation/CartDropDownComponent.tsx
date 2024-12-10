@@ -201,7 +201,7 @@ const CartDropDownComponent = () => {
         </Box>
       </CardContent>
       <Button
-        onClick={() => navigate(`/${ROUTES_CONSTANT.CART_PAGE}`)}
+        onClick={() => navigate(ROUTES_CONSTANT.CART_PAGE)}
         variant="contained"
         fullWidth
       >

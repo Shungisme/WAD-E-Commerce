@@ -2,6 +2,7 @@ export interface PRODUCT {
   name: string;
   description: string;
   thumbnail: string;
+  images:string[];
   price: number;
   quantity: number;
   status: string;

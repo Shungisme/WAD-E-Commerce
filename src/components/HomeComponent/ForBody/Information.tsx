@@ -3,9 +3,6 @@ import {informationContants} from "../../../constants/informationContans";
 import IconifyIcon from "../../iconifyIcon";
 
 const InformationComponent = () => {
-
-
-
     const renderInformation = () => {
         return Array.isArray(informationContants()) 
         ? informationContants()?.map((item:any, index: any) => {

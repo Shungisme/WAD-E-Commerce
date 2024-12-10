@@ -61,7 +61,7 @@ const MainCarousel = () => {
               alt={item.title}
               className="w-full h-full object-cover"
             />
-            <Box
+            {/* <Box
               sx={{
                 position: "absolute",
                 top: "10%",
@@ -81,7 +81,7 @@ const MainCarousel = () => {
               >
                 {item.title}
               </Typography>
-            </Box>
+            </Box> */}
           </Box>
         </div>
       );
