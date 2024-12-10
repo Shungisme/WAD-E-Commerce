@@ -1,15 +1,16 @@
 import { Box, Card, useTheme } from "@mui/material";
-import {  ReactNode, useRef, useState } from "react";
+import {  CSSProperties, ReactNode, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import useClickOutSide from "../hooks/useClickOutSide";
 
 interface TProps {
   children: ReactNode
   dropdownKey:string
-  contentDrop?: JSX.Element
+  contentDrop?: JSX.Element,
+  style?:CSSProperties ; 
 }
 
-const DropdownComponent = ({ children,contentDrop,dropdownKey }: TProps) => {  
+const DropdownComponent = ({ children,contentDrop,dropdownKey,...rest }: TProps) => {  
   const theme = useTheme();
   const [clickDropDown, setClickDropDown] = useState<boolean>(false);
   const clickRef = useRef<HTMLDivElement | null>(null);
@@ -32,10 +33,12 @@ const DropdownComponent = ({ children,contentDrop,dropdownKey }: TProps) => {
             alignItems: "center",
             cursor: "pointer",
           }}
+          
         >
           {children}
         </Box>
         <Card
+        
           style={{
             visibility: clickDropDown ? "visible" : "hidden",
             opacity: clickDropDown ? 1 : 0,
@@ -43,12 +46,13 @@ const DropdownComponent = ({ children,contentDrop,dropdownKey }: TProps) => {
             transition: "opacity 200ms ease-out, transform 300ms ease-in-out",
             zIndex: clickDropDown ? 2 : -9999,
           }}
+          
           sx={{
             position: "absolute",
             right: 0,
             mt: 1,
-            padding: "0.8rem 1.5rem",
-            width: "24rem",
+            padding: "0.8rem 1rem",
+            width: "25rem",
             textAlign: "center",
             overflow: "visible",
             "&::before": {

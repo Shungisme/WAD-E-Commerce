@@ -11,6 +11,7 @@ import {
 import { toVND } from "../utils/convertNumberToVND";
 import SmallCarouselComponent from "./SmallCarousel";
 import IconifyIcon from "./iconifyIcon";
+import { toDiscountPrice } from "../utils/toDiscountPrice";
 
 interface TProps {
   items: Array<any>;
@@ -23,9 +24,7 @@ const SmallCarousel = ({ items, type }: TProps) => {
 
   const renderCarousel = () => {
     return items.map((item, index) => {
-      const currency = Math.floor(
-        item.discount <= 0 ? item.price : item.price * (1 - item.discount / 100)
-      );
+      const currency = toDiscountPrice(item);
       return (
         <>
           <Card

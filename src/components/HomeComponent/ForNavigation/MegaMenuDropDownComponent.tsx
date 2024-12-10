@@ -32,11 +32,11 @@ const MegaMenuDropDownComponent = ({ content }: TProps) => {
                 gap: 1,
               }}
             >
-              {item.child.map((item) => {
+              {item.child.map((item,index) => {
                 return (
                   <>
                     <Typography
-                      
+                      key={index}
                       sx={{
                         transition: "all ease-in-out 0.1s",
                         fontSize: "0.85rem",

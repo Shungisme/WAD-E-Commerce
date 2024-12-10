@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import ErrorPage from "./pages/ErrorPage";
 import HomePage from "./pages/HomePage";
 import { ROUTES_CONSTANT } from "./constants/routesConstants";
+import CartPage from "./pages/CartPage";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -18,6 +19,7 @@ const AppContent: React.FC = () => {
     >
       <Routes location={location}>
         <Route index path={ROUTES_CONSTANT.HOME_PAGE} element={<HomePage />} />
+        <Route path={ROUTES_CONSTANT.CART_PAGE} element={<CartPage/>}/>
         <Route path={ROUTES_CONSTANT.ERROR_PAGE} element={<ErrorPage />} />
       </Routes>
     </motion.div>
