@@ -9,10 +9,6 @@ import SmallCarousel from "../SmallCarouselComponent";
 
 
 const BodyHomeComponent = () => {
-
-
-   
-
     return <>
         <Box sx={{
             display:"flex",

@@ -16,7 +16,7 @@ const FooterComponent = () => {
     <>
       <Paper
         sx={{
-          mt: 5,
+          mt: 10,
           width: "98.9",
           padding: 10,
           backgroundColor:

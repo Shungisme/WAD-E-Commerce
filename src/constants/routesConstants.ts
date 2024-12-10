@@ -1,4 +1,5 @@
 export const ROUTES_CONSTANT = {
     HOME_PAGE:'/',
-    ERROR_PAGE:'*'
+    ERROR_PAGE:'*',
+    CART_PAGE:'cart',
 }
