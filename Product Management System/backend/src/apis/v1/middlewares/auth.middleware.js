@@ -1,4 +1,4 @@
-import JWTHelper from "../../../helpers/jwt.helper";
+import JWTHelper from "../../../helpers/jwt.helper.js";
 import { StatusCodes } from "http-status-codes";
 
 const isAuthorized = async (req, res, next) => {
@@ -24,3 +24,13 @@ const isAuthorized = async (req, res, next) => {
 		});
 	}
 }
+
+const isAuthenticated = (req, res, next) => {
+	if (req.isAuthenticated()) {
+		return next();
+	}
+	res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' });
+};
+
+
+export { isAuthorized, isAuthenticated };

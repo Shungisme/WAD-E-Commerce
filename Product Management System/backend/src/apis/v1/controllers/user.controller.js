@@ -36,6 +36,7 @@ class UserController {
 
 			const accessToken = await JWTHelper.generateToken(userInformation, process.env.ACCESS_TOKEN_SECRET_SIGNATURE, process.env.ACCESS_TOKEN_LIFE_TIME);
 			const refreshToken = await JWTHelper.generateToken(userInformation, process.env.REFRESH_TOKEN_SECRET_SIGNATURE, process.env.REFRESH_TOKEN_LIFE_TIME);
+			req.session.loginMethod = "local";
 
 			res.status(StatusCodes.OK).json({
 				accessToken,
@@ -87,16 +88,47 @@ class UserController {
 	}
 
 	static async logout(req, res) {
-		try {
-			res.status(StatusCodes.OK).json({
-				message: 'Logout successfully'
-			});
+		const method = req.session.loginMethod;
+		if (method === 'google') {
+			try {
+				await new Promise((resolve, reject) => {
+					req.logout((err) => {
+						if (err) {
+							reject(err);
+						}
+						resolve();
+					});
+				});
+
+				await new Promise((resolve, reject) => {
+					req.session.destroy((err) => {
+						if (err) {
+							reject(err);
+						}
+						resolve();
+					});
+				});
+
+				res.status(StatusCodes.OK).json({
+					message: 'Logout successfully'
+				});
+			} catch (error) {
+				res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+			}
 		}
-		catch (error) {
-			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-				error: error.message
-			});
+		else {
+			try {
+				res.status(StatusCodes.OK).json({
+					message: 'Logout successfully'
+				});
+			}
+			catch (error) {
+				res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+					error: error.message
+				});
+			}
 		}
+
 	}
 
 	static async refreshToken(req, res) {
