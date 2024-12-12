@@ -39,7 +39,6 @@ const productSchema = new mongoose.Schema({
 	},
 	category: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Category',
 		required: true
 	},
 	slug: {
@@ -47,6 +46,14 @@ const productSchema = new mongoose.Schema({
 		slug: "title",
 		unique: true,
 		required: true
+	},
+	images: {
+		type: [String],
+		required: true
+	},
+	relatedProducts: {
+		type: [mongoose.Schema.Types.ObjectId],
+		ref: 'Product'
 	}
 },
 	{

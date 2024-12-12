@@ -1,7 +1,9 @@
+import Product from '../models/product.model';
+
 class ProductController {
 	static async getAllProducts(req, res) {
 		try {
-			// const products = await _product.default.find();
+			const products = await Product.find({ status: 'active' });
 			return res.status(200).json({
 				products
 			});
@@ -17,7 +19,7 @@ class ProductController {
 			const {
 				id
 			} = req.params;
-			// const product = await _product.default.findById(id);
+			const product = await Product.findById(id);
 			if (!product) return res.status(404).json({
 				error: 'Product not found'
 			});

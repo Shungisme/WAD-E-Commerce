@@ -22,6 +22,12 @@ class UserController {
 				});
 			};
 
+			if (user.status === 'inactive') {
+				return res.status(StatusCodes.FORBIDDEN).json({
+					message: 'User is inactive'
+				});
+			}
+
 			const userInformation = {
 				_id: user._id,
 				email: user.email,
@@ -29,7 +35,6 @@ class UserController {
 			};
 
 			const accessToken = await JWTHelper.generateToken(userInformation, process.env.ACCESS_TOKEN_SECRET_SIGNATURE, process.env.ACCESS_TOKEN_LIFE_TIME);
-
 			const refreshToken = await JWTHelper.generateToken(userInformation, process.env.REFRESH_TOKEN_SECRET_SIGNATURE, process.env.REFRESH_TOKEN_LIFE_TIME);
 
 			res.status(StatusCodes.OK).json({
