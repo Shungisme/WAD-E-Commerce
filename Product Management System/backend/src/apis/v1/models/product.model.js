@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import slug from 'mongoose-slug-generator';
+import slug from 'mongoose-slug-updater';
 
 mongoose.plugin(slug);
 
 const productSchema = new mongoose.Schema({
-	name: {
+	title: {
 		type: String,
 		required: true,
 		min: 6,
@@ -37,24 +37,19 @@ const productSchema = new mongoose.Schema({
 		type: Number,
 		default: 0
 	},
-	category: {
-		type: mongoose.Schema.Types.ObjectId,
+	categorySlug: {
+		type: String,
 		required: true
 	},
 	slug: {
 		type: String,
 		slug: "title",
-		unique: true,
-		required: true
+		unique: true
 	},
 	images: {
 		type: [String],
 		required: true
 	},
-	relatedProducts: {
-		type: [mongoose.Schema.Types.ObjectId],
-		ref: 'Product'
-	}
 },
 	{
 		timestamps: true

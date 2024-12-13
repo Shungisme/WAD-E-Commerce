@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
+import slug from "mongoose-slug-updater";
+
+mongoose.plugin(slug);
 
 const roleSchema = new mongoose.Schema({
-	name: {
+	title: {
 		type: String,
 		required: true,
 		min: 6,
@@ -21,7 +24,12 @@ const roleSchema = new mongoose.Schema({
 		type: String,
 		default: 'active',
 		enum: ['active', 'inactive']
-	}
+	},
+	slug: {
+		type: String,
+		slug: "title",
+		unique: true
+	},
 },
 	{
 		timestamps: true

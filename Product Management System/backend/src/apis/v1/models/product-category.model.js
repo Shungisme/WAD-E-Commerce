@@ -4,15 +4,14 @@ import slug from "mongoose-slug-updater";
 mongoose.plugin(slug);
 
 const productCategorySchema = new mongoose.Schema({
-	name: {
+	title: {
 		type: String,
 		required: true,
 		min: 6,
 		max: 255
 	},
-	parent: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'ProductCategory',
+	parentSlug: {
+		type: String,
 		default: ""
 	},
 	description: {
@@ -30,7 +29,6 @@ const productCategorySchema = new mongoose.Schema({
 		type: String,
 		unique: true,
 		slug: "title",
-		required: true
 	}
 },
 	{

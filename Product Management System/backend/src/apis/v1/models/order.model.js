@@ -8,6 +8,7 @@ const orderSchema = new mongoose.Schema({
 	},
 	products: {
 		type: [{
+			_id: false,
 			productId: {
 				type: mongoose.Schema.Types.ObjectId,
 				ref: 'Product',
@@ -27,7 +28,7 @@ const orderSchema = new mongoose.Schema({
 	status: {
 		type: String,
 		default: 'pending',
-		enum: ['pending', 'processing', 'completed', 'cancelled']
+		enum: ['pending', 'processing', 'completed', 'cancelled', 'deleted']
 	},
 },
 	{
