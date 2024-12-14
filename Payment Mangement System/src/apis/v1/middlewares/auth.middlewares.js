@@ -12,9 +12,9 @@ const jwtVerifier = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, secretKey);
+    const decodedToken = jwt.verify(token, secretKey);
 
-    req.decodedToken = decoded;
+    req.decodedToken = decodedToken;
 
     next();
   } catch (err) {

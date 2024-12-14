@@ -3,6 +3,7 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const { sequelize, mysqlConnection } = require("./configs/db");
+const init = require("./configs/init");
 const ApplicationError = require("./error/cerror");
 const errorCode = require("./error/errorCode");
 const jwtVerifier = require("./apis/v1/middlewares/auth.middlewares");
@@ -45,4 +46,5 @@ const sslServer = https.createServer(
 sslServer.listen(PORT, async () => {
   console.log(`Server started on port ${PORT}`);
   await mysqlConnection();
+  await init();
 });
