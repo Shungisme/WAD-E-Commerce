@@ -25,6 +25,12 @@ export const ErrorCode = {
     desc: "The input is empty",
   },
 
+  INVALID_OTP: {
+    message: "Invalid OTP",
+    statusCode: HttpStatus.BAD_REQUEST,
+    desc: "The OTP you entered is invalid",
+  },
+
   PAGE_NOT_FOUND: {
     message: "Page not found",
     statusCode: HttpStatus.NOT_FOUND,

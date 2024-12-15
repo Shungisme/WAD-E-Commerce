@@ -7,6 +7,9 @@ const init = require("./configs/init");
 const ApplicationError = require("./error/cerror");
 const errorCode = require("./error/errorCode");
 const jwtVerifier = require("./apis/v1/middlewares/auth.middlewares");
+const userRouter = require("./apis/v1/routes/user.router");
+const otpRouter = require("./apis/v1/routes/otp.router");
+const paymentRouter = require("./apis/v1/routes/payment.router");
 
 require("dotenv").config();
 
@@ -15,7 +18,7 @@ const ec = errorCode.ErrorCode;
 
 const app = express();
 
-app.use("/", jwtVerifier);
+app.use("/", jwtVerifier, userRouter, otpRouter, paymentRouter);
 
 app.use((req, res, next) => {
   res

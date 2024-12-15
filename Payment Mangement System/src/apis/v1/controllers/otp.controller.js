@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendOtp = async (req, res, next) => {
-  const { email } = req.decodedToken;
+  const email = req.decodedToken.email;
   const otp = generateOtp(6);
 
   try {

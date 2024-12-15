@@ -33,3 +33,5 @@ Otp.belongsTo(User, {
   foreignKey: "userId",
   onDelete: "CASCADE",
 });
+
+module.exports = Otp;
