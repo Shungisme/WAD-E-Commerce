@@ -1,6 +1,6 @@
 const { sequelize } = require("../../../configs/db");
 const { DataTypes } = require("sequelize");
-const { User } = require("./user.model");
+const User = require("./user.model");
 
 const Otp = sequelize.define(
   "Otp",
@@ -33,5 +33,9 @@ Otp.belongsTo(User, {
   foreignKey: "userId",
   onDelete: "CASCADE",
 });
+
+Otp.findByUserId = async (userId) => {
+  return await Otp.findOne({ where: { userId } });
+};
 
 module.exports = Otp;

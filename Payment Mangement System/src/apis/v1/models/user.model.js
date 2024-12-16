@@ -23,7 +23,7 @@ const User = sequelize.define(
     },
     balance: {
       type: DataTypes.BIGINT,
-      defaultValue: BigInt("999999999999999999"),
+      defaultValue: "999999999999999999",
       field: "balance",
     },
   },

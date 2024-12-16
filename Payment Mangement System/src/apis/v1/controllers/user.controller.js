@@ -4,17 +4,21 @@ const errorCode = require("../../../error/errorCode");
 
 const ec = errorCode.ErrorCode;
 
-const getUserPaymentAccount = async (req, res) => {
+const getUserPaymentAccount = async (req, res, next) => {
   const decodedTokenUser = req.decodedToken;
   try {
-    const user = await User.findByPk(decodedTokenUser.userId);
+    let user = await User.findByPk(decodedTokenUser.userId);
     if (!user) {
-      user = await User.create(decodedTokenUser);
+      user = await User.create({
+        id: decodedTokenUser.userId,
+        email: decodedTokenUser.email,
+        name: decodedTokenUser.name,
+      });
     }
 
-    res.status(200).json({ balance: user.balance });
+    res.status(200).json(user);
   } catch (error) {
-    throw new ApplicationError(ec.SERVER_ERROR);
+    return next(new ApplicationError(ec.SERVER_ERROR));
   }
 };
 

@@ -37,6 +37,18 @@ export const ErrorCode = {
     desc: "The page you're looking for doesn't exist",
   },
 
+  TOKEN_MISSING: {
+    message: "Token missing",
+    statusCode: HttpStatus.UNAUTHORIZED,
+    desc: "Token missing",
+  },
+
+  INVALID_TOKEN: {
+    message: "Invalid token",
+    statusCode: HttpStatus.UNAUTHORIZED,
+    desc: "The token is invalid",
+  },
+
   SERVER_ERROR: {
     message: "Internal server error",
     statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

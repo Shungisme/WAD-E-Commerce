@@ -23,18 +23,26 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendOtp = async (req, res, next) => {
+
   const email = req.decodedToken.email;
-  const otp = generateOtp(6);
+  const userId = req.decodedToken.userId;  
 
   try {
+    let otp = await Otp.findByUserId(userId);
+    if (otp) {
+      await Otp.destroy({where: {code: otp.code}});
+    }
+
+    otp = generateOtp(6);
+
     const expiredAt = new Date();
     expiredAt.setMinutes(expiredAt.getMinutes() + 5);
 
     const user = await User.findByEmail(email);
-
+    const utcExpiredAt = expiredAt.toISOString();
     await Otp.create({
       code: otp,
-      expiredAt,
+      expiredAt: utcExpiredAt,
       userId: user.id,
     });
 
@@ -50,6 +58,7 @@ const sendOtp = async (req, res, next) => {
 
     res.status(200).json({ message: "OTP has been sent to your email" });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };

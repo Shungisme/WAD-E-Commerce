@@ -8,8 +8,9 @@ const ec = errorCode.ErrorCode;
 
 const verifyOtp = async (otp) => {
   const otpData = await Otp.findByPk(otp);
+  const now = new Date().toISOString();
 
-  if (!otpData || otpData.expiredAt < new Date()) {
+  if (!otpData || otpData.expiredAt < now) {
     throw new ApplicationError(ec.INVALID_OTP);
   }
 
@@ -21,7 +22,7 @@ const createPayment = async (req, res, next) => {
   const decodedTokenUser = req.decodedToken;
 
   try {
-    const otpData = verifyOtp(otp);
+    const otpData = await verifyOtp(otp);
 
     if (decodedTokenUser.userId !== otpData.userId) {
       throw new ApplicationError(ec.INVALID_OTP);
@@ -40,10 +41,11 @@ const createPayment = async (req, res, next) => {
 
     user.balance = user.balance - totalAmount;
 
-    await User.update(user);
+    await User.update({ balance: user.balance }, { where: { id: user.id } });
 
     res.status(201).json({ message: "Payment successful", payment });
   } catch (err) {
+    console.error(err);
     next(err);
   }
 };

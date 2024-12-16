@@ -9,6 +9,7 @@ const MYSQL_DATABASE = process.env.MYSQL_DATABASE;
 const sequelize = new Sequelize(MYSQL_DATABASE, USER, PASSWORD, {
   host: HOST,
   dialect: "mysql",
+  timezone: "+07:00",
 });
 
 const mysqlConnection = async () => {
