@@ -7,6 +7,8 @@ import HomePage from "./pages/HomePage";
 import { ROUTES_CONSTANT } from "./constants/routesConstants";
 import CartPage from "./pages/CartPage";
 import DetailPage from "./pages/DetailPage";
+import LayoutFilter from "./components/layouts/LayoutFilter";
+import FilterPage from "./pages/FilterPage";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -23,6 +25,7 @@ const AppContent: React.FC = () => {
         <Route path={ROUTES_CONSTANT.CART_PAGE} element={<CartPage/>}/>
         <Route path={ROUTES_CONSTANT.ERROR_PAGE} element={<ErrorPage />} />
         <Route path={ROUTES_CONSTANT.DETAIL_PRODUCT_PAGE} element={<DetailPage/>}/>
+        <Route path={ROUTES_CONSTANT.FILTER_PAGE} element={<FilterPage/>}/>
       </Routes>
     </motion.div>
   );

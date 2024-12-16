@@ -12,6 +12,7 @@ import { toVND } from "../utils/convertNumberToVND";
 import SmallCarouselComponent from "./SmallCarousel";
 import IconifyIcon from "./iconifyIcon";
 import { toDiscountPrice } from "../utils/toDiscountPrice";
+import CardComponent from "./CardComponent";
 
 interface TProps {
   items: Array<any>;
@@ -24,84 +25,9 @@ const SmallCarousel = ({ items, type }: TProps) => {
 
   const renderCarousel = () => {
     return items.map((item, index) => {
-      const currency = toDiscountPrice(item);
       return (
         <>
-          <Card
-            key={index}
-            sx={{
-              height: "29rem",
-              mx: 3,
-              cursor: "pointer",
-            }}
-          >
-            <Box position={"relative"}>
-              <CardMedia
-                component={"img"}
-                height={"4.5rem"}
-                image={item.thumbnail}
-                alt={item.title}
-                sx={{
-                  objectFit: "cover",
-                }}
-              />
-              {item.discount !== 0 && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "3.5rem",
-                    height: "2rem",
-                    backgroundColor: theme.palette.primary.main,
-                    color: theme.palette.common.white,
-                    borderRadius: "0 0 18px 18px",
-                    textAlign: "center",
-                  }}
-                >
-                  {item.discount}%
-                </Box>
-              )}
-            </Box>
-            <CardContent>
-              <Typography
-                sx={{
-                  display: "-webkit-box",
-                  WebkitBoxOrient: "vertical",
-                  WebkitLineClamp: 2,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-                mb={2}
-                fontSize={"1.2rem"}
-                letterSpacing={1.3}
-                fontWeight={500}
-              >
-                {item.title}
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 2,
-                }}
-              >
-                <Typography fontWeight={"bold"} color={theme.palette.primary.main}>
-                  {toVND(currency)}
-                </Typography>
-                {item.discount !== 0 && (
-                  <>
-                    <Typography
-                      sx={{
-                        textDecoration: "line-through",
-                      }}
-                    >
-                      {item.price}
-                    </Typography>
-                  </>
-                )}
-              </Box>
-            </CardContent>
-          </Card>
+          <CardComponent item={item} key={index}/>
         </>
       );
     });
