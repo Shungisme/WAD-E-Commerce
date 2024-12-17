@@ -27,7 +27,12 @@ const SmallCarousel = ({ items, type }: TProps) => {
     return items.map((item, index) => {
       return (
         <>
+          <Box sx={{
+            width:"22rem",
+            height:"30rem"
+          }}>
           <CardComponent item={item} key={index}/>
+          </Box>
         </>
       );
     });
@@ -37,7 +42,7 @@ const SmallCarousel = ({ items, type }: TProps) => {
     <>
       <Box
         sx={{
-          maxWidth: "80%",
+          maxWidth: "85%",
           margin: "0 auto",
         }}
       >

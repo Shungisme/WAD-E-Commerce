@@ -1,10 +1,13 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { TUser } from "../types/userType";
+import { getMeAuth, loginUserAPI, logoutAuth } from "../services/auth";
+import { clearLocalData, setDataInLocalStorage } from "../utils/localStorage";
+import { decodeJwt } from "../utils/decodeJWT";
 
 interface ValuesType {
   user: TUser | null;
   setUser: React.Dispatch<React.SetStateAction<TUser | null>>;
-  loginAuth: () => Promise<void>;
+  loginAuth: (data: TUser) => Promise<void>;
   logoutAuth: () => Promise<void>;
 }
 
@@ -15,7 +18,7 @@ interface TProps {
 const inititalData: ValuesType = {
   user: null,
   setUser: () => {},
-  loginAuth: async () => {},
+  loginAuth: async (data: TUser) => {},
   logoutAuth: async () => {},
 };
 
@@ -24,9 +27,49 @@ export const AuthContext = createContext<ValuesType>(inititalData);
 const AuthProvider = ({ children }: TProps) => {
   const [user, setUser] = useState<TUser | null>(null);
 
-  const handleLogin = async () => {};
+  useEffect(() => {
+    const getMe = async () => {
+      await getMeAuth()
+        .then((res) => {
+          const user = res.user;
+          setUser(user);
+        })
+        .catch((error) => {
+          setUser(null);
+          console.log("Error at getme useEffect in auth context");
+          throw error;
+        });
+    };
 
-  const handleLogout = async () => {};
+    getMe();
+  }, []);
+
+  const handleLogin = async (data: TUser) => {
+    await loginUserAPI(data)
+      .then((res) => {
+        const { accessToken, refreshToken } = res;
+        setDataInLocalStorage(accessToken, refreshToken);
+        const data: any = decodeJwt(accessToken);
+        setUser(data.user);
+      })
+      .catch((error) => {
+        console.log("error in handle login");
+        setUser(null);
+        throw error;
+      });
+  };
+
+  const handleLogout = async () => {
+    await logoutAuth()
+      .then(() => {
+        setUser(null);
+        clearLocalData();
+      })
+      .catch((error) => {
+        console.log("error at handle logout in auth context");
+        throw(error);
+      });
+  };
 
   return (
     <AuthContext.Provider

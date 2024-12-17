@@ -7,7 +7,7 @@ interface TProps {
   children: ReactNode
   dropdownKey:string
   contentDrop?: JSX.Element,
-  style?:CSSProperties ; 
+  style?:CSSProperties; 
 }
 
 const DropdownComponent = ({ children,contentDrop,dropdownKey,...rest }: TProps) => {  
