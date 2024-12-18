@@ -25,6 +25,26 @@ class ProductCategoryController {
 		}
 	}
 
+	static async megaMenuTitle(req, res) {
+		productCategoryModel.find().lean()
+			.then((productCategories) => {
+				const megaMenuTitle = productCategories
+					.filter((category) => !category.parentSlug)
+					.map((category) => {
+						category.children = productCategories
+							.filter((child) => child.parentSlug === category.slug)
+							.map((child) => child.title);
+						return [category.title, category.children];
+					});
+				res.status(StatusCodes.OK).json({ megaMenuTitle });
+			})
+			.catch((error) => {
+				res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+					error: error.message
+				});
+			});
+	}
+
 	static async getProductCategoryById(req, res) {
 		try {
 			const { id } = req.params;
@@ -93,6 +113,25 @@ class ProductCategoryController {
 			});
 		}
 	}
+
+	static async getProductCategoryBySlug(req, res) {
+		try {
+			const { slug } = req.params;
+			const productCategory = await productCategoryModel.findOne({ slug });
+			if (!productCategory) return res.status(StatusCodes.NOT_FOUND).json({
+				error: 'Product category not found'
+			});
+			res.status(StatusCodes.OK).json({
+				productCategory
+			});
+		}
+		catch (error) {
+			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
+
 }
 
 export default ProductCategoryController;
