@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import Product from '../models/product.model.js';
-import mongoose from 'mongoose';
+import ProductCategory from '../models/product-category.model.js';
 
 class ProductController {
 	static async getAllProducts(req, res) {
@@ -12,8 +12,11 @@ class ProductController {
 				status: 'active',
 			};
 
+			const allCategorySlugs = ProductCategory.find({ parentSlug: categorySlug }).lean().select('slug');
+			const categorySlugs = [categorySlug, ...(await allCategorySlugs).map((category) => category.slug)];
+
 			if (categorySlug)
-				options.categorySlug = categorySlug;
+				options.categorySlug = { $in: categorySlugs };
 
 			if (search)
 				options.title = { $regex: search, $options: 'i' };
