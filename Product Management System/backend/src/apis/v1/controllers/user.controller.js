@@ -161,6 +161,26 @@ class UserController {
 			});
 		}
 	}
+
+	static async getCurrentUser(req, res) {
+		try {
+			const id = req.userInformation._id;
+			const user = await User.findById(id).select('-password');;
+			if (!user) {
+				return res.status(StatusCodes.NOT_FOUND).json({
+					message: 'User not found'
+				});
+			}
+			res.status(StatusCodes.OK).json({
+				user
+			});
+		}
+		catch (error) {
+			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
 }
 
 
