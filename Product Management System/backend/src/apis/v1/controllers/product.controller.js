@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 class ProductController {
 	static async getAllProducts(req, res) {
-		const { categorySlug, page = 1, limit = 100 } = req.query;
+		const { categorySlug = "", page = 1, limit = 100, search = "", sort = "" } = req.query;
 		const startIndex = (page - 1) * limit;
 
 		try {
@@ -15,10 +15,30 @@ class ProductController {
 			if (categorySlug)
 				options.categorySlug = categorySlug;
 
+			if (search)
+				options.title = { $regex: search, $options: 'i' };
+
 			const totalProducts = await Product.countDocuments(options);
 			const products = await Product.find(options)
 				.skip(startIndex)
 				.limit(parseInt(limit));
+
+			if (sort) {
+				products.sort((a, b) => {
+					if (sort === 'newest') {
+						return new Date(b.createdAt) - new Date(a.createdAt);
+					}
+					else if (sort === 'oldest') {
+						return new Date(a.createdAt) - new Date(b.createdAt);
+					}
+					else if (sort === 'asc') {
+						return a.price - b.price;
+					}
+					else if (sort === 'desc') {
+						return b.price - a.price;
+					}
+				});
+			}
 
 			return res.status(StatusCodes.OK).json({
 				totalProducts,

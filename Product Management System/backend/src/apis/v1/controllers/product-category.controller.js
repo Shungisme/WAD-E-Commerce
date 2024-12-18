@@ -4,9 +4,19 @@ import { StatusCodes } from 'http-status-codes';
 class ProductCategoryController {
 	static async getAllProductCategories(req, res) {
 		try {
-			const productCategories = await productCategoryModel.find();
+			const productCategories = await productCategoryModel.find().lean();
+			const categoriesWithChildren = await Promise.all(
+				productCategories.map(async (category) => {
+					category.childSlugs = productCategories
+						.filter((child) => child.parentSlug === category.slug)
+						.map((child) => child.slug);
+
+					return category;
+				})
+			);
+
 			res.status(StatusCodes.OK).json({
-				productCategories
+				productCategories: categoriesWithChildren
 			});
 		} catch (error) {
 			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

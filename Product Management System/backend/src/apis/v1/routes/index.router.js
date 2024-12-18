@@ -5,6 +5,7 @@ import roleRouter from '../routes/role.router.js';
 import productCategoryRouter from '../routes/product-category.router.js';
 import cartRouter from '../routes/cart.router.js';
 import orderRouter from '../routes/order.router.js';
+import { isAuthorized } from '../middlewares/auth.middleware.js';
 
 const RouterV1 = (app) => {
 	const version = 'api/v1';

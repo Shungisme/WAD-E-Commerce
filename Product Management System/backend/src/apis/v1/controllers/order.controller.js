@@ -1,12 +1,33 @@
 import { StatusCodes } from 'http-status-codes';
 import Order from '../models/order.model.js';
+import Product from '../models/product.model.js';
 
 class OrderController {
 	static async getAllOrders(req, res) {
 		try {
 			const orders = await Order.find();
+
+			const updatedOrders = await Promise.all(
+				orders.map(async (order) => {
+					const updatedProducts = await Promise.all(
+						order.products.map(async (item) => {
+							const product = await Product.findById(item.productId);
+							return {
+								...item.toObject(),
+								title: product?.title || 'Unknown',
+								price: product?.price || 0,
+								discount: product?.discount || 0,
+								thumbnail: product?.thumbnail || '',
+								remainingQuantity: product?.quantity || 0,
+							};
+						})
+					);
+					return { ...order.toObject(), products: updatedProducts };
+				})
+			);
+
 			return res.status(StatusCodes.OK).json({
-				orders
+				orders: updatedOrders
 			});
 		} catch (error) {
 			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -18,10 +39,25 @@ class OrderController {
 	static async getOrderById(req, res) {
 		try {
 			const { id } = req.params;
-			const order = await Order.findById(id);
+			const order = await Order.findById(id).lean();
 			if (!order) return res.status(StatusCodes.NOT_FOUND).json({
 				error: 'Order not found'
 			});
+
+			const updatedProducts = await Promise.all(
+				order.products.map(async (item) => {
+					const product = await Product.findById(item.productId);
+					return {
+						...item,
+						title: product?.title || 'Unknown',
+						price: product?.price || 0,
+						discount: product?.discount || 0,
+						thumbnail: product?.thumbnail || '',
+						remainingQuantity: product?.quantity || 0,
+					};
+				})
+			);
+			order.products = updatedProducts;
 			return res.status(StatusCodes.OK).json({
 				order
 			});
