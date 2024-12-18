@@ -2,13 +2,16 @@ import { Box, Card, CardContent, CardMedia, Typography, useTheme } from "@mui/ma
 import { PRODUCT } from "../types/productType";
 import { toVND } from "../utils/convertNumberToVND";
 import { toDiscountPrice } from "../utils/toDiscountPrice";
+import { useNavigate } from "react-router-dom";
+import { slugify } from "../utils/slugify";
 
 interface TProps {
   item: PRODUCT;
 }
 
 const CardComponent = ({ item }: TProps) => {
-    const theme = useTheme();
+  const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -19,13 +22,15 @@ const CardComponent = ({ item }: TProps) => {
           height:"100%",
           width:"100%"
         }}
+        component={'div'}
+        onClick={() => navigate(`/detail?content=${slugify(item.title)}`)}
       >
         <Box position={"relative"}>
           <CardMedia
             component={"img"}
             height={"2rem"}
             image={item.thumbnail}
-            alt={item.name}
+            alt={item.title}
             sx={{
               objectFit: "cover",
             }}
@@ -62,7 +67,7 @@ const CardComponent = ({ item }: TProps) => {
             letterSpacing={1.3}
             fontWeight={500}
           >
-            {item.name}
+            {item.title}
           </Typography>
           <Box
             sx={{

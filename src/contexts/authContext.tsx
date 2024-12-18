@@ -37,7 +37,6 @@ const AuthProvider = ({ children }: TProps) => {
         .catch((error) => {
           setUser(null);
           console.log("Error at getme useEffect in auth context");
-          throw error;
         });
     };
 

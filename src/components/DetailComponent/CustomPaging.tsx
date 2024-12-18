@@ -7,11 +7,11 @@ interface TProps {
 }
 
 const CustomPaging = ({ item }: TProps) => {
-  const [heroImage,setHeroImage] = useState<string>(item.thumbnail);
+  const [heroImage,setHeroImage] = useState<string>(item?.thumbnail);
   const theme = useTheme();
 
   const renderListImages = () => {
-    return item.images.map((item,index) => {
+    return item?.images.map((item,index) => {
       return <>
         <Box 
         onClick={() => setHeroImage(item)}
@@ -55,10 +55,10 @@ const CustomPaging = ({ item }: TProps) => {
                 objectFit:"cover",
                 borderRadius:"5px",
                 boxShadow: `rgba(0, 0, 0, 0.24) 0px 3px 3px`
-            }} alt={item.name} component={'img'} src={heroImage}/>
+            }} alt={item?.title} component={'img'} src={heroImage}/>
             
             {
-              item.discount > 0 && <>
+              item?.discount > 0 && <>
                 <Box sx={{
                   position:"absolute",
                   fontWeight:"bold",
@@ -70,7 +70,7 @@ const CustomPaging = ({ item }: TProps) => {
                   p:0.5,
                   borderRadius:"5px 0 10px 10px"
                 }}>
-                  {item.discount}%
+                  {item?.discount}%
                 </Box>
               </> 
             }

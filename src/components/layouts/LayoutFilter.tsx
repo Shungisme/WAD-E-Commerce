@@ -17,7 +17,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { CATEGORIES_CONTANT } from "../../constants/categoryContants";
+import { CATEGORIES_CONTANT } from "../../mocks/categoryContants";
 import IconifyIcon from "../iconifyIcon";
 import { motion, AnimatePresence } from "framer-motion";
 

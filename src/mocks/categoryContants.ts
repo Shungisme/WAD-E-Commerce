@@ -54,6 +54,10 @@ export const CATEGORIES_CONTANT = (): ParentCategory[] => {
           name: "Áo nỉ",
           link: "#",
         },
+        {
+          name:"Áo khoác",
+          link:"#"
+        }
       ],
     },
     {
@@ -75,6 +79,10 @@ export const CATEGORIES_CONTANT = (): ParentCategory[] => {
           name: "Quần nỉ",
           link: "#",
         },
+        {
+          name:"Quần thể thao",
+          link:"#"
+        }
       ],
     },
     {
@@ -96,6 +104,10 @@ export const CATEGORIES_CONTANT = (): ParentCategory[] => {
           name: "Thắt lưng",
           link: "#",
         },
+        {
+          name:"Đồng hồ",
+          link:"#"
+        }
       ],
     },
     {
@@ -109,6 +121,18 @@ export const CATEGORIES_CONTANT = (): ParentCategory[] => {
           name: "Rubik",
           link: "#",
         },
+        {
+          name:"Cốc",
+          link:"#"
+        },
+        {
+          name:"Túi sách",
+          link:"#"
+        },
+        {
+          name:"Vòng tay",
+          link:"#"
+        }
       ],
     },
   ];

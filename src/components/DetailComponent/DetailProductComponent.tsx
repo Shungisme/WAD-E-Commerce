@@ -1,14 +1,18 @@
 import { Box, Button, Typography, useTheme } from "@mui/material";
-import { PRODUCT } from "../../types/productType";
 import { toDiscountPrice } from "../../utils/toDiscountPrice";
 import { toVND } from "../../utils/convertNumberToVND";
+import { useSearchParams } from "react-router-dom";
+import { useMemo } from "react";
 
 interface TProps {
-  item: PRODUCT;
+  item: any;
 }
 
 const DetailProductComponent = ({ item }: TProps) => {
- const theme = useTheme();
+  const theme = useTheme();
+  const [searchParams] = useSearchParams();
+  const slug = useMemo(() => searchParams.get("slug"), []);
+
   return (
     <>
       <Box
@@ -25,22 +29,33 @@ const DetailProductComponent = ({ item }: TProps) => {
             fontWeight: 400,
           }}
         >
-          {item.name}
+          {item?.title}
         </Typography>
-        {item.discount > 0 ? (
+        {item?.discount > 0 ? (
           <>
-            <Box sx={{
-                display:"flex",
-                alignItems:"center",
-                gap: 2
-            }}>
-              <Typography sx={{
-                color: theme.palette.primary.main,
-                fontWeight:"bold",
-                fontSize:"1.5rem"
-              }}>{toVND(toDiscountPrice(item))}</Typography>
-              <Typography sx={{
-              textDecoration: "line-through"}}>{toVND(item.price)}</Typography>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <Typography
+                sx={{
+                  color: theme.palette.primary.main,
+                  fontWeight: "bold",
+                  fontSize: "1.5rem",
+                }}
+              >
+                {toVND(toDiscountPrice(item))}
+              </Typography>
+              <Typography
+                sx={{
+                  textDecoration: "line-through",
+                }}
+              >
+                {toVND(item?.price)}
+              </Typography>
             </Box>
           </>
         ) : (
@@ -48,8 +63,10 @@ const DetailProductComponent = ({ item }: TProps) => {
             <Typography>{toVND(toDiscountPrice(item))}</Typography>
           </>
         )}
-        <Typography>Category: <strong>{item.category}</strong></Typography>
-        <Typography>{item.description}</Typography>
+        <Typography>
+          Category: <strong>{item?.categorySlug}</strong>
+        </Typography>
+        <Typography>{item?.description}</Typography>
         <Button variant="contained">Thêm vào giỏi hàng</Button>
       </Box>
     </>

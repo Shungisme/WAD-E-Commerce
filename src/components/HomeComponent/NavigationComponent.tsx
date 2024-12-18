@@ -25,12 +25,13 @@ import SearchComponent from "./ForNavigation/SearchComponent";
 import useHover from "../../hooks/useHover";
 import MegaMenuDropDownComponent from "./ForNavigation/MegaMenuDropDownComponent";
 import { AnimatePresence } from "framer-motion";
-import { CATEGORIES_CONTANT } from "../../constants/categoryContants";
+import { CATEGORIES_CONTANT } from "../../mocks/categoryContants";
 import { motion } from "framer-motion";
 import { ROUTES_CONSTANT } from "../../constants/routesConstants";
 import { useAuth } from "../../hooks/useAuth";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import SpinnerFullScreen from "../SpinnerFullScreen";
+import { getAllCategories } from "../../services/categories";
 
 const NavigationComponent = () => {
   const [isSticky, setIsSticky] = useState(false);
@@ -69,6 +70,11 @@ const NavigationComponent = () => {
   const mutation = useMutation({
     mutationKey: ["logout-user"],
     mutationFn: async () => await logoutAuth(),
+  });
+
+  const categories = useQuery({
+    queryKey: ["categories"],
+    queryFn: getAllCategories,
   });
 
   const renderItemInCarouselHeaderContent = () => {
@@ -112,7 +118,7 @@ const NavigationComponent = () => {
                   textTransform: "capitalize",
                   fontSize: "12px",
                 }}
-                onClick={() => navigate(item.url)}
+                onClick={() => navigate(ROUTES_CONSTANT.FILTER_PAGE)}
               >
                 Shop
               </Button>
@@ -153,7 +159,11 @@ const NavigationComponent = () => {
             </Typography>
           </Box>
           <Divider />
-          <Button onClick={() => mutation.mutate()} variant="contained" fullWidth>
+          <Button
+            onClick={() => mutation.mutate()}
+            variant="contained"
+            fullWidth
+          >
             Đăng xuất
           </Button>
         </Stack>
@@ -163,7 +173,7 @@ const NavigationComponent = () => {
 
   return (
     <>
-      {mutation.isPending && <SpinnerFullScreen />}
+      {(categories.isFetching || mutation.isPending) && <SpinnerFullScreen />}
       <Box>
         <Box
           sx={{
@@ -359,13 +369,15 @@ const NavigationComponent = () => {
                       cursor: "pointer",
                       py: 1.5,
                     }}
+                    component={"div"}
+                    onClick={() => navigate(ROUTES_CONSTANT.FILTER_PAGE)}
                   >
                     Cửa hàng
                   </Typography>
                   <AnimatePresence>
                     {hoverShopTab.isHover && (
                       <MegaMenuDropDownComponent
-                        content={CATEGORIES_CONTANT()}
+                        content={categories.data}
                       />
                     )}
                   </AnimatePresence>

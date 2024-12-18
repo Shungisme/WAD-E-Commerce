@@ -1,5 +1,6 @@
 export interface PRODUCT {
-  name: string;
+  _id?:string,  
+  title: string;
   description: string;
   thumbnail: string;
   images:string[];
@@ -7,8 +8,8 @@ export interface PRODUCT {
   quantity: number;
   status: string;
   discount: number;
-  category: string;
   slug: string;
+  categorySlug:string
 }
 
 export interface PRODUCT_FOR_CART {

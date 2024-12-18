@@ -1,4 +1,3 @@
-// AppContent.tsx
 import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -7,7 +6,6 @@ import HomePage from "./pages/HomePage";
 import { ROUTES_CONSTANT } from "./constants/routesConstants";
 import CartPage from "./pages/CartPage";
 import DetailPage from "./pages/DetailPage";
-import LayoutFilter from "./components/layouts/LayoutFilter";
 import FilterPage from "./pages/FilterPage";
 
 const AppContent: React.FC = () => {
@@ -22,10 +20,13 @@ const AppContent: React.FC = () => {
     >
       <Routes location={location}>
         <Route index path={ROUTES_CONSTANT.HOME_PAGE} element={<HomePage />} />
-        <Route path={ROUTES_CONSTANT.CART_PAGE} element={<CartPage/>}/>
+        <Route path={ROUTES_CONSTANT.CART_PAGE} element={<CartPage />} />
         <Route path={ROUTES_CONSTANT.ERROR_PAGE} element={<ErrorPage />} />
-        <Route path={ROUTES_CONSTANT.DETAIL_PRODUCT_PAGE} element={<DetailPage/>}/>
-        <Route path={ROUTES_CONSTANT.FILTER_PAGE} element={<FilterPage/>}/>
+        <Route
+          path={ROUTES_CONSTANT.DETAIL_PRODUCT_PAGE}
+          element={<DetailPage />}
+        />
+        <Route path={ROUTES_CONSTANT.FILTER_PAGE} element={<FilterPage />} />
       </Routes>
     </motion.div>
   );

@@ -1,18 +1,9 @@
 import { useRef } from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  useTheme,
-  IconButton,
-} from "@mui/material";
-import { toVND } from "../utils/convertNumberToVND";
+import { Box, Typography, useTheme, IconButton } from "@mui/material";
 import SmallCarouselComponent from "./SmallCarousel";
 import IconifyIcon from "./iconifyIcon";
-import { toDiscountPrice } from "../utils/toDiscountPrice";
 import CardComponent from "./CardComponent";
+import { useNavigate } from "react-router-dom";
 
 interface TProps {
   items: Array<any>;
@@ -24,14 +15,16 @@ const SmallCarousel = ({ items, type }: TProps) => {
   const theme = useTheme();
 
   const renderCarousel = () => {
-    return items.map((item, index) => {
+    return items?.map((item) => {
       return (
         <>
-          <Box sx={{
-            width:"22rem",
-            height:"30rem"
-          }}>
-          <CardComponent item={item} key={index}/>
+          <Box
+            sx={{
+              width: "22rem",
+              height: "30rem",
+            }}
+          >
+            <CardComponent item={item} key={item?._id} />
           </Box>
         </>
       );
@@ -40,80 +33,106 @@ const SmallCarousel = ({ items, type }: TProps) => {
 
   return (
     <>
-      <Box
-        sx={{
-          maxWidth: "85%",
-          margin: "0 auto",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
-          <Typography
-            fontSize={"2rem"}
-            color={theme.palette.primary.main}
-            fontWeight={500}
-          >
-            {type}
-          </Typography>
-          <Typography sx={{
-            cursor:"pointer"
-          }}>Xem tất cả</Typography>
-        </Box>
-
-        <Box position={"relative"}>
-          <SmallCarouselComponent ref={smallCarouselref}>
-            {renderCarousel()}
-          </SmallCarouselComponent>
-
-          <IconButton
-            className="prev-arrow"
+      {items?.length > 0 ? (
+        <>
+          <Box
             sx={{
-              color: theme.palette.mode === "dark" ? theme.palette.common.white : theme.palette.common.black,
-              position: "absolute",
-              left: -30,
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 1,
-            }}
-            onClick={() => {
-              smallCarouselref.current.slickPrev();
+              maxWidth: "85%",
+              margin: "0 auto",
             }}
           >
-            <IconifyIcon
-              icon={"ooui:next-rtl"}
-              fontSize={"2.5rem"}
-              fontWeight={"bold"}
-            />
-          </IconButton>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
+              <Typography
+                fontSize={"2rem"}
+                color={theme.palette.primary.main}
+                fontWeight={500}
+              >
+                {type}
+              </Typography>
+              <Typography
+                sx={{
+                  cursor: "pointer",
+                }}
+              >
+                Xem tất cả
+              </Typography>
+            </Box>
 
-          <IconButton
-            className="next-arrow"
+            <Box position={"relative"}>
+              <SmallCarouselComponent ref={smallCarouselref}>
+                {renderCarousel()}
+              </SmallCarouselComponent>
+
+              <IconButton
+                className="prev-arrow"
+                sx={{
+                  color:
+                    theme.palette.mode === "dark"
+                      ? theme.palette.common.white
+                      : theme.palette.common.black,
+                  position: "absolute",
+                  left: -30,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 1,
+                }}
+                onClick={() => {
+                  smallCarouselref.current.slickPrev();
+                }}
+              >
+                <IconifyIcon
+                  icon={"ooui:next-rtl"}
+                  fontSize={"2.5rem"}
+                  fontWeight={"bold"}
+                />
+              </IconButton>
+
+              <IconButton
+                className="next-arrow"
+                sx={{
+                  color:
+                    theme.palette.mode === "dark"
+                      ? theme.palette.common.white
+                      : theme.palette.common.black,
+                  position: "absolute",
+                  right: -30,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 1,
+                }}
+                onClick={() => {
+                  smallCarouselref.current.slickNext();
+                }}
+              >
+                <IconifyIcon
+                  fontWeight={"bold"}
+                  icon={"ooui:next-ltr"}
+                  fontSize={"2.5rem"}
+                />
+              </IconButton>
+            </Box>
+          </Box>
+        </>
+      ) : (
+        <>
+          <Box
             sx={{
-              color: theme.palette.mode === "dark" ? theme.palette.common.white : theme.palette.common.black,
-              position: "absolute",
-              right: -30,
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 1,
-            }}
-            onClick={() => {
-              smallCarouselref.current.slickNext()
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <IconifyIcon
-              fontWeight={"bold"}
-              icon={"ooui:next-ltr"}
-              fontSize={"2.5rem"}
-            />
-          </IconButton>
-        </Box>
-      </Box>
+            <Typography>Không tồn tại sản phẩm</Typography>
+          </Box>
+        </>
+      )}
     </>
   );
 };

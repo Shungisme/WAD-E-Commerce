@@ -1,7 +1,8 @@
 import axios from "axios";
 import { API_CONSTANTS } from "../constants/apiContants";
 import { TUser } from "../types/userType";
-import { getDataFromLocalStorage } from "../utils/localStorage";
+import { getDataFromLocalStorage, setDataInLocalStorage } from "../utils/localStorage";
+import { instanceAxios } from "../utils/instanceAxios";
 
 const BASE_URL = API_CONSTANTS.auth;
 
@@ -42,9 +43,9 @@ export const loginUserAPI = async (user: TUser) => {
 
 export const getMeAuth = async () => {
   try {
-    const url = BASE_URL + "/get-me";
+    const url = BASE_URL + "current-user";
     const { accessToken } = getDataFromLocalStorage();
-    const response = await axios(url, {
+    const response = await instanceAxios(url, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -76,6 +77,31 @@ export const logoutAuth = async () => {
     throw(error);
   }
 }
+
+
+export const newAccessToken = async (refreshToken:string) => {
+  try {
+    const url = BASE_URL + 'refresh';
+    const {accessToken} = getDataFromLocalStorage();
+
+    const newToken = await axios(url,{
+      method:"POST",
+      data:{
+        refreshToken:refreshToken
+      },
+      headers:{
+        "Content-Type":"Application/json",
+        Authorization:`Bearer ${accessToken}`
+      }
+    })
+    return newToken.data.newAccessToken
+  } catch (error) {
+    console.log("error at refresh Token in services")
+    throw(error);
+  }
+
+}
+
 
 
 export const getAuthGoogleUrl = () => {
