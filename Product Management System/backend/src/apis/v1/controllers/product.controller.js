@@ -24,7 +24,8 @@ class ProductController {
 			const totalProducts = await Product.countDocuments(options);
 			const products = await Product.find(options)
 				.skip(startIndex)
-				.limit(parseInt(limit));
+				.limit(parseInt(limit))
+				.lean();
 
 			if (sort) {
 				products.sort((a, b) => {
@@ -43,11 +44,23 @@ class ProductController {
 				});
 			}
 
+			const productsWithCategoryTitle = await Promise.all(
+				products.map(async (product) => {
+					const category = await ProductCategory.findOne({ slug: product.categorySlug })
+						.lean()
+						.select('title');
+					return {
+						...product,
+						categoryTitle: category ? category.title : null,
+					};
+				})
+			);
+
 			return res.status(StatusCodes.OK).json({
 				totalProducts,
 				totalPages: Math.ceil(totalProducts / limit),
 				currentPage: parseInt(page),
-				products
+				products: productsWithCategoryTitle
 			});
 
 		} catch (error) {
