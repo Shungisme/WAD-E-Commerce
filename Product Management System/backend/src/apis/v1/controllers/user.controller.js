@@ -29,9 +29,12 @@ class UserController {
 			}
 
 			const userInformation = {
-				_id: user._id,
-				email: user.email,
-				role: user.role
+				user: {
+					_id: user._id,
+					email: user.email,
+					name: user.name,
+					role: user.role
+				}
 			};
 
 			const accessToken = await JWTHelper.generateToken(userInformation, process.env.ACCESS_TOKEN_SECRET_SIGNATURE, process.env.ACCESS_TOKEN_LIFE_TIME);
@@ -133,20 +136,18 @@ class UserController {
 
 	static async refreshToken(req, res) {
 		try {
-			const { accessToken } = req.body;
+			const { refreshToken } = req.body;
 
-			if (!accessToken) {
+			if (!refreshToken) {
 				return res.status(StatusCodes.BAD_REQUEST).json({
 					message: 'Missing required fields'
 				});
 			}
 
-			const decoded = await JWTHelper.verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET_SIGNATURE);
+			const decoded = await JWTHelper.verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET_SIGNATURE);
 
 			const userInformation = {
-				_id: decoded._id,
-				email: decoded.email,
-				role: decoded.role
+				user: decoded.user
 			};
 
 			const newAccessToken = await JWTHelper.generateToken(userInformation, process.env.ACCESS_TOKEN_SECRET_SIGNATURE, process.env.ACCESS_TOKEN_LIFE_TIME);

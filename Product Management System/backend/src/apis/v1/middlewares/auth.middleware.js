@@ -10,7 +10,7 @@ const isAuthorized = async (req, res, next) => {
 			});
 		}
 		const decoded = await JWTHelper.verifyToken(token, process.env.ACCESS_TOKEN_SECRET_SIGNATURE);
-		req.userInformation = decoded;
+		req.userInformation = decoded.user;
 		next();
 	} catch (error) {
 		if (error.message?.includes('jwt expired')) {
