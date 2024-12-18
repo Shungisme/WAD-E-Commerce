@@ -82,6 +82,31 @@ class ProductController {
 		}
 	}
 
+	static async getProductBySlug(req, res) {
+		const { slug } = req.params;
+		try {
+			const product = await Product.findOne({ slug, status: 'active' }).lean();
+			if (!product) return res.status(StatusCodes.NOT_FOUND).json({
+				error: 'Product not found'
+			});
+
+			const relatedProducts = await Product.find({
+				status: 'active',
+				categorySlug: product.categorySlug,
+				_id: { $ne: product._id }
+			}).limit(5).lean();
+
+			return res.status(StatusCodes.OK).json({
+				...product,
+				relatedProducts
+			});
+		} catch (error) {
+			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
+
 	static async createProduct(req, res) {
 		try {
 			const productData = {
