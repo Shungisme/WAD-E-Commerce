@@ -84,8 +84,18 @@ class ProductController {
 				_id: { $ne: product._id }
 			}).limit(5).lean();
 
-			return res.status(StatusCodes.OK).json({
+			const category = await ProductCategory.findOne({ slug: product.categorySlug })
+				.lean()
+				.select('title');
+
+			const productWithCategoryTitle = {
 				...product,
+				categoryTitle: category ? category.title : null,
+			};
+
+
+			return res.status(StatusCodes.OK).json({
+				...productWithCategoryTitle,
 				relatedProducts
 			});
 		} catch (error) {
@@ -109,8 +119,18 @@ class ProductController {
 				_id: { $ne: product._id }
 			}).limit(5).lean();
 
-			return res.status(StatusCodes.OK).json({
+
+			const category = await ProductCategory.findOne({ slug: product.categorySlug })
+				.lean()
+				.select('title');
+
+			const productWithCategoryTitle = {
 				...product,
+				categoryTitle: category ? category.title : null,
+			};
+
+			return res.status(StatusCodes.OK).json({
+				...productWithCategoryTitle,
 				relatedProducts
 			});
 		} catch (error) {
