@@ -1,12 +1,39 @@
-import { Box, Container, Typography } from "@mui/material";
-import { DETAIL_PRODUCT } from "../mocks/detailProduct";
+import { Box, Typography } from "@mui/material";
 import CustomPaging from "../components/DetailComponent/CustomPaging";
-import InformationComponent from "../components/HomeComponent/ForBody/Information";
 import DetailProductComponent from "../components/DetailComponent/DetailProductComponent";
 import SmallCarousel from "../components/SmallCarouselComponent";
+import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
+import { getProductBySlug, getProductsByCategory } from "../services/products";
+import { slugify } from "../utils/slugify";
 
 const DetailPage = () => {
-  const product = DETAIL_PRODUCT;
+  const [searchParams] = useSearchParams();
+
+  const detailProduct = useQuery({
+    queryKey: ["detail-product",searchParams.get("content")],
+    queryFn: async () => {
+      const response = await getProductBySlug(
+        String(searchParams.get("content"))
+      );
+      return response;
+    },
+    enabled: !!searchParams.get("content"),
+  });
+
+  const relatedProducts = useQuery({
+    queryKey: ["related-product", detailProduct?.data?.categoryTitle,searchParams.get("content")],
+    queryFn: async () => {
+      const response = await getProductsByCategory({
+        categorySlug: slugify(detailProduct?.data.categoryTitle),
+        limit: 6,
+        page: 1,
+      });
+
+      return response;
+    },
+    enabled: !!detailProduct?.data?.categoryTitle,
+  });
 
   return (
     <>
@@ -24,17 +51,24 @@ const DetailPage = () => {
             gap: 5,
           }}
         >
-          <CustomPaging item={product} />
-          <DetailProductComponent item={product} />
+          <CustomPaging item={detailProduct?.data} />
+          <DetailProductComponent item={detailProduct?.data} />
         </Box>
         <Box mt={"2rem"}>
-          <Typography sx={{
-            fontSize:"2rem",
-            fontWeight:"bold",
-            textAlign:"left",
-            mb:2
-          }}>Sản phẩm liên quan</Typography>
-           ....
+          <Typography
+            sx={{
+              fontSize: "2rem",
+              fontWeight: "bold",
+              textAlign: "left",
+              mb: 2,
+            }}
+          >
+            Sản phẩm liên quan
+          </Typography>
+          <SmallCarousel
+            items={relatedProducts?.data?.products.filter((item:any) => item?._id !== detailProduct?.data._id)}
+            type={detailProduct?.data?.categoryTitle}
+          />
         </Box>
       </Box>
     </>

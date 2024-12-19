@@ -6,6 +6,7 @@ import { ThemeProviderWrapper } from "./contexts/themeContext";
 import AppContent from "./AppContent";
 import NavigationComponent from "./components/HomeComponent/NavigationComponent";
 import FooterComponent from "./components/HomeComponent/FooterComponent";
+import InstanceAxiosProvider from "./utils/instanceAxios";
 
 const App = () => {
   return (
@@ -16,9 +17,11 @@ const App = () => {
             path: "*",
             element: (
               <>
-                <NavigationComponent />
-                <AppContent />
-                <FooterComponent/>
+                <InstanceAxiosProvider>
+                  <NavigationComponent />
+                  <AppContent />
+                  <FooterComponent />
+                </InstanceAxiosProvider>
               </>
             ),
           },

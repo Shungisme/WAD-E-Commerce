@@ -11,6 +11,13 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import IconifyIcon from "../../iconifyIcon";
+import { useState } from "react";
+import { getAuthGoogleUrl, loginUserAPI } from "../../../services/auth";
+import { TUser } from "../../../types/userType";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "../../../hooks/useAuth";
+import SpinnerFullScreen from "../../SpinnerFullScreen";
+import { useNavigate } from "react-router-dom";
 
 interface LoginForm {
   email: string;
@@ -39,6 +46,10 @@ const schema = yup
 
 const LoginComponent = ({ navigateToComponent }: TProps) => {
   const theme = useTheme();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const {loginAuth} = useAuth();
+  const navigate = useNavigate();
+
   const {
     handleSubmit,
     formState: { errors },
@@ -52,10 +63,22 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<LoginForm> = (data) => {};
+  const mutation = useMutation({
+    mutationKey:["login-user"],
+    mutationFn: async (data:TUser) => {
+      const response = await loginAuth(data)
+      return response
+    },
+  })
+
+  const onSubmit: SubmitHandler<any> = async (data: TUser) => {
+    const response = await mutation.mutate(data);
+    return response;
+  };
 
   return (
     <>
+      {mutation.isPending && <SpinnerFullScreen/>}
       <CardContent>
         <Typography fontSize={"1.1rem"} fontWeight={"bold"}>
           Đăng nhập tài khoản
@@ -132,6 +155,7 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
                   value={value}
                   id="password"
                   className=" w-full outline-none px-2 py-3 border-2 rounded-md text-[13px] peer"
+                  type={showPassword ? "text" : "password"}
                 />
                 <label
                   style={{
@@ -146,6 +170,23 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
                 >
                   Password
                 </label>
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  sx={{
+                    position: "absolute",
+                    right: 0,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                  }}
+                >
+                  <IconifyIcon
+                    icon={
+                      showPassword
+                        ? "ic:sharp-visibility"
+                        : "material-symbols:visibility-off"
+                    }
+                  />
+                </IconButton>
               </div>
             )}
             name="password"
@@ -191,7 +232,7 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
         <Typography component={"div"} fontSize={"0.8rem"}>
           Đăng nhập bằng
         </Typography>
-        <IconButton>
+        <IconButton onClick={() => {window.location.href = getAuthGoogleUrl()}}>
           <IconifyIcon icon={"flat-color-icons:google"} />
         </IconButton>
       </Box>

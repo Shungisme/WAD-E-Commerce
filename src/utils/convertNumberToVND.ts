@@ -1,15 +1,22 @@
-
-
-
 export const toVND = (value: number | string): string => {
-    value = value.toString().replace(/\./g, "");
-    const formatted = new Intl.NumberFormat("it-IT", {
+  if (!value || isNaN(Number(value))) {
+    return new Intl.NumberFormat("it-IT", {
       style: "currency",
       currency: "VND",
-      })
-      .format(Number(value))
+    })
+      .format(0)
       .replace("₫", "")
       .trim();
-  
-    return formatted;
-}
+  }
+
+  value = value.toString().replace(/\./g, "");
+  const formatted = new Intl.NumberFormat("it-IT", {
+    style: "currency",
+    currency: "VND",
+  })
+    .format(Number(value))
+    .replace("₫", "")
+    .trim();
+
+  return formatted;
+};

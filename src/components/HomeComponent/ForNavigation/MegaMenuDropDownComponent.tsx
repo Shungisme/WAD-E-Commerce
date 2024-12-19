@@ -1,17 +1,17 @@
 import { Box, Container, Paper, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
-import { ParentCategory } from "../../../constants/categoryContants";
 import { useNavigate } from "react-router-dom";
+import { slugify } from "../../../utils/slugify";
 
 interface TProps {
-  content: ParentCategory[];
+  content: any;
 }
 
 const MegaMenuDropDownComponent = ({ content }: TProps) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const renderComponet = () => {
-    return content.map((item,index) => {
+    return content?.megaMenuTitle?.map((item: any, index: any) => {
       return (
         <>
           <Box key={index}>
@@ -22,8 +22,10 @@ const MegaMenuDropDownComponent = ({ content }: TProps) => {
               mb={2}
               fontWeight={"bold"}
               letterSpacing={"1px"}
+              component={"div"}
+              onClick={() => navigate(`/filter?content=${slugify(item[0])}`)}
             >
-              {item.parent}
+              {item[0]}
             </Typography>
             <Box
               sx={{
@@ -32,7 +34,7 @@ const MegaMenuDropDownComponent = ({ content }: TProps) => {
                 gap: 1,
               }}
             >
-              {item.child.map((item,index) => {
+              {item[1].map((item: any, index: any) => {
                 return (
                   <>
                     <Typography
@@ -46,8 +48,12 @@ const MegaMenuDropDownComponent = ({ content }: TProps) => {
                           fontWeight: 500,
                         },
                       }}
+                      component={"div"}
+                      onClick={() =>
+                        navigate(`/filter?content=${slugify(item)}`)
+                      }
                     >
-                      {item.name}
+                      {item}
                     </Typography>
                   </>
                 );
@@ -79,7 +85,7 @@ const MegaMenuDropDownComponent = ({ content }: TProps) => {
           left: 0,
           width: "98.9vw",
           transform: "translateY(100%)",
-          zIndex:2
+          zIndex: 2,
         }}
       >
         <Paper

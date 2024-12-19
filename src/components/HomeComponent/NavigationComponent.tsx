@@ -2,7 +2,9 @@ import {
   Badge,
   Box,
   Button,
+  Divider,
   IconButton,
+  Stack,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -23,27 +25,30 @@ import SearchComponent from "./ForNavigation/SearchComponent";
 import useHover from "../../hooks/useHover";
 import MegaMenuDropDownComponent from "./ForNavigation/MegaMenuDropDownComponent";
 import { AnimatePresence } from "framer-motion";
-import { CATEGORIES_CONTANT } from "../../constants/categoryContants";
 import { motion } from "framer-motion";
 import { ROUTES_CONSTANT } from "../../constants/routesConstants";
+import { useAuth } from "../../hooks/useAuth";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import SpinnerFullScreen from "../SpinnerFullScreen";
+import { getAllCategories } from "../../services/categories";
 
 const NavigationComponent = () => {
   const [isSticky, setIsSticky] = useState(false);
+  const { user, logoutAuth } = useAuth();
+  const [cartData, setCartData] = useState<any>(null);
+
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
       setIsSticky(scrollTop > 100);
     };
-
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  //setting carousel
   const settings = useMemo(() => {
     return {
       dots: false,
@@ -57,14 +62,22 @@ const NavigationComponent = () => {
     };
   }, []);
 
-  //Hooks
   const [nameComponent, setNameComponent] = useState<string>("login");
 
   const theme = useTheme();
   const navigate = useNavigate();
   const hoverShopTab = useHover();
 
-  //render component
+  const mutation = useMutation({
+    mutationKey: ["logout-user"],
+    mutationFn: async () => await logoutAuth(),
+  });
+
+  const categories = useQuery({
+    queryKey: ["categories"],
+    queryFn: getAllCategories,
+  });
+
   const renderItemInCarouselHeaderContent = () => {
     return headerContentCarousel().map((item, index) => {
       return (
@@ -106,7 +119,7 @@ const NavigationComponent = () => {
                   textTransform: "capitalize",
                   fontSize: "12px",
                 }}
-                onClick={() => navigate(item.url)}
+                onClick={() => navigate(ROUTES_CONSTANT.FILTER_PAGE)}
               >
                 Shop
               </Button>
@@ -127,8 +140,43 @@ const NavigationComponent = () => {
     }
   };
 
+  const renderHasLogin = () => {
+    return (
+      <>
+        <Stack direction={"column"} gap={2}>
+          <Typography fontWeight={500} fontSize={"1.4rem"}>
+            Thông tin cá nhân
+          </Typography>
+          <Divider />
+          <Box textAlign={"left"} ml={2.5}>
+            <Typography>
+              <strong>Email: </strong> {user?.email}
+            </Typography>
+            <Typography>
+              <strong>Name: </strong> {user?.name}
+            </Typography>
+            <Typography>
+              <strong>Role: </strong> {user?.role}
+            </Typography>
+          </Box>
+          <Divider />
+          <Button
+            onClick={() => {
+              mutation.mutate()
+            }}
+            variant="contained"
+            fullWidth
+          >
+            Đăng xuất
+          </Button>
+        </Stack>
+      </>
+    );
+  };
+
   return (
     <>
+      {(categories.isFetching || mutation.isPending) && <SpinnerFullScreen />}
       <Box>
         <Box
           sx={{
@@ -324,14 +372,14 @@ const NavigationComponent = () => {
                       cursor: "pointer",
                       py: 1.5,
                     }}
+                    component={"div"}
+                    onClick={() => navigate(ROUTES_CONSTANT.FILTER_PAGE)}
                   >
                     Cửa hàng
                   </Typography>
                   <AnimatePresence>
                     {hoverShopTab.isHover && (
-                      <MegaMenuDropDownComponent
-                        content={CATEGORIES_CONTANT()}
-                      />
+                      <MegaMenuDropDownComponent content={categories.data} />
                     )}
                   </AnimatePresence>
                 </Box>
@@ -380,22 +428,40 @@ const NavigationComponent = () => {
               <SearchComponent />
 
               <DropdownComponent
-                contentDrop={renderComponentAuthentication()}
-                dropdownKey={nameComponent}
-              >
-                <IconifyIcon icon={"ph:user-light"} fontSize={"1.5rem"} />
-                <Typography fontSize={"0.8rem"}>Tài khoản</Typography>
-              </DropdownComponent>
-
-              <DropdownComponent
-                contentDrop={<CartDropDownComponent />}
+                contentDrop={<CartDropDownComponent setData={setCartData} />}
                 dropdownKey="cartDropDown"
+             
               >
-                <Badge badgeContent={4} color="primary">
+                <Badge
+                  badgeContent={user?._id ? cartData?.products?.length : 0}
+                  color="primary"
+                >
                   <IconifyIcon icon={"mdi-light:cart"} fontSize={"1.5rem"} />
                 </Badge>
                 <Typography fontSize={"0.8rem"}>Giỏ hàng</Typography>
               </DropdownComponent>
+
+              {user ? (
+                <>
+                  <DropdownComponent
+                    contentDrop={renderHasLogin()}
+                    dropdownKey={nameComponent}
+                  >
+                    <IconifyIcon icon={"ph:user-light"} fontSize={"1.5rem"} />
+                    <Typography fontSize={"0.8rem"}>{user.name}</Typography>
+                  </DropdownComponent>
+                </>
+              ) : (
+                <>
+                  <DropdownComponent
+                    contentDrop={renderComponentAuthentication()}
+                    dropdownKey={nameComponent}
+                  >
+                    <IconifyIcon icon={"ph:user-light"} fontSize={"1.5rem"} />
+                    <Typography fontSize={"0.8rem"}>Tài khoản</Typography>
+                  </DropdownComponent>
+                </>
+              )}
             </Box>
           </Box>
         </motion.div>
