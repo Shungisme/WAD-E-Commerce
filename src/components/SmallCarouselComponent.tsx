@@ -20,8 +20,9 @@ const SmallCarousel = ({ items, type }: TProps) => {
         <>
           <Box
             sx={{
-              width: "22rem",
-              height: "30rem",
+              width: "25rem",
+              height: "30rem", 
+              margin: "0 auto", 
             }}
           >
             <CardComponent item={item} key={item?._id} />
@@ -69,7 +70,6 @@ const SmallCarousel = ({ items, type }: TProps) => {
               <SmallCarouselComponent ref={smallCarouselref}>
                 {renderCarousel()}
               </SmallCarouselComponent>
-
               <IconButton
                 className="prev-arrow"
                 sx={{

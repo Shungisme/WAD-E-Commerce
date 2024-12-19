@@ -25,7 +25,6 @@ import SearchComponent from "./ForNavigation/SearchComponent";
 import useHover from "../../hooks/useHover";
 import MegaMenuDropDownComponent from "./ForNavigation/MegaMenuDropDownComponent";
 import { AnimatePresence } from "framer-motion";
-import { CATEGORIES_CONTANT } from "../../mocks/categoryContants";
 import { motion } from "framer-motion";
 import { ROUTES_CONSTANT } from "../../constants/routesConstants";
 import { useAuth } from "../../hooks/useAuth";
@@ -36,6 +35,8 @@ import { getAllCategories } from "../../services/categories";
 const NavigationComponent = () => {
   const [isSticky, setIsSticky] = useState(false);
   const { user, logoutAuth } = useAuth();
+  const [cartData, setCartData] = useState<any>(null);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -160,7 +161,9 @@ const NavigationComponent = () => {
           </Box>
           <Divider />
           <Button
-            onClick={() => mutation.mutate()}
+            onClick={() => {
+              mutation.mutate()
+            }}
             variant="contained"
             fullWidth
           >
@@ -376,9 +379,7 @@ const NavigationComponent = () => {
                   </Typography>
                   <AnimatePresence>
                     {hoverShopTab.isHover && (
-                      <MegaMenuDropDownComponent
-                        content={categories.data}
-                      />
+                      <MegaMenuDropDownComponent content={categories.data} />
                     )}
                   </AnimatePresence>
                 </Box>
@@ -427,10 +428,14 @@ const NavigationComponent = () => {
               <SearchComponent />
 
               <DropdownComponent
-                contentDrop={<CartDropDownComponent />}
+                contentDrop={<CartDropDownComponent setData={setCartData} />}
                 dropdownKey="cartDropDown"
+             
               >
-                <Badge badgeContent={4} color="primary">
+                <Badge
+                  badgeContent={user?._id ? cartData?.products?.length : 0}
+                  color="primary"
+                >
                   <IconifyIcon icon={"mdi-light:cart"} fontSize={"1.5rem"} />
                 </Badge>
                 <Typography fontSize={"0.8rem"}>Giỏ hàng</Typography>

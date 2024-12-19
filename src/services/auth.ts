@@ -45,7 +45,7 @@ export const getMeAuth = async () => {
   try {
     const url = BASE_URL + "current-user";
     const { accessToken } = getDataFromLocalStorage();
-    const response = await instanceAxios(url, {
+    const response = await axios(url, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",

@@ -80,30 +80,41 @@ const BodyHomeComponent = () => {
           alignItems: "center",
           flexDirection: "column",
           gap: "1rem",
+          width: "100%",
         }}
       >
         <MainCarousel />
         <InformationComponent />
-        <SmallCarousel
-          items={shoesProducts?.data?.products}
-          type="Sản phẩm giày"
-        />
-        <SmallCarousel
-          items={shirtProducts?.data?.products}
-          type="Sản phẩm áo"
-        />
-        <SmallCarousel
-          items={trousersProducts?.data?.products}
-          type="Sản phẩm quần"
-        />
-        <SmallCarousel
-          items={accessoriesProducts?.data?.products}
-          type="Phụ kiện"
-        />
-         <SmallCarousel
-          items={presentsProducts?.data?.products}
-          type="qua-luu-niem"
-        />
+        <Box sx={{ width: "100%" }}>
+          <SmallCarousel
+            items={shoesProducts?.data?.products}
+            type="Sản phẩm giày"
+          />
+        </Box>
+        <Box sx={{ width: "100%" }}>
+          <SmallCarousel
+            items={shirtProducts?.data?.products}
+            type="Sản phẩm áo"
+          />
+        </Box>
+        <Box sx={{ width: "100%" }}>
+          <SmallCarousel
+            items={trousersProducts?.data?.products}
+            type="Sản phẩm quần"
+          />
+        </Box>
+        <Box sx={{ width: "100%" }}>
+          <SmallCarousel
+            items={accessoriesProducts?.data?.products}
+            type="Phụ kiện"
+          />
+        </Box>
+        <Box sx={{ width: "100%" }}>
+          <SmallCarousel
+            items={presentsProducts?.data?.products}
+            type="Quà lưu niệm"
+          />
+        </Box>
       </Box>
     </>
   );

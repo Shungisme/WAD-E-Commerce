@@ -1,6 +1,5 @@
 import { Box, Container, Paper, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
-import { ParentCategory } from "../../../mocks/categoryContants";
 import { useNavigate } from "react-router-dom";
 import { slugify } from "../../../utils/slugify";
 

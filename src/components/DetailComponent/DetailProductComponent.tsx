@@ -1,8 +1,11 @@
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { toDiscountPrice } from "../../utils/toDiscountPrice";
 import { toVND } from "../../utils/convertNumberToVND";
-import { useSearchParams } from "react-router-dom";
-import { useMemo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateCart } from "../../services/cart";
+import { useAuth } from "../../hooks/useAuth";
+import AnnouceModalComponent from "../AnnouceModalComponent";
+import { useState } from "react";
 
 interface TProps {
   item: any;
@@ -10,11 +13,77 @@ interface TProps {
 
 const DetailProductComponent = ({ item }: TProps) => {
   const theme = useTheme();
-  const [searchParams] = useSearchParams();
-  const slug = useMemo(() => searchParams.get("slug"), []);
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const [openModal, setOpenModal] = useState<boolean>(false);
+
+  const addCart = useMutation({
+    mutationKey: ["get-cart",user?._id],
+    mutationFn: async ({
+      userId,
+      products,
+    }: {
+      userId: string;
+      products?: any;
+    }) => {
+      const response = await updateCart(userId, products);
+      return response;
+    },
+    onMutate: ({ products }) => {
+      queryClient.cancelQueries({ queryKey: ["add-cart"] });
+      const previousData = queryClient.getQueryData(["get-cart"]);
+
+      queryClient.setQueryData(["get-cart"], (old: any) => {
+        const data = old?.cart;
+        const newObject = { ...data };
+        newObject.products = [...products];
+        return newObject;
+      });
+
+      return {previousData};
+    },
+    onError: (error, { userId, products }, context: any) => {
+      queryClient.setQueryData(["get-cart"], context?.previousData);
+    },
+    onSettled: async () => {
+      queryClient.refetchQueries({
+        queryKey: ["get-cart", user?._id],
+      });
+    },
+  });
+
+  const handleAddProductToCart = async () => {
+    if (!user) {
+      setOpenModal(true);
+      return;
+    }
+    const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
+    const data = cart?.products;
+    const detailProduct: any = queryClient.getQueryData(["detail-product"]);
+    const index = data?.findIndex(
+      (item: any) => item?.productId === detailProduct?._id
+    );
+    if (index !== -1) {
+      data[index].quantity = data[index].quantity + 1;
+    } else {
+      data.push({
+        productId: detailProduct._id,
+        quantity: 1,
+      });
+    }
+    await addCart.mutate({ userId: user?._id || "", products: [...data] });
+  };
 
   return (
     <>
+      <AnnouceModalComponent
+        header="Thông báo"
+        bodyContent="Vui lòng đăng nhập"
+        open={openModal}
+        setOpen={setOpenModal}
+        doCancel={() => setOpenModal(false)}
+        doOk={() => setOpenModal(false)}
+      />
       <Box
         sx={{
           display: "flex",
@@ -64,10 +133,12 @@ const DetailProductComponent = ({ item }: TProps) => {
           </>
         )}
         <Typography>
-          Category: <strong>{item?.categorySlug}</strong>
+          Loại hàng: <strong>{item?.categoryTitle}</strong>
         </Typography>
         <Typography>{item?.description}</Typography>
-        <Button variant="contained">Thêm vào giỏi hàng</Button>
+        <Button onClick={() => handleAddProductToCart()} variant="contained">
+          Thêm vào giỏ hàng
+        </Button>
       </Box>
     </>
   );
