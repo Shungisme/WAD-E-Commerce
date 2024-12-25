@@ -7,7 +7,7 @@ import { store } from "./stores/store";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import AuthProvider from "./contexts/authContext";
+
 
 const queryClient = new QueryClient();
 
@@ -19,9 +19,7 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
           <App />
-        </AuthProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </Provider>

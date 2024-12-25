@@ -31,11 +31,12 @@ import { useAuth } from "../../hooks/useAuth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import SpinnerFullScreen from "../SpinnerFullScreen";
 import { getAllCategories } from "../../services/categories";
+import { useCart } from "../../hooks/useCart";
 
 const NavigationComponent = () => {
   const [isSticky, setIsSticky] = useState(false);
   const { user, logoutAuth } = useAuth();
-  const [cartData, setCartData] = useState<any>(null);
+  const {myCart} = useCart()
 
 
   useEffect(() => {
@@ -428,12 +429,12 @@ const NavigationComponent = () => {
               <SearchComponent />
 
               <DropdownComponent
-                contentDrop={<CartDropDownComponent setData={setCartData} />}
+                contentDrop={<CartDropDownComponent />}
                 dropdownKey="cartDropDown"
              
               >
                 <Badge
-                  badgeContent={user?._id ? cartData?.products?.length : 0}
+                  badgeContent={user?._id ? myCart?.data?.products?.length : 0}
                   color="primary"
                 >
                   <IconifyIcon icon={"mdi-light:cart"} fontSize={"1.5rem"} />

@@ -12,12 +12,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import IconifyIcon from "../../iconifyIcon";
 import { useState } from "react";
-import { getAuthGoogleUrl, loginUserAPI } from "../../../services/auth";
+import { getAuthGoogleUrl } from "../../../services/auth";
 import { TUser } from "../../../types/userType";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../../hooks/useAuth";
 import SpinnerFullScreen from "../../SpinnerFullScreen";
-import { useNavigate } from "react-router-dom";
+
 
 interface LoginForm {
   email: string;
@@ -48,7 +48,6 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
   const theme = useTheme();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const {loginAuth} = useAuth();
-  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -72,7 +71,7 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
   })
 
   const onSubmit: SubmitHandler<any> = async (data: TUser) => {
-    const response = await mutation.mutate(data);
+    const response = await loginAuth(data);
     return response;
   };
 
@@ -161,11 +160,11 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
                   style={{
                     color: theme.palette.common.black,
                   }}
-                  className={` absolute left-[0.55rem] transition-all duration-200 ease-in-out ${
+                  className={`absolute left-[0.55rem] transition-all duration-200 ease-in-out ${
                     value
-                      ? "text-[10px] top-[2px] translate-y-0"
-                      : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
-                  }`}
+                        ? "text-[10px] top-[2px] translate-y-0"
+                        : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
+                }`}
                   htmlFor="password"
                 >
                   Password

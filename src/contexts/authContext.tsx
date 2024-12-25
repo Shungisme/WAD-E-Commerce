@@ -27,10 +27,11 @@ export const AuthContext = createContext<ValuesType>(inititalData);
 const AuthProvider = ({ children }: TProps) => {
   const [user, setUser] = useState<TUser | null>(null);
 
+  
   useEffect(() => {
     const getMe = async () => {
       await getMeAuth()
-        .then((res) => {
+      .then((res) => {
           const user = res.user;
           setUser(user);
         })
@@ -44,10 +45,11 @@ const AuthProvider = ({ children }: TProps) => {
   }, []);
 
   const handleLogin = async (data: TUser) => {
+    console.log("Hello")
     await loginUserAPI(data)
       .then((res) => {
-        const { accessToken, refreshToken } = res;
-        setDataInLocalStorage(accessToken, refreshToken);
+        const { accessToken,refreshToken } = res;
+        setDataInLocalStorage(accessToken,refreshToken)
         const data: any = decodeJwt(accessToken);
         setUser(data.user);
       })

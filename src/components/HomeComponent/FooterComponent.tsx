@@ -19,6 +19,9 @@ const FooterComponent = () => {
           mt: 10,
           width: "98.9",
           padding: 10,
+          height:"100%",
+          display:"flex",
+          alignItems:"center",
           backgroundColor:
             theme.palette.mode === "dark"
               ? theme.customColors.lightPaperBg

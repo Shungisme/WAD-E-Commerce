@@ -9,22 +9,131 @@ import {
   useTheme,
 } from "@mui/material";
 import IconifyIcon from "../../iconifyIcon";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES_CONSTANT } from "../../../constants/routesConstants";
 import { toDiscountPrice } from "../../../utils/toDiscountPrice";
 import { toVND } from "../../../utils/convertNumberToVND";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../hooks/useAuth";
+import {  getProductInCartById, updateCart } from "../../../services/cart";
+import { totalPrice } from "../../../utils/totalPrice";
 import { slugify } from "../../../utils/slugify";
 import { useCart } from "../../../hooks/useCart";
 
+interface TProps {
+  setData: React.Dispatch<any>;
+}
 
-
-const CartDropDownComponent = () => {
+const SearchDropDownComponent = ({ setData }: TProps) => {
   const { user } = useAuth();
-  const { myCart, handleChangeQuantity, handleDelete ,totalMoney} = useCart();
+  const queryClient = useQueryClient();
+  // const { myCart } = useCart();
   const theme = useTheme();
   const navigate = useNavigate();
+  const [totalMoney, setTotalMoney] = useState<number>(0);
 
+  // useEffect(() => {
+  //   setData(myCart?.data);
+  //   setTotalMoney(totalPrice(myCart?.data?.products));
+  // }, [myCart?.data, setData]);
+
+  const myCart = useQuery({
+    queryKey: ["get-cart", user?._id],
+    queryFn: async () => {
+      const response = await getProductInCartById(String(user?._id));
+      setData(response?.cart?.products);
+      setTotalMoney(totalPrice(response?.cart?.products));
+      return response?.cart;
+    },
+    enabled: !!user?._id,
+  });
+
+  const changeDataInCart = useMutation({
+    mutationKey: ["change-quantity"],
+    mutationFn: async ({
+      userId,
+      products,
+    }: {
+      userId: string;
+      products?: any;
+    }) => {
+      const response = await updateCart(userId, products);
+      return response;
+    },
+    onMutate: ({ userId, products }) => {
+      queryClient.cancelQueries({ queryKey: ["get-cart", user?._id] });
+      const previousData = queryClient.getQueryData(["get-cart", user?._id]);
+
+      queryClient.setQueryData(["get-cart", user?._id], (old: any) => {
+        const data = old?.cart;
+        const newObject = { ...data };
+        newObject.products = [...products];
+
+        setTotalMoney(totalPrice(newObject?.products));
+        return newObject;
+      });
+
+      return { previousData };
+    },
+    onError: async (error, { userId, products }, context: any) => {
+      await queryClient.setQueryData(
+        ["get-cart", user?._id],
+        context?.previousData
+      );
+      setTotalMoney(totalPrice(context?.previousData?.cart?.products));
+    },
+    onSettled: () => {
+      queryClient.refetchQueries({ queryKey: ["get-cart", user?._id] });
+    },
+  });
+
+  const handleChangeQuantity = async (productItem: any, status: string) => {
+    const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
+    const data = cart?.products;
+
+    const index = data?.findIndex(
+      (item: any) => item.productId === productItem?.productId
+    );
+
+    if (index === -1) return;
+
+    const newProducts = [...data];
+
+    if (status === "inscrese") {
+      newProducts[index].quantity++;
+    } else if (status === "descrease") {
+      if (newProducts[index].quantity === 1) return;
+      newProducts[index].quantity--;
+    }
+
+    await changeDataInCart?.mutate({
+      userId: user?._id || "",
+      products: newProducts,
+    });
+  };
+
+  const handleDelete = async (productItem: any) => {
+    const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
+    const data = cart?.products;
+
+    const index = data?.findIndex(
+      (item: any) => item.productId === productItem?.productId
+    );
+
+    if (index === -1) return;
+
+    const newProducts = data?.filter(
+      (item: any) => item?.productId !== productItem?.productId
+    );
+    console.log(newProducts)
+    setData(newProducts)
+
+    await changeDataInCart?.mutate({
+      userId: user?._id || "",
+      products: newProducts,
+    });
+  };
 
   const renderProductsInCart = () => {
     return myCart?.data?.products?.map((item: any, index: any) => {
@@ -217,4 +326,4 @@ const CartDropDownComponent = () => {
   );
 };
 
-export default CartDropDownComponent;
+export default SearchDropDownComponent;

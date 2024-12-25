@@ -26,6 +26,7 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
     async (request) => {
       const { accessToken, refreshToken } = getDataFromLocalStorage();
 
+
       if (!accessToken || !refreshToken) {
         clearLocalData();
         setUser(null);

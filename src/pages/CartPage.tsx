@@ -5,51 +5,29 @@ import {
   Grid,
   Grid2,
   IconButton,
+  Stack,
   Typography,
   useTheme,
 } from "@mui/material";
-import { CART_CONSTANT } from "../mocks/cart";
-import {  useMemo, useState } from "react";
 import IconifyIcon from "../components/iconifyIcon";
 import { toDiscountPrice } from "../utils/toDiscountPrice";
 import { toVND } from "../utils/convertNumberToVND";
+import { useCart } from "../hooks/useCart";
+import { useState } from "react";
 
 const CartPage = () => {
   const theme = useTheme();
-  const MyProducts = CART_CONSTANT;
-  const transformedProducts = CART_CONSTANT.products.reduce((acc, item) => {
-    acc[item.product.id] = item.quantity;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const [quantityVal, setQuantityVal] =
-    useState<Record<string, number>>(transformedProducts);
-
-  const quantityInStock = useMemo(() => {
-    return MyProducts.products.reduce((total, currentValue) => {
-      return total + currentValue.quantity;
-    }, 0);
-  }, [MyProducts.products]);
-
-  const totalPrice = useMemo(() => {
-    return MyProducts.products.reduce((acc, item) => {
-      const price = toDiscountPrice(item.product);
-      const quantity = quantityVal[item.product.id] || 0;
-      return acc + price * quantity;
-    }, 0);
-  }, [quantityVal, MyProducts.products]);
-
-
+  const { myCart, handleChangeQuantity, handleDelete, totalMoney } = useCart();
+  const [input, setInput] = useState<string>("");
 
   const renderProduct = () => {
-    return MyProducts.products.map((item, index) => {
-      const price = toDiscountPrice(item.product);
+    return myCart?.data?.products.map((item: any, index: any) => {
+      const price = toDiscountPrice(item);
       const quantity = item.quantity;
-      const total = price * quantity;
       return (
         <>
           <Grid2
-            key={index}
+            key={item.productId}
             width={"100%"}
             container
             spacing={5}
@@ -75,7 +53,7 @@ const CartPage = () => {
                     borderRadius: "5px",
                   }}
                   component={"img"}
-                  src={item.product.thumbnail}
+                  src={item?.thumbnail}
                 ></Box>
 
                 <IconButton
@@ -85,7 +63,11 @@ const CartPage = () => {
                     left: 0,
                   }}
                 >
-                  <IconifyIcon icon={"typcn:delete"} color={"red"} />
+                  <IconifyIcon
+                    onClick={() => handleDelete(item)}
+                    icon={"typcn:delete"}
+                    color={"red"}
+                  />
                 </IconButton>
               </Box>
             </Grid>
@@ -99,17 +81,45 @@ const CartPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  {item.product.name}
+                  {item?.title}
                 </Typography>
-                <Typography
-                  sx={{
-                    color: theme.palette.primary.main,
-                    fontWeight: 500,
-                    fontSize: "0.8rem",
-                  }}
-                >
-                  {toVND(price)}
-                </Typography>
+                {item.discount > 0 ? (
+                  <>
+                    <Stack direction={"row"} gap={2} alignItems={"center"}>
+                      <Typography
+                        sx={{
+                          color: theme.palette.primary.main,
+                          fontWeight: "bolder",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        {toVND(price)}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          color: theme.palette.primary.main,
+                          fontWeight: 500,
+                          fontSize: "0.8rem",
+                          textDecoration: "line-through",
+                        }}
+                      >
+                        {toVND(item?.price)}
+                      </Typography>
+                    </Stack>
+                  </>
+                ) : (
+                  <>
+                    <Typography
+                      sx={{
+                        color: theme.palette.primary.main,
+                        fontWeight: "bolder",
+                        fontSize: "1rem",
+                      }}
+                    >
+                      {toVND(price)}
+                    </Typography>
+                  </>
+                )}
               </Box>
             </Grid>
 
@@ -127,11 +137,13 @@ const CartPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  {toVND(total)}
+                  {toVND(price * quantity)}
                 </Typography>
 
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <IconButton>
+                  <IconButton
+                    onClick={() => handleChangeQuantity(item, "descrease")}
+                  >
                     <IconifyIcon icon={"tabler:minus"} />
                   </IconButton>
                   <input
@@ -142,36 +154,29 @@ const CartPage = () => {
                       appearance: "none",
                       MozAppearance: "textfield",
                     }}
-                    value={String(quantityVal[item.product.id])}
-                    onChange={(e) => {
-                      if (isNaN(Number(e.target.value))) {
-                        setQuantityVal({
-                          ...quantityVal,
-                        });
-                        return;
-                      }
-                      let value = Number(e.target.value);
-                      if (value < 0) {
-                        setQuantityVal({
-                          ...quantityVal,
-                          [item.product.id]: 0,
-                        });
-                      } else {
-                        setQuantityVal({
-                          ...quantityVal,
-                          [item.product.id]: value,
-                        });
+                    value={String(quantity)}
+                    onChange={async (e) => {
+                      let val = e?.target?.value;
+
+                      if (isNaN(Number(val)) || Number(val) < 0) return;
+                      await handleChangeQuantity(item, "input", Number(val));
+                    }}
+                    onBlur={async () => {
+                      if (quantity === 0) {
+                        await handleChangeQuantity(item, "input", 1);
                       }
                     }}
                   />
-                  <IconButton>
+                  <IconButton
+                    onClick={() => handleChangeQuantity(item, "inscrese")}
+                  >
                     <IconifyIcon icon={"mynaui:plus"} />
                   </IconButton>
                 </Box>
               </Box>
             </Grid>
           </Grid2>
-          {index < MyProducts.products.length - 1 && (
+          {index < myCart?.data?.products?.length - 1 && (
             <Divider sx={{ width: "100%", my: 3 }} />
           )}
         </>
@@ -185,10 +190,11 @@ const CartPage = () => {
         sx={{
           maxWidth: "90%",
           margin: "0 auto",
-          mt:"2rem"
+          mt: "2rem",
+          minHeight: "70vh",
         }}
       >
-        {quantityInStock !== 0 ? (
+        {myCart?.data?.products.length !== 0 ? (
           <>
             <Grid2 container justifyContent={"space-around"}>
               <Grid item xs={8} width={"60%"}>
@@ -206,7 +212,8 @@ const CartPage = () => {
                   </Typography>
                   <Divider sx={{ width: "100%" }} />
                   <Typography>
-                    Bạn đang có <strong>{quantityInStock} sản phẩm</strong>{" "}
+                    Bạn đang có{" "}
+                    <strong>{myCart?.data?.products?.length} sản phẩm</strong>{" "}
                     trong giỏ hàng
                   </Typography>
                   <Box
@@ -262,7 +269,6 @@ const CartPage = () => {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      
                     }}
                   >
                     <Typography
@@ -279,11 +285,14 @@ const CartPage = () => {
                         color: theme.palette.primary.main,
                       }}
                     >
-                      {toVND(totalPrice)}
+                      {toVND(totalMoney)}
                     </Typography>
                   </Box>
                   <Divider />
-                  <Typography>Thời gian giao hàng từ 3 đến 5 ngày kể từ khi xác nhận đơn hàng.</Typography>
+                  <Typography>
+                    Thời gian giao hàng từ 3 đến 5 ngày kể từ khi xác nhận đơn
+                    hàng.
+                  </Typography>
                   <Button variant="contained">Thanh toán</Button>
                 </Box>
               </Grid>
@@ -291,7 +300,11 @@ const CartPage = () => {
           </>
         ) : (
           <>
-            <Typography>Không có sản phẩm trong giỏ hàng</Typography>
+            <Box textAlign={"center"}>
+              <Typography fontWeight={"bold"} fontSize={"2rem"}>
+                Không có sản phẩm trong giỏ hàng
+              </Typography>
+            </Box>
           </>
         )}
       </Box>
