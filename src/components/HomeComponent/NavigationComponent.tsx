@@ -447,7 +447,7 @@ const NavigationComponent = () => {
                     dropdownKey={nameComponent}
                   >
                     <IconifyIcon icon={"ph:user-light"} fontSize={"1.5rem"} />
-                    <Typography fontSize={"0.8rem"}>{user.name}</Typography>
+                    <Typography fontSize={"0.8rem"}>{user?.name}</Typography>
                   </DropdownComponent>
                 </>
               ) : (

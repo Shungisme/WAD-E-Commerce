@@ -59,7 +59,7 @@ export const getProductBySlug = async (slug: string) => {
 export const getProductsByFilter = async ({
   categorySlug,
   page,
-  limit,
+  limit = 6,
   search,
   sort,
 }: {
