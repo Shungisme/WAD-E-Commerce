@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_CONSTANTS } from "../constants/apiContants";
 import { getDataFromLocalStorage } from "../utils/localStorage";
+import { instanceAxios } from "../utils/instanceAxios";
 
 const BASE_URL = API_CONSTANTS.products;
 
@@ -55,3 +56,40 @@ export const getProductBySlug = async (slug: string) => {
   }
 };
 
+export const getProductsByFilter = async ({
+  categorySlug,
+  page,
+  limit,
+  search,
+  sort,
+}: {
+  categorySlug?: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+  sort?: string;
+}) => {
+  try {
+    const url = BASE_URL;
+    const { accessToken } = getDataFromLocalStorage();
+    const response = await instanceAxios(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        categorySlug,
+        page,
+        limit,
+        search,
+        sort,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log("Error at getProductsByFilter in servers", error);
+    throw error;
+  }
+};

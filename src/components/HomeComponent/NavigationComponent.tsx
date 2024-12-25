@@ -36,8 +36,7 @@ import { useCart } from "../../hooks/useCart";
 const NavigationComponent = () => {
   const [isSticky, setIsSticky] = useState(false);
   const { user, logoutAuth } = useAuth();
-  const {myCart} = useCart()
-
+  const { myCart } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -163,7 +162,7 @@ const NavigationComponent = () => {
           <Divider />
           <Button
             onClick={() => {
-              mutation.mutate()
+              mutation.mutate();
             }}
             variant="contained"
             fullWidth
@@ -431,7 +430,6 @@ const NavigationComponent = () => {
               <DropdownComponent
                 contentDrop={<CartDropDownComponent />}
                 dropdownKey="cartDropDown"
-             
               >
                 <Badge
                   badgeContent={user?._id ? myCart?.data?.products?.length : 0}

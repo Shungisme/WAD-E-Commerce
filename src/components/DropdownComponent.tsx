@@ -55,21 +55,6 @@ const DropdownComponent = ({ children,contentDrop,dropdownKey,...rest }: TProps)
             width: "25rem",
             textAlign: "center",
             overflow: "visible",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: "-10px",
-              right: "20px",
-              width: 0,
-              height: 0,
-              borderLeft: "10px solid transparent",
-              borderRight: "10px solid transparent",
-              borderBottom: "10px solid",
-              color:
-                theme.palette.mode === "dark"
-                  ? theme.customColors.darkPaperBg
-                  : theme.customColors.lightPaperBg,
-            },
           }}
         > 
           <motion.div

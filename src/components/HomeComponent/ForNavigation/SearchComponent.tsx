@@ -1,12 +1,13 @@
 import { Box, TextField, Typography } from "@mui/material";
 import IconifyIcon from "../../iconifyIcon";
 import { useState } from "react";
-
-
-
+import DropdownComponent from "../../DropdownComponent";
+import SearchDropDownComponent from "./SearchDropDownComponent";
 
 const SearchComponent = () => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [input, setInput] = useState<string>("");
+
 
   return (
     <Box
@@ -28,12 +29,20 @@ const SearchComponent = () => {
       {!isClicked ? (
         <Typography fontSize={"0.8rem"}>Tìm kiếm</Typography>
       ) : (
-        <TextField sx={{
-          width:"11rem"
-        }}
-        size="small" 
-        variant="outlined" 
-        label={"Tìm kiếm"} />
+        <DropdownComponent
+          contentDrop={<SearchDropDownComponent input={input} />}
+          dropdownKey="searchDropDown"
+        >
+          <TextField
+            sx={{
+              width: "11rem",
+            }}
+            size="small"
+            variant="outlined"
+            label={"Tìm kiếm"}
+            onChange={(e) => setInput(e?.target?.value)}
+          />
+        </DropdownComponent>
       )}
     </Box>
   );
