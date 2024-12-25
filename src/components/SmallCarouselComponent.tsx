@@ -3,7 +3,6 @@ import { Box, Typography, useTheme, IconButton } from "@mui/material";
 import SmallCarouselComponent from "./SmallCarousel";
 import IconifyIcon from "./iconifyIcon";
 import CardComponent from "./CardComponent";
-import { useNavigate } from "react-router-dom";
 
 interface TProps {
   items: Array<any>;
@@ -20,7 +19,7 @@ const SmallCarousel = ({ items, type }: TProps) => {
         <>
           <Box
             sx={{
-              width: "25rem",
+              width: "22rem",
               height: "30rem", 
               margin: "0 auto", 
             }}

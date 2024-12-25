@@ -1,8 +1,9 @@
 import axios from "axios";
 import { API_CONSTANTS } from "../constants/apiContants";
 import { TUser } from "../types/userType";
-import { getDataFromLocalStorage, setDataInLocalStorage } from "../utils/localStorage";
+import { getDataFromLocalStorage } from "../utils/localStorage";
 import { instanceAxios } from "../utils/instanceAxios";
+
 
 const BASE_URL = API_CONSTANTS.auth;
 
@@ -27,6 +28,7 @@ export const registerUserAPI = async (user: TUser) => {
 export const loginUserAPI = async (user: TUser) => {
   try {
     const url = BASE_URL + "login";
+    console.log(url)
     const response = await axios(url, {
       method: "POST",
       data: user,
@@ -45,16 +47,16 @@ export const getMeAuth = async () => {
   try {
     const url = BASE_URL + "current-user";
     const { accessToken } = getDataFromLocalStorage();
-    const response = await axios(url, {
+    
+    const response = await instanceAxios(url, {
       method: "GET",
       headers: {
-        "Content-Type": "Application/json",
         Authorization: `Bearer ${accessToken}`,
       },
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error:any) {
     console.log("error at getMeAuth in services");
     throw error;
   }

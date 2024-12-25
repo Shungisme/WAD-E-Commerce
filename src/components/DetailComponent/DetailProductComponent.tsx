@@ -6,6 +6,7 @@ import { updateCart } from "../../services/cart";
 import { useAuth } from "../../hooks/useAuth";
 import AnnouceModalComponent from "../AnnouceModalComponent";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 interface TProps {
   item: any;
@@ -16,9 +17,10 @@ const DetailProductComponent = ({ item }: TProps) => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
 
   const addCart = useMutation({
-    mutationKey: ["get-cart",user?._id],
+    mutationKey: ["get-cart", user?._id],
     mutationFn: async ({
       userId,
       products,
@@ -40,7 +42,7 @@ const DetailProductComponent = ({ item }: TProps) => {
         return newObject;
       });
 
-      return {previousData};
+      return { previousData };
     },
     onError: (error, { userId, products }, context: any) => {
       queryClient.setQueryData(["get-cart"], context?.previousData);
@@ -57,9 +59,13 @@ const DetailProductComponent = ({ item }: TProps) => {
       setOpenModal(true);
       return;
     }
+
     const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
     const data = cart?.products;
-    const detailProduct: any = queryClient.getQueryData(["detail-product"]);
+    const detailProduct: any = queryClient.getQueryData([
+      "detail-product",
+      searchParams.get("content"),
+    ]);
     const index = data?.findIndex(
       (item: any) => item?.productId === detailProduct?._id
     );
@@ -67,10 +73,11 @@ const DetailProductComponent = ({ item }: TProps) => {
       data[index].quantity = data[index].quantity + 1;
     } else {
       data.push({
-        productId: detailProduct._id,
+        productId: detailProduct?._id,
         quantity: 1,
       });
     }
+
     await addCart.mutate({ userId: user?._id || "", products: [...data] });
   };
 

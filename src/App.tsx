@@ -7,8 +7,10 @@ import AppContent from "./AppContent";
 import NavigationComponent from "./components/HomeComponent/NavigationComponent";
 import FooterComponent from "./components/HomeComponent/FooterComponent";
 import InstanceAxiosProvider from "./utils/instanceAxios";
-
+import CartProvider from "./contexts/cartContext";
+import AuthProvider from "./contexts/authContext";
 const App = () => {
+
   return (
     <ThemeProviderWrapper>
       <RouterProvider
@@ -18,9 +20,13 @@ const App = () => {
             element: (
               <>
                 <InstanceAxiosProvider>
-                  <NavigationComponent />
-                  <AppContent />
-                  <FooterComponent />
+                  <AuthProvider>
+                    <CartProvider>
+                      <NavigationComponent />
+                        <AppContent />
+                      <FooterComponent />
+                    </CartProvider>
+                  </AuthProvider>
                 </InstanceAxiosProvider>
               </>
             ),

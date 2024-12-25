@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import ErrorPage from "./pages/ErrorPage";
@@ -10,6 +10,11 @@ import FilterPage from "./pages/FilterPage";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <motion.div
       key={location.pathname}

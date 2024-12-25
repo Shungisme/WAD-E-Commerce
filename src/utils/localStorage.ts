@@ -7,6 +7,7 @@ export const setDataInLocalStorage = (
     window.localStorage.setItem("refreshToken", refreshToken || "");
   }
 
+
   return {
     accessToken: accessToken,
     refreshToken: refreshToken,

@@ -11,7 +11,7 @@ const DetailPage = () => {
   const [searchParams] = useSearchParams();
 
   const detailProduct = useQuery({
-    queryKey: ["detail-product",searchParams.get("content")],
+    queryKey: ["detail-product", searchParams.get("content")],
     queryFn: async () => {
       const response = await getProductBySlug(
         String(searchParams.get("content"))
@@ -22,7 +22,11 @@ const DetailPage = () => {
   });
 
   const relatedProducts = useQuery({
-    queryKey: ["related-product", detailProduct?.data?.categoryTitle,searchParams.get("content")],
+    queryKey: [
+      "related-product",
+      detailProduct?.data?.categoryTitle,
+      searchParams.get("content"),
+    ],
     queryFn: async () => {
       const response = await getProductsByCategory({
         categorySlug: slugify(detailProduct?.data.categoryTitle),
@@ -39,13 +43,14 @@ const DetailPage = () => {
     <>
       <Box
         sx={{
-          maxWidth: "80%",
           margin: "0 auto",
           mt: 5,
         }}
       >
         <Box
           sx={{
+            maxWidth: "80%",
+            margin: "0 auto",
             display: "flex",
             justifyContent: "center",
             gap: 5,
@@ -61,14 +66,20 @@ const DetailPage = () => {
               fontWeight: "bold",
               textAlign: "left",
               mb: 2,
+              maxWidth: "90%",
+              margin: "0 auto",
             }}
           >
             Sản phẩm liên quan
           </Typography>
-          <SmallCarousel
-            items={relatedProducts?.data?.products.filter((item:any) => item?._id !== detailProduct?.data._id)}
-            type={detailProduct?.data?.categoryTitle}
-          />
+          <Box width={"100%"}>
+            <SmallCarousel
+              items={relatedProducts?.data?.products.filter(
+                (item: any) => item?._id !== detailProduct?.data._id
+              )}
+              type={detailProduct?.data?.categoryTitle}
+            />
+          </Box>
         </Box>
       </Box>
     </>
