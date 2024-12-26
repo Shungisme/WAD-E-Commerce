@@ -23,9 +23,8 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
   const { logoutAuth, setUser } = useAuth();
 
   instanceAxios.interceptors.request.use(
-    async (request) => {
+    async (request: any) => {
       const { accessToken, refreshToken } = getDataFromLocalStorage();
-
 
       if (!accessToken || !refreshToken) {
         clearLocalData();
@@ -36,7 +35,8 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
       }
 
       const decodedAccess = decodeJwt(accessToken);
-      const accessExpired = decodedAccess.exp && decodedAccess.exp * 1000 < Date.now();
+      const accessExpired =
+        decodedAccess.exp && decodedAccess.exp * 1000 < Date.now();
 
       if (accessExpired) {
         try {
@@ -56,7 +56,7 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
 
       return request;
     },
-    (error) => {
+    (error: any) => {
       return Promise.reject(error);
     }
   );
