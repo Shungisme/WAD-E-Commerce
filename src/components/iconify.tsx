@@ -1,5 +1,5 @@
-import { Icon } from "@iconify/react";
-import { Box, BoxProps, IconProps, SxProps, Theme } from "@mui/material";
+import { Icon, IconProps } from "@iconify/react";
+import { Box, BoxProps, SxProps, Theme } from "@mui/material";
 import { forwardRef } from "react";
 
 export type IconifyProps = BoxProps & IconProps;

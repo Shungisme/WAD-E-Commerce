@@ -64,7 +64,11 @@ export const SignInView = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 edge="end"
               >
-                <Iconify />
+                <Iconify
+                  icon={
+                    showPassword ? "solar:eye-bold" : "solar:eye-closed-bold"
+                  }
+                />
               </IconButton>
             </InputAdornment>
           ),

@@ -31,9 +31,9 @@ const themeConfig = (mode: "light" | "dark"): ThemeOptions => {
     palette: {
       mode,
       primary: {
-        light: "#5eb8f7", // Màu sáng hơn của màu chủ đạo
+        light: "#5eb8f7",
         main: primaryColor,
-        dark: "#1e6dab", // Màu tối hơn của màu chủ đạo
+        dark: "#1e6dab",
         contrastText: whiteColor,
       },
       secondary: {

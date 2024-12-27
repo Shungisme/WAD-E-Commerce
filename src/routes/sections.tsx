@@ -3,16 +3,18 @@ import {
   Box,
   LinearProgress,
   linearProgressClasses,
+  useTheme,
 } from "@mui/material";
 import type { Theme } from "@mui/material/styles";
-import { lazy } from "react";
-import { Navigate, useRoutes } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { Navigate, Outlet, useRoutes } from "react-router-dom";
 import { AuthLayout } from "../layouts/auth/layout";
+import { DashboardLayout } from "../layouts/dashboard/layout";
 
 export const SignInPage = lazy(() => import("../pages/sign-in"));
 export const Page404 = lazy(() => import("../pages/page-not-found"));
 
-const renderFallback = ({ theme }: { theme: Theme }) => (
+const renderFallback = (theme: Theme) => (
   <Box
     display="flex"
     alignItems="center"
@@ -33,9 +35,17 @@ const renderFallback = ({ theme }: { theme: Theme }) => (
 );
 
 export const Router = () => {
+  const theme = useTheme();
+
   return useRoutes([
     {
-      element: <></>,
+      element: (
+        <DashboardLayout>
+          <Suspense fallback={renderFallback(theme)}>
+            <Outlet />
+          </Suspense>
+        </DashboardLayout>
+      ),
       children: [
         {
           element: <></>,
