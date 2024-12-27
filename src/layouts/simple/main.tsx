@@ -34,6 +34,7 @@ export const CompactContent = ({
         textAlign: "center",
         flexDirection: "column",
         p: theme.spacing(3, 2, 10, 2),
+        maxWidth: 448,
         [theme.breakpoints.up(layoutQuery)]: {
           justifyContent: "center",
           p: theme.spacing(10, 0, 10, 0),

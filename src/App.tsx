@@ -11,6 +11,7 @@ import CartProvider from "./contexts/cartContext";
 import AuthProvider from "./contexts/authContext";
 import { useScrollToTop } from "./hooks/use-scroll-to-top";
 import { Router } from "./routes/sections";
+
 const App = () => {
   // return (
   //   <ThemeProviderWrapper>
@@ -24,7 +25,7 @@ const App = () => {
   //                 <AuthProvider>
   //                   <CartProvider>
   //                     <NavigationComponent />
-  //                       <AppContent />
+  //                     <AppContent />
   //                     <FooterComponent />
   //                   </CartProvider>
   //                 </AuthProvider>
@@ -36,6 +37,7 @@ const App = () => {
   //     />
   //   </ThemeProviderWrapper>
   // );
+
   useScrollToTop();
 
   return (

@@ -4,6 +4,7 @@ import { HeaderSection } from "../core/header-section";
 import { Logo } from "../../components/logo";
 import { RouterLink } from "../../components/router-link";
 import { Main } from "./main";
+import { stylesMode } from "../../theme/styles/utils";
 
 export type AuthLayoutProps = {
   sx?: SxProps<Theme>;
@@ -76,6 +77,9 @@ export const AuthLayout = ({ sx, children, header }: AuthLayoutProps) => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center center",
           backgroundImage: `url(/assets/background/overlay.jpg)`,
+          [stylesMode.dark]: {
+            opacity: 0.08,
+          },
         },
         ...sx,
       }}

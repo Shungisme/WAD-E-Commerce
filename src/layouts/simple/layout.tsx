@@ -30,12 +30,12 @@ export const SimpleLayout = ({
         <HeaderSection
           layoutQuery={layoutQuery}
           slotProps={{
-            toolbar: {
-              sx: {
-                bgcolor: "transparent",
-                backdropFilter: "unset",
-              },
-            },
+            // toolbar: {
+            //   sx: {
+            //     bgcolor: "transparent",
+            //     backdropFilter: "unset",
+            //   },
+            // },
             container: {
               maxWidth: false,
             },

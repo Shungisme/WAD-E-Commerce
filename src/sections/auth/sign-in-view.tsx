@@ -30,21 +30,21 @@ export const SignInView = () => {
         InputLabelProps={{ shrink: true }}
         sx={{
           mb: 3,
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "grey",
-            },
-            "&hover fieldset": {
-              borderColor: "info.main",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "info.main",
-              borderWidth: 2,
-            },
-          },
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "info.main",
-          },
+          // "& .MuiOutlinedInput-root": {
+          //   "& fieldset": {
+          //     borderColor: "grey",
+          //   },
+          //   "&hover fieldset": {
+          //     borderColor: "info.main",
+          //   },
+          //   "&.Mui-focused fieldset": {
+          //     borderColor: "info.main",
+          //     borderWidth: 2,
+          //   },
+          // },
+          // "& .MuiInputLabel-root.Mui-focused": {
+          //   color: "info.main",
+          // },
         }}
       />
 
@@ -75,22 +75,22 @@ export const SignInView = () => {
         }}
         sx={{
           mb: 3,
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "grey",
-              color: "grey",
-            },
-            "&hover fieldset": {
-              borderColor: "info.main",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "info.main",
-              borderWidth: 2,
-            },
-          },
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "info.main",
-          },
+          // "& .MuiOutlinedInput-root": {
+          //   "& fieldset": {
+          //     borderColor: "grey",
+          //     color: "grey",
+          //   },
+          //   "&hover fieldset": {
+          //     borderColor: "info.main",
+          //   },
+          //   "&.Mui-focused fieldset": {
+          //     borderColor: "info.main",
+          //     borderWidth: 2,
+          //   },
+          // },
+          // "& .MuiInputLabel-root.Mui-focused": {
+          //   color: "info.main",
+          // },
         }}
       />
 

@@ -40,7 +40,7 @@ export const Searchbar = ({ sx, ...other }: BoxProps) => {
           <Box
             sx={{
               ...bgBlur({
-                color: "background.default",
+                color: theme.palette.background.default,
               }),
               top: 0,
               left: 0,
@@ -53,7 +53,7 @@ export const Searchbar = ({ sx, ...other }: BoxProps) => {
                 xs: 3,
                 md: 5,
               },
-              boxShadow: `0 8px 16px 0 ${alpha(theme.palette.grey[500], 0.16)}`,
+              boxShadow: theme.customShadows.z8,
               height: {
                 xs: 64,
                 md: 72,
@@ -66,7 +66,7 @@ export const Searchbar = ({ sx, ...other }: BoxProps) => {
               autoFocus
               fullWidth
               disableUnderline
-              placeholder="Search..."
+              placeholder="Search…"
               startAdornment={
                 <InputAdornment position="start">
                   <Iconify

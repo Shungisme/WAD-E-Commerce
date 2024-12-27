@@ -39,16 +39,19 @@ export const HeaderSection = ({
   const toolbarStyles = {
     default: {
       ...bgBlur({
-        color: alpha(theme.palette.background.default, 0.8),
+        color: alpha(theme.palette.background.defaultChannel, 0.8),
       }),
       minHeight: "auto",
       height: 64,
-      transition: theme.transitions.create(["height", "min-height"]),
+      transition: theme.transitions.create(["height", "background-color"], {
+        easing: theme.transitions.easing.easeInOut,
+        duration: theme.transitions.duration.shorter,
+      }),
       [theme.breakpoints.up("sm")]: {
         minHeight: "auto",
       },
       [theme.breakpoints.up(layoutQuery)]: {
-        height: 96,
+        height: 72,
       },
     },
   };

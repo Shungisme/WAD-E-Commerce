@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { Logo } from "../../components/logo";
 import { Scrollbar } from "../../components/scrollbar";
 import { RouterLink } from "../../components/router-link";
+import { varAlpha } from "../../theme/styles/utils";
 
 export type NavContentProps = {
   data: {
@@ -48,8 +49,9 @@ export const NavDesktop = ({
         display: "none",
         position: "fixed",
         flexDirection: "column",
-        bgcolor: "background.paper",
+        bgcolor: theme.palette.common.white,
         zIndex: 1101,
+        width: 300,
         [theme.breakpoints.up(layoutQuery)]: {
           display: "flex",
         },
@@ -84,12 +86,12 @@ export const NavMobile = ({
       open={open}
       onClose={onClose}
       sx={{
-        [`& ${drawerClasses.paper}`]: {
+        [`& .${drawerClasses.paper}`]: {
           pt: 2.5,
           px: 2.5,
           overflow: "unset",
-          bgcolor: "lightPaperBg",
-          width: "320px",
+          bgcolor: "common.white",
+          width: 320,
           ...sx,
         },
       }}
@@ -101,6 +103,8 @@ export const NavMobile = ({
 
 export const NavContent = ({ data, slots, sx }: NavContentProps) => {
   const pathname = usePathname();
+
+  const theme = useTheme();
 
   return (
     <>
@@ -135,13 +139,19 @@ export const NavContent = ({ data, slots, sx }: NavContentProps) => {
                       typography: "body2",
                       fontWeight: "fontWeightMedium",
                       color: "text.secondary",
-                      minHeight: "44px",
+                      minHeight: 44,
                       ...(isActive && {
                         fontWeight: "fontWeightSemiBold",
-                        bgcolor: "primary.main",
+                        bgcolor: varAlpha(
+                          theme.palette.primary.mainChannel,
+                          0.08
+                        ),
                         color: "primary.main",
                         "&:hover": {
-                          bgcolor: "primary.main",
+                          bgcolor: varAlpha(
+                            theme.palette.primary.mainChannel,
+                            0.16
+                          ),
                         },
                       }),
                     }}

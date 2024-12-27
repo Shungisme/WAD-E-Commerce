@@ -6,19 +6,19 @@ export const NotFoundView = () => {
   return (
     <SimpleLayout content={{ compact: true }}>
       <Container
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          flex: "1 1 auto",
-        }}
+      // sx={{
+      //   display: "flex",
+      //   flexDirection: "column",
+      //   alignItems: "center",
+      //   justifyContent: "center",
+      //   flex: "1 1 auto",
+      // }}
       >
         <Typography variant="h3" sx={{ mb: 2 }}>
           Sorry, page not found!
         </Typography>
 
-        <Typography sx={{ color: "text.primary" }}>
+        <Typography sx={{ color: "text.secondary" }}>
           Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve
           mistyped the URL? Be sure to check your spelling.
         </Typography>
@@ -38,9 +38,10 @@ export const NotFoundView = () => {
           href="/"
           size="large"
           variant="contained"
-          sx={{
-            bgcolor: "info.main",
-          }}
+          color="inherit"
+          // sx={{
+          //   bgcolor: "info.main",
+          // }}
         >
           Go to home
         </Button>
