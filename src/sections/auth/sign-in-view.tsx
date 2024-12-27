@@ -28,7 +28,24 @@ export const SignInView = () => {
         label="Email address"
         defaultValue="tqtos@gmail.com"
         InputLabelProps={{ shrink: true }}
-        sx={{ mb: 3 }}
+        sx={{
+          mb: 3,
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "grey",
+            },
+            "&hover fieldset": {
+              borderColor: "info.main",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "info.main",
+              borderWidth: 2,
+            },
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "info.main",
+          },
+        }}
       />
 
       <TextField
@@ -52,7 +69,25 @@ export const SignInView = () => {
             </InputAdornment>
           ),
         }}
-        sx={{ mb: 3 }}
+        sx={{
+          mb: 3,
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "grey",
+              color: "grey",
+            },
+            "&hover fieldset": {
+              borderColor: "info.main",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "info.main",
+              borderWidth: 2,
+            },
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "info.main",
+          },
+        }}
       />
 
       <LoadingButton
@@ -63,7 +98,7 @@ export const SignInView = () => {
         variant="contained"
         onClick={handleSignIn}
         sx={{
-          bgcolor: "primary.main",
+          bgcolor: "info.main",
         }}
       >
         Sign in

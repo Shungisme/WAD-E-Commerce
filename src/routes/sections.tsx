@@ -10,6 +10,7 @@ import { Navigate, useRoutes } from "react-router-dom";
 import { AuthLayout } from "../layouts/auth/layout";
 
 export const SignInPage = lazy(() => import("../pages/sign-in"));
+export const Page404 = lazy(() => import("../pages/page-not-found"));
 
 const renderFallback = ({ theme }: { theme: Theme }) => (
   <Box
@@ -64,7 +65,7 @@ export const Router = () => {
     },
     {
       path: "404",
-      element: <></>,
+      element: <Page404 />,
     },
     {
       path: "*",

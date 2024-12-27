@@ -1,36 +1,37 @@
 import { Box, BoxProps, Breakpoint, useTheme } from "@mui/material";
 
-type MainProps = BoxProps & {
-  layoutQuery: Breakpoint;
-};
-
-export const Main = ({ sx, children, layoutQuery, ...other }: MainProps) => {
-  const theme = useTheme();
-
-  const renderContent = (
-    <Box
-      sx={{
-        py: 10,
-        px: 3,
-        width: 1,
-        borderRadius: 4,
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: "background.default",
-        maxWidth: "420px",
-      }}
-    >
-      {children}
-    </Box>
-  );
-
+export const Main = ({ children, sx, ...other }: BoxProps) => {
   return (
     <Box
       component="main"
       sx={{
         display: "flex",
         flex: "1 1 auto",
-        alignItems: "center",
+        flexDirection: "column",
+        ...sx,
+      }}
+      {...other}
+    >
+      {children}
+    </Box>
+  );
+};
+
+export const CompactContent = ({
+  sx,
+  layoutQuery,
+  children,
+  ...other
+}: BoxProps & { layoutQuery: Breakpoint }) => {
+  const theme = useTheme();
+
+  return (
+    <Box
+      sx={{
+        width: 1,
+        mx: "auto",
+        display: "flex",
+        textAlign: "center",
         flexDirection: "column",
         p: theme.spacing(3, 2, 10, 2),
         [theme.breakpoints.up(layoutQuery)]: {
@@ -41,7 +42,7 @@ export const Main = ({ sx, children, layoutQuery, ...other }: MainProps) => {
       }}
       {...other}
     >
-      {renderContent}
+      {children}
     </Box>
   );
 };
