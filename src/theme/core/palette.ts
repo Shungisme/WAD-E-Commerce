@@ -26,6 +26,7 @@ declare module "@mui/material/styles/createPalette" {
   interface SimplePaletteColorOptions {
     lighter: string;
     darker: string;
+    lightChannel: string;
     lighterChannel: string;
     darkerChannel: string;
     mainChannel: string;
@@ -33,6 +34,7 @@ declare module "@mui/material/styles/createPalette" {
   interface PaletteColor {
     lighter: string;
     darker: string;
+    lightChannel: string;
     lighterChannel: string;
     darkerChannel: string;
     mainChannel: string;

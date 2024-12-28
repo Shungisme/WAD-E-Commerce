@@ -31,6 +31,7 @@ export const CompactContent = ({
         width: 1,
         mx: "auto",
         display: "flex",
+        flex: "1 1 auto",
         textAlign: "center",
         flexDirection: "column",
         p: theme.spacing(3, 2, 10, 2),

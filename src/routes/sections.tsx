@@ -1,17 +1,11 @@
-import {
-  alpha,
-  Box,
-  LinearProgress,
-  linearProgressClasses,
-  useTheme,
-} from "@mui/material";
-import type { Theme } from "@mui/material/styles";
+import { Box, LinearProgress, linearProgressClasses } from "@mui/material";
 import { lazy, Suspense } from "react";
 import { Navigate, Outlet, useRoutes } from "react-router-dom";
 import { AuthLayout } from "../layouts/auth/layout";
 import { DashboardLayout } from "../layouts/dashboard/layout";
 import { varAlpha } from "../theme/styles/utils";
 
+export const HomePage = lazy(() => import("../pages/home-admin"));
 export const SignInPage = lazy(() => import("../pages/sign-in"));
 export const Page404 = lazy(() => import("../pages/page-not-found"));
 
@@ -47,7 +41,7 @@ export const Router = () => {
       ),
       children: [
         {
-          element: <></>,
+          element: <HomePage />,
           index: true,
         },
         {

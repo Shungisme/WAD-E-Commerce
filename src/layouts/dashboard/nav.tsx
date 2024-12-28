@@ -13,7 +13,7 @@ import { usePathname } from "../../routes/hooks/use-pathname";
 import { useEffect } from "react";
 import { Logo } from "../../components/logo";
 import { Scrollbar } from "../../components/scrollbar";
-import { RouterLink } from "../../components/router-link";
+import { RouterLink } from "../../routes/components/router-link";
 import { varAlpha } from "../../theme/styles/utils";
 
 export type NavContentProps = {
@@ -112,7 +112,7 @@ export const NavContent = ({ data, slots, sx }: NavContentProps) => {
 
       {slots?.topArea}
 
-      <Scrollbar fillContent>
+      <Scrollbar fillContent sx={{ my: 2 }}>
         <Box
           component="nav"
           display="flex"

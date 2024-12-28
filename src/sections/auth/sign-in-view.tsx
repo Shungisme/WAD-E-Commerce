@@ -101,9 +101,6 @@ export const SignInView = () => {
         color="inherit"
         variant="contained"
         onClick={handleSignIn}
-        sx={{
-          bgcolor: "info.main",
-        }}
       >
         Sign in
       </LoadingButton>

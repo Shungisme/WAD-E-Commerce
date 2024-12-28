@@ -1,18 +1,18 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import { SimpleLayout } from "../../layouts/simple/layout";
-import { RouterLink } from "../../components/router-link";
+import { RouterLink } from "../../routes/components/router-link";
 
 export const NotFoundView = () => {
   return (
     <SimpleLayout content={{ compact: true }}>
       <Container
-      // sx={{
-      //   display: "flex",
-      //   flexDirection: "column",
-      //   alignItems: "center",
-      //   justifyContent: "center",
-      //   flex: "1 1 auto",
-      // }}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          flex: "1 1 auto",
+        }}
       >
         <Typography variant="h3" sx={{ mb: 2 }}>
           Sorry, page not found!

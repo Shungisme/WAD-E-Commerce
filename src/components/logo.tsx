@@ -1,6 +1,6 @@
 import { Box, BoxProps, useTheme } from "@mui/material";
 import { forwardRef, useId } from "react";
-import { RouterLink } from "./router-link";
+import { RouterLink } from "../routes/components/router-link";
 
 export type LogoProps = BoxProps & {
   href?: string;

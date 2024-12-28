@@ -1,5 +1,4 @@
 import {
-  alpha,
   AppBar,
   AppBarProps,
   Box,
@@ -11,6 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { bgBlur } from "../../theme/styles";
+import { varAlpha } from "../../theme/styles/utils";
 
 export type HeaderSectionProps = AppBarProps & {
   layoutQuery: Breakpoint;
@@ -39,7 +39,7 @@ export const HeaderSection = ({
   const toolbarStyles = {
     default: {
       ...bgBlur({
-        color: alpha(theme.palette.background.defaultChannel, 0.8),
+        color: varAlpha(theme.palette.background.defaultChannel, 0.8),
       }),
       minHeight: "auto",
       height: 64,
