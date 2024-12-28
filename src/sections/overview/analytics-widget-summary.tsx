@@ -1,4 +1,4 @@
-import { Chart, ChartOptions, useChart } from "../../components/chart";
+import { Chart, ChartOptions } from "../../components/chart/chart";
 import { ColorType } from "../../theme/core";
 import { Box, Card, CardProps, useTheme } from "@mui/material";
 import {
@@ -7,9 +7,10 @@ import {
   formatShortenNumber,
 } from "../../utils/format-number";
 import { varAlpha } from "../../theme/styles/utils";
-import { Iconify } from "../../components/iconify";
+import { Iconify } from "../../components/iconify/iconify";
 import { bgGradient } from "../../theme/styles";
-import { SvgColor } from "../../components/svg-color";
+import { SvgColor } from "../../components/svg-color/svg-color";
+import { useChart } from "../../components/chart/use-chart";
 
 type Props = CardProps & {
   title: string;

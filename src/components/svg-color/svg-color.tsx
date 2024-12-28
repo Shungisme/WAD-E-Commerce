@@ -1,15 +1,17 @@
 import { Box, BoxProps } from "@mui/material";
 import { forwardRef } from "react";
+import { svgColorClasses } from "./classes";
 
 export type SvgColorProps = BoxProps & {
   src: string;
 };
 
 export const SvgColor = forwardRef<HTMLSpanElement, SvgColorProps>(
-  ({ src, width = 24, height, sx, ...other }, ref) => (
+  ({ src, width = 24, height, sx, className, ...other }, ref) => (
     <Box
       ref={ref}
       component="span"
+      className={svgColorClasses.root.concat(className ? ` ${className}` : "")}
       sx={{
         width,
         flexShrink: 0,

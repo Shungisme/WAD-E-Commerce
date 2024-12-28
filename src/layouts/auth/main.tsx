@@ -1,4 +1,5 @@
 import { Box, BoxProps, Breakpoint, useTheme } from "@mui/material";
+import { layoutClasses } from "../classes";
 
 type MainProps = BoxProps & {
   layoutQuery: Breakpoint;
@@ -27,6 +28,7 @@ export const Main = ({ sx, children, layoutQuery, ...other }: MainProps) => {
   return (
     <Box
       component="main"
+      className={layoutClasses.main}
       sx={{
         display: "flex",
         flex: "1 1 auto",

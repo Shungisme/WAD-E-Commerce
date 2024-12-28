@@ -1,6 +1,7 @@
 import { Box, BoxProps, useTheme } from "@mui/material";
 import { forwardRef, useId } from "react";
-import { RouterLink } from "../routes/components/router-link";
+import { RouterLink } from "../../routes/components/router-link";
+import { logoClasses } from "./classes";
 
 export type LogoProps = BoxProps & {
   href?: string;
@@ -179,6 +180,7 @@ export const Logo = forwardRef<HTMLDivElement, LogoProps>(
         ref={ref}
         component={RouterLink}
         href={href}
+        className={logoClasses.root.concat(className ? ` ${className}` : "")}
         aria-label="Logo"
         sx={{
           ...baseSize,

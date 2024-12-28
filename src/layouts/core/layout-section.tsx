@@ -1,4 +1,5 @@
 import { Box, GlobalStyles, SxProps, Theme, useTheme } from "@mui/material";
+import { layoutClasses } from "../classes";
 
 export type LayoutSectionProps = {
   sx?: SxProps<Theme>;
@@ -18,17 +19,14 @@ export const LayoutSection = ({
   const theme = useTheme();
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        minHeight: "100vh",
-        overflow: "hidden",
-        transition: theme.transitions.create(["margin"]),
-        ...sx,
-      }}
-    >
+    <Box id="root__layout" className={layoutClasses.root}>
       {sidebarSection}
-      <Box display="flex" flex="1 1 auto" flexDirection="column">
+      <Box
+        display="flex"
+        flex="1 1 auto"
+        flexDirection="column"
+        className={layoutClasses.hasSidebar}
+      >
         {headerSection}
         {children}
         {footerSection}

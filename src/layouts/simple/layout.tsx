@@ -1,7 +1,7 @@
 import { Alert, Breakpoint, Link, SxProps, Theme } from "@mui/material";
 import { LayoutSection } from "../core/layout-section";
 import { HeaderSection } from "../core/header-section";
-import { Logo } from "../../components/logo";
+import { Logo } from "../../components/logo/logo";
 import { RouterLink } from "../../routes/components/router-link";
 import { CompactContent, Main } from "./main";
 

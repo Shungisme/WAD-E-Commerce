@@ -1,9 +1,11 @@
 import { Box, BoxProps, Breakpoint, useTheme } from "@mui/material";
+import { layoutClasses } from "../classes";
 
 export const Main = ({ children, sx, ...other }: BoxProps) => {
   return (
     <Box
       component="main"
+      className={layoutClasses.main}
       sx={{
         display: "flex",
         flex: "1 1 auto",
@@ -27,6 +29,7 @@ export const CompactContent = ({
 
   return (
     <Box
+      className={layoutClasses.content}
       sx={{
         width: 1,
         mx: "auto",

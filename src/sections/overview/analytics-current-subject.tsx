@@ -1,10 +1,7 @@
 import { Card, CardHeader, CardProps, Divider, useTheme } from "@mui/material";
-import {
-  Chart,
-  ChartLegends,
-  ChartOptions,
-  useChart,
-} from "../../components/chart";
+import { Chart, ChartOptions } from "../../components/chart/chart";
+import { useChart } from "../../components/chart/use-chart";
+import { ChartLegends } from "../../components/chart/chart-legends";
 
 type Props = CardProps & {
   title?: string;

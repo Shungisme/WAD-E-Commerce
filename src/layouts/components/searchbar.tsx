@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useCallback, useState } from "react";
-import { Iconify } from "../../components/iconify";
+import { Iconify } from "../../components/iconify/iconify";
 import { bgBlur } from "../../theme/styles";
 
 export const Searchbar = ({ sx, ...other }: BoxProps) => {

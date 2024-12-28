@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Iconify } from "../../components/iconify";
+import { Iconify } from "../../components/iconify/iconify";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 export const SignInView = () => {

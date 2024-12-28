@@ -6,11 +6,13 @@ import {
   ContainerProps,
   useTheme,
 } from "@mui/material";
+import { layoutClasses } from "../classes";
 
 export const Main = ({ children, sx, ...other }: BoxProps) => {
   return (
     <Box
       component="main"
+      className={layoutClasses.main}
       sx={{
         display: "flex",
         flex: "1 1 auto",
@@ -41,6 +43,7 @@ export const DashboardContent = ({
 
   return (
     <Container
+      className={layoutClasses.content}
       maxWidth={maxWidth || false}
       sx={{
         display: "flex",

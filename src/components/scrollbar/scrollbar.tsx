@@ -2,6 +2,7 @@ import { Box, SxProps, Theme } from "@mui/material";
 import React, { forwardRef } from "react";
 import type { Props as SimplebarProps } from "simplebar-react";
 import SimpleBar from "simplebar-react";
+import { scrollbarClasses } from "./classes";
 
 export type ScrollbarProps = SimplebarProps & {
   sx?: SxProps<Theme>;
@@ -19,6 +20,7 @@ export const Scrollbar = forwardRef<HTMLDivElement, ScrollbarProps>(
     <Box
       component={SimpleBar}
       scrollableNodeProps={{ ref }}
+      className={scrollbarClasses.root}
       clickOnTrack={false}
       sx={{
         minWidth: 0,

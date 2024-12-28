@@ -16,8 +16,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
-import { Iconify } from "../../components/iconify";
-import { Scrollbar } from "../../components/scrollbar";
+import { Iconify } from "../../components/iconify/iconify";
+import { Scrollbar } from "../../components/scrollbar/scrollbar";
 import { formatToNow } from "../../utils/format-time";
 
 type NotificationItemProps = {

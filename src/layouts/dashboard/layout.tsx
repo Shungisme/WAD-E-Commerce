@@ -16,8 +16,9 @@ import { Searchbar } from "../components/searchbar";
 import { NotificationsPopover } from "../components/notifications-popover";
 import { _notifications } from "../../mocks/_data";
 import { AccountPopover } from "../components/account-popover";
-import { Iconify } from "../../components/iconify";
+import { Iconify } from "../../components/iconify/iconify";
 import { Main } from "./main";
+import { layoutClasses } from "../classes";
 
 export type DashboardLayoutProps = {
   sx?: SxProps<Theme>;
@@ -129,8 +130,10 @@ export const DashboardLayout = ({
       sidebarSection={<NavDesktop data={navData} layoutQuery={layoutQuery} />}
       footerSection={null}
       sx={{
-        [theme.breakpoints.up(layoutQuery)]: {
-          pl: "300px",
+        [`& .${layoutClasses.hasSidebar}`]: {
+          [theme.breakpoints.up(layoutQuery)]: {
+            pl: "300px",
+          },
         },
         ...sx,
       }}

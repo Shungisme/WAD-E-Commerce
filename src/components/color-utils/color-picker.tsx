@@ -1,4 +1,5 @@
 import {
+  alpha,
   Box,
   BoxProps,
   ButtonBase,
@@ -7,8 +8,8 @@ import {
   Theme,
 } from "@mui/material";
 import { forwardRef, useCallback } from "react";
-import { varAlpha } from "../theme/styles/utils";
-import { Iconify } from "./iconify";
+import { Iconify } from "../iconify/iconify";
+import { varAlpha } from "../../theme/styles/utils";
 
 export type ColorPickerProps = {
   multi?: boolean;
@@ -19,11 +20,6 @@ export type ColorPickerProps = {
   slotProps?: {
     button?: SxProps<Theme>;
   };
-};
-
-export type ColorPreviewProps = {
-  limit?: number;
-  colors: ColorPickerProps["colors"];
 };
 
 export const ColorPicker = forwardRef<
@@ -82,10 +78,6 @@ export const ColorPicker = forwardRef<
             ? selected === color
             : selected.includes(color);
 
-          function hexAlpha(color: string, arg1: number) {
-            throw new Error("Function not implemented.");
-          }
-
           return (
             <Box component="li" key={color} sx={{ display: "inline-flex" }}>
               <ButtonBase
@@ -112,8 +104,8 @@ export const ColorPicker = forwardRef<
                     )}`,
                     ...(hasSelected && {
                       transform: "scale(1.3)",
-                      boxShadow: `4px 4px 8px 0 ${hexAlpha(color, 0.48)}`,
-                      outline: `solid 2px ${hexAlpha(color, 0.08)}`,
+                      boxShadow: `4px 4px 8px 0 ${alpha(color, 0.48)}`,
+                      outline: `solid 2px ${alpha(color, 0.08)}`,
                       transition: theme.transitions.create("all", {
                         duration: theme.transitions.duration.shortest,
                       }),
@@ -139,52 +131,3 @@ export const ColorPicker = forwardRef<
     );
   }
 );
-
-export const ColorPreview = forwardRef<
-  HTMLDivElement,
-  BoxProps & ColorPreviewProps
->(({ colors, limit = 3, sx, ...other }, ref) => {
-  const colorsRange = colors.slice(0, limit);
-
-  const restColors = colors.length - limit;
-
-  return (
-    <Box
-      ref={ref}
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        ...sx,
-      }}
-      {...other}
-    >
-      {colorsRange.map((color, index) => (
-        <Box
-          key={color + index}
-          sx={{
-            ml: -0.75,
-            width: 16,
-            height: 16,
-            bgcolor: color,
-            borderRadius: "50%",
-            border: (theme) => `solid 2px ${theme.palette.background.paper}`,
-            boxShadow: (theme) =>
-              `inset -1px 1px 2px ${varAlpha(
-                theme.palette.common.blackChannel,
-                0.24
-              )}`,
-          }}
-        />
-      ))}
-
-      {colors.length > limit && (
-        <Box
-          component="span"
-          sx={{ typography: "subtitle2" }}
-        >{`+${restColors}`}</Box>
-      )}
-    </Box>
-  );
-});

@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import { usePathname } from "../../routes/hooks/use-pathname";
 import { useEffect } from "react";
-import { Logo } from "../../components/logo";
-import { Scrollbar } from "../../components/scrollbar";
+import { Logo } from "../../components/logo/logo";
+import { Scrollbar } from "../../components/scrollbar/scrollbar";
 import { RouterLink } from "../../routes/components/router-link";
 import { varAlpha } from "../../theme/styles/utils";
 

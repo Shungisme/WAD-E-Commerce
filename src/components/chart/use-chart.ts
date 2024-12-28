@@ -1,133 +1,6 @@
-import {
-  Box,
-  BoxProps,
-  Stack,
-  styled,
-  SxProps,
-  Theme,
-  useTheme,
-} from "@mui/material";
-import type { Props } from "react-apexcharts";
-import ApexChart from "react-apexcharts";
-import { varAlpha } from "../theme/styles/utils";
-
-export const StyledLegend = styled(Box)(({ theme }) => ({
-  gap: 6,
-  alignItems: "center",
-  display: "inline-flex",
-  justifyContent: "flex-start",
-  fontSize: theme.typography.pxToRem(13),
-  fontWeight: theme.typography.fontWeightMedium,
-}));
-
-export const StyledDot = styled(Box)<BoxProps>(() => ({
-  width: 12,
-  height: 12,
-  flexShrink: 0,
-  display: "flex",
-  borderRadius: "50%",
-  position: "relative",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "currentColor",
-}));
-
-type ChartLegendsProps = BoxProps & {
-  labels?: string[];
-  colors?: string[];
-  values?: string[];
-  sublabels?: string[];
-  icons?: React.ReactNode[];
-};
-
-export function ChartLegends({
-  icons,
-  values,
-  sublabels,
-  labels = [],
-  colors = [],
-  ...other
-}: ChartLegendsProps) {
-  return (
-    <Box gap={2} display="flex" flexWrap="wrap" {...other}>
-      {labels?.map((series, index) => (
-        <Stack key={series} spacing={1}>
-          <StyledLegend>
-            {icons?.length ? (
-              <Box
-                component="span"
-                sx={{
-                  color: colors[index],
-                  "& svg, & img": { width: 20, height: 20 },
-                }}
-              >
-                {icons?.[index]}
-              </Box>
-            ) : (
-              <StyledDot component="span" sx={{ color: colors[index] }} />
-            )}
-
-            <Box component="span" sx={{ flexShrink: 0 }}>
-              {series}
-              {sublabels && <> {` (${sublabels[index]})`}</>}
-            </Box>
-          </StyledLegend>
-
-          {values && <Box sx={{ typography: "h6" }}>{values[index]}</Box>}
-        </Stack>
-      ))}
-    </Box>
-  );
-}
-
-export type ChartProps = {
-  type: Props["type"];
-  series: Props["series"];
-  options: Props["options"];
-};
-
-export type ChartBaseProps = Props;
-
-export type ChartOptions = Props["options"];
-
-export type ChartLoadingProps = {
-  disabled?: boolean;
-  sx?: SxProps<Theme>;
-};
-
-export function Chart({
-  sx,
-  type,
-  series,
-  height,
-  options,
-  className,
-  width = "100%",
-  ...other
-}: BoxProps & ChartProps) {
-  return (
-    <Box
-      dir="ltr"
-      sx={{
-        width,
-        height,
-        flexShrink: 0,
-        borderRadius: 1.5,
-        position: "relative",
-        ...sx,
-      }}
-      {...other}
-    >
-      <ApexChart
-        type={type}
-        series={series}
-        options={options}
-        width="100%"
-        height="100%"
-      />
-    </Box>
-  );
-}
+import { useTheme } from "@mui/material";
+import { ChartOptions } from "./chart";
+import { varAlpha } from "../../theme/styles/utils";
 
 export function useChart(options?: ChartOptions): ChartOptions {
   const theme = useTheme();
@@ -149,7 +22,7 @@ export function useChart(options?: ChartOptions): ChartOptions {
 
   const RESPONSIVE = [
     {
-      breakpoint: theme.breakpoints.values.sm, // sm ~ 600
+      breakpoint: theme.breakpoints.values.sm,
       options: {
         plotOptions: {
           bar: {
@@ -160,7 +33,7 @@ export function useChart(options?: ChartOptions): ChartOptions {
       },
     },
     {
-      breakpoint: theme.breakpoints.values.md, // md ~ 900
+      breakpoint: theme.breakpoints.values.md,
       options: {
         plotOptions: {
           bar: {
@@ -175,9 +48,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
   return {
     ...options,
 
-    /** **************************************
-     * Chart
-     *************************************** */
     chart: {
       toolbar: {
         show: false,
@@ -198,9 +68,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
       },
     },
 
-    /** **************************************
-     * Colors
-     *************************************** */
     colors: options?.colors ?? [
       theme.palette.primary.main,
       theme.palette.warning.main,
@@ -213,9 +80,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
       theme.palette.info.darker,
     ],
 
-    /** **************************************
-     * States
-     *************************************** */
     states: {
       ...options?.states,
       hover: {
@@ -234,9 +98,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
       },
     },
 
-    /** **************************************
-     * Fill
-     *************************************** */
     fill: {
       opacity: 1,
       ...options?.fill,
@@ -250,17 +111,11 @@ export function useChart(options?: ChartOptions): ChartOptions {
       },
     },
 
-    /** **************************************
-     * Data labels
-     *************************************** */
     dataLabels: {
       enabled: false,
       ...options?.dataLabels,
     },
 
-    /** **************************************
-     * Stroke
-     *************************************** */
     stroke: {
       width: 2.5,
       curve: "smooth",
@@ -268,9 +123,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
       ...options?.stroke,
     },
 
-    /** **************************************
-     * Grid
-     *************************************** */
     grid: {
       strokeDashArray: 3,
       borderColor: theme.palette.divider,
@@ -289,9 +141,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
       },
     },
 
-    /** **************************************
-     * Axis
-     *************************************** */
     xaxis: {
       axisBorder: {
         show: false,
@@ -306,18 +155,12 @@ export function useChart(options?: ChartOptions): ChartOptions {
       ...options?.yaxis,
     },
 
-    /** **************************************
-     * Markers
-     *************************************** */
     markers: {
       size: 0,
       strokeColors: theme.palette.background.paper,
       ...options?.markers,
     },
 
-    /** **************************************
-     * Tooltip
-     *************************************** */
     tooltip: {
       theme: "false",
       fillSeriesColor: false,
@@ -327,9 +170,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
       ...options?.tooltip,
     },
 
-    /** **************************************
-     * Legend
-     *************************************** */
     legend: {
       show: false,
       position: "top",
@@ -352,12 +192,8 @@ export function useChart(options?: ChartOptions): ChartOptions {
       },
     },
 
-    /** **************************************
-     * plotOptions
-     *************************************** */
     plotOptions: {
       ...options?.plotOptions,
-      // plotOptions: Bar
       bar: {
         borderRadius: 4,
         columnWidth: "48%",
@@ -365,7 +201,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
         ...options?.plotOptions?.bar,
       },
 
-      // plotOptions: Pie + Donut
       pie: {
         ...options?.plotOptions?.pie,
         donut: {
@@ -385,7 +220,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
         },
       },
 
-      // plotOptions: Radialbar
       radialBar: {
         ...options?.plotOptions?.radialBar,
         hollow: {
@@ -412,7 +246,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
         },
       },
 
-      // plotOptions: Radar
       radar: {
         ...options?.plotOptions?.radar,
         polygons: {
@@ -425,7 +258,6 @@ export function useChart(options?: ChartOptions): ChartOptions {
         },
       },
 
-      // plotOptions: polarArea
       polarArea: {
         rings: {
           strokeColor: theme.palette.divider,
@@ -436,16 +268,12 @@ export function useChart(options?: ChartOptions): ChartOptions {
         ...options?.plotOptions?.polarArea,
       },
 
-      // plotOptions: heatmap
       heatmap: {
         distributed: true,
         ...options?.plotOptions?.heatmap,
       },
     },
 
-    /** **************************************
-     * Responsive
-     *************************************** */
     responsive: RESPONSIVE.reduce((acc: typeof RESPONSIVE, cur) => {
       if (!acc.some((item) => item.breakpoint === cur.breakpoint)) {
         acc.push(cur);

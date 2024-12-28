@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { bgBlur } from "../../theme/styles";
 import { varAlpha } from "../../theme/styles/utils";
+import { layoutClasses } from "../classes";
 
 export type HeaderSectionProps = AppBarProps & {
   layoutQuery: Breakpoint;
@@ -60,6 +61,7 @@ export const HeaderSection = ({
     <AppBar
       position="sticky"
       component="header"
+      className={layoutClasses.header}
       color="transparent"
       sx={{
         boxShadow: "none",
@@ -76,7 +78,6 @@ export const HeaderSection = ({
         sx={{
           ...toolbarStyles.default,
           ...slotProps?.toolbar?.sx,
-          height: { xs: 64, md: 72 },
         }}
       >
         <Container
