@@ -50,18 +50,23 @@ export function getComparator<Key extends keyof any>(
 
 type ApplyFilterProps = {
   inputData: AccountProps[];
-  filterName: string;
+  filter: {
+    key: keyof AccountProps;
+    value: string;
+  }[];
   comparator: (a: any, b: any) => number;
 };
 
 export function applyFilter({
   inputData,
-  filterName,
+  filter,
   comparator,
 }: ApplyFilterProps) {
   const stabilizedThis = inputData.map(
     (element, index) => [element, index] as const
   );
+
+  console.log(filter);
 
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -71,11 +76,21 @@ export function applyFilter({
 
   inputData = stabilizedThis.map((element) => element[0]);
 
-  if (filterName) {
-    inputData = inputData.filter(
-      (account) =>
-        account.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-    );
+  for (const { key, value } of filter) {
+    if (value) {
+      inputData = inputData.filter((account) => {
+        if (key === "status" || key === "role") {
+          return account[key] === value;
+        }
+
+        return (
+          account[key]
+            .toLowerCase()
+            .trim()
+            .indexOf(value.toLowerCase().trim()) !== -1
+        );
+      });
+    }
   }
 
   return inputData;

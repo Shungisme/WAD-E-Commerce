@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTable } from "../use-table";
 import { AccountProps, AccountTableRow } from "../account-table-row";
 import { applyFilter, getComparator, emptyRows } from "../utils";
@@ -8,6 +8,7 @@ import { Box } from "@mui/system";
 import {
   Button,
   Card,
+  SelectChangeEvent,
   Table,
   TableBody,
   TableContainer,
@@ -25,11 +26,31 @@ export function AccountView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterRole, setFilterRole] = useState("");
+
+  const filter = useMemo(
+    () => [
+      {
+        key: "name" as keyof AccountProps,
+        value: filterName,
+      },
+      {
+        key: "status" as keyof AccountProps,
+        value: filterStatus,
+      },
+      {
+        key: "role" as keyof AccountProps,
+        value: filterRole,
+      },
+    ],
+    [filterName, filterStatus, filterRole]
+  );
 
   const dataFiltered: AccountProps[] = applyFilter({
     inputData: _users,
     comparator: getComparator(table.order, table.orderBy),
-    filterName,
+    filter: filter,
   });
 
   const notFound = !dataFiltered.length && !!filterName;
@@ -56,6 +77,14 @@ export function AccountView() {
           filterName={filterName}
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
             setFilterName(event.target.value);
+          }}
+          filterStatus={filterStatus}
+          onFilterStatus={(event: SelectChangeEvent<string>) => {
+            setFilterStatus(event.target.value);
+          }}
+          filterRole={filterRole}
+          onFilterRole={(event: SelectChangeEvent<string>) => {
+            setFilterRole(event.target.value);
           }}
         />
 
