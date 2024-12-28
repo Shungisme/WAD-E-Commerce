@@ -6,6 +6,7 @@ import { DashboardLayout } from "../layouts/dashboard/layout";
 import { varAlpha } from "../theme/styles/utils";
 
 export const HomePage = lazy(() => import("../pages/home-admin"));
+export const AccountsPage = lazy(() => import("../pages/account"));
 export const SignInPage = lazy(() => import("../pages/sign-in"));
 export const Page404 = lazy(() => import("../pages/page-not-found"));
 
@@ -45,8 +46,8 @@ export const Router = () => {
           index: true,
         },
         {
-          path: "user",
-          element: <></>,
+          path: "accounts",
+          element: <AccountsPage />,
         },
         {
           path: "products",
