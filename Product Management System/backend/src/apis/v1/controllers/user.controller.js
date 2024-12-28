@@ -90,6 +90,42 @@ class UserController {
 		}
 	}
 
+	static async updateUser(req, res) {
+		try {
+			const { id } = req.params;
+			const user = await User.findByIdAndUpdate(id, req.body, { new: true });
+			if (!user) return res.status(StatusCodes.NOT_FOUND).json({
+				message: 'User not found'
+			});
+			res.status(StatusCodes.OK).json({
+				user
+			});
+		}
+		catch (error) {
+			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
+
+	static async deleteUser(req, res) {
+		try {
+			const { id } = req.params;
+			const user = await User.findByIdAndUpdate(id, { status: 'inactive' }, { new: true });
+			if (!user) return res.status(StatusCodes.NOT_FOUND).json({
+				message: 'User not found'
+			});
+			res.status(StatusCodes.OK).json({
+				message: 'User deleted successfully'
+			});
+		}
+		catch (error) {
+			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
+
 	static async logout(req, res) {
 		const method = req.session.loginMethod;
 		if (method === 'google') {
@@ -174,6 +210,20 @@ class UserController {
 			}
 			res.status(StatusCodes.OK).json({
 				user
+			});
+		}
+		catch (error) {
+			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
+
+	static async getAllUsers(req, res) {
+		try {
+			const users = await User.find().select('-password');
+			res.status(StatusCodes.OK).json({
+				users
 			});
 		}
 		catch (error) {
