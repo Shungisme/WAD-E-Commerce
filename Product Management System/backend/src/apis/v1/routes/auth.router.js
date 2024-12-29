@@ -6,7 +6,9 @@ const router = Router();
 
 router.get('/google',
 	passport.authenticate('google', {
-		scope: ['profile', 'email']
+		scope: ['profile', 'email'],
+		accessType: 'offline',
+		prompt: 'consent'
 	})
 );
 router.get(

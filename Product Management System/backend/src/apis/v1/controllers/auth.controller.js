@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import passport from "../../../configs/passport.js";
 import JWTHelper from "../../../helpers/jwt.helper.js";
 
@@ -12,20 +13,20 @@ class AuthController {
 		req.session.loginMethod = "google";
 		console.log("User authenticated via Google");
 
-		const accessToken = await JWTHelper.generateToken(
-			{ _id: user._id, email: user.email, role: user.role },
-			process.env.ACCESS_TOKEN_SECRET_SIGNATURE,
-			process.env.ACCESS_TOKEN_LIFE_TIME
-		);
+		const userInformation = {
+			user: {
+				_id: user._id,
+				email: user.email,
+				name: user.name,
+				role: user.role
+			}
+		};
 
-		const refreshToken = await JWTHelper.generateToken(
-			{ _id: user._id, email: user.email, role: user.role },
-			process.env.REFRESH_TOKEN_SECRET_SIGNATURE,
-			process.env.REFRESH_TOKEN_LIFE_TIME
-		);
+		const accessToken = await JWTHelper.generateToken(userInformation, process.env.ACCESS_TOKEN_SECRET_SIGNATURE, process.env.ACCESS_TOKEN_LIFE_TIME);
+		const refreshToken = await JWTHelper.generateToken(userInformation, process.env.REFRESH_TOKEN_SECRET_SIGNATURE, process.env.REFRESH_TOKEN_LIFE_TIME);
 		req.session.accessToken = accessToken;
 		req.session.refreshToken = refreshToken;
-		res.redirect(process.env.BASE_URL);
+		res.redirect(`http://localhost:3000/users/oauth/google`);
 	};
 
 	static getCurrentUser = async (req, res) => {
