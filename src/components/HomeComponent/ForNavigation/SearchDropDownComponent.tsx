@@ -40,7 +40,6 @@ const SearchDropDownComponent = ({ input }: TProps) => {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const { currentPage, totalPages } = lastPage;
-      console.log(currentPage, totalPages,currentPage < totalPages)
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
     enabled: !!debounceValue,

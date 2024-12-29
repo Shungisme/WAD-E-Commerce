@@ -432,7 +432,7 @@ const NavigationComponent = () => {
                 dropdownKey="cartDropDown"
               >
                 <Badge
-                  badgeContent={user?._id ? myCart?.data?.products?.length : 0}
+                  badgeContent={myCart?.data?.products?.length}
                   color="primary"
                 >
                   <IconifyIcon icon={"mdi-light:cart"} fontSize={"1.5rem"} />
