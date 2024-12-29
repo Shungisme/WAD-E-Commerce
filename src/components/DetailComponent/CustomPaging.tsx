@@ -11,7 +11,7 @@ const CustomPaging = ({ item }: TProps) => {
   const theme = useTheme();
 
   const renderListImages = () => {
-    return item?.images.map((item,index) => {
+    return item?.images?.map((item,index) => {
       return <>
         <Box 
         onClick={() => setHeroImage(item)}

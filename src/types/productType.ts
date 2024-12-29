@@ -1,15 +1,15 @@
 export interface PRODUCT {
   productId?:string,  
   title: string;
-  description: string;
+  description?: string;
   thumbnail: string;
-  images:string[];
+  images?:string[];
   price: number;
   quantity: number;
-  status: string;
+  status?: string;
   discount: number;
-  slug: string;
-  categorySlug:string
+  slug?: string;
+  categorySlug?:string
 }
 
 export interface PRODUCT_FOR_CART {

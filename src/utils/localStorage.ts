@@ -1,3 +1,5 @@
+import { PRODUCT } from "../types/productType";
+
 export const setDataInLocalStorage = (
   accessToken?: string,
   refreshToken?: string
@@ -6,7 +8,6 @@ export const setDataInLocalStorage = (
     window.localStorage.setItem("accessToken", accessToken || "");
     window.localStorage.setItem("refreshToken", refreshToken || "");
   }
-
 
   return {
     accessToken: accessToken,
@@ -33,4 +34,35 @@ export const clearLocalData = () => {
     window.localStorage.removeItem("accessToken");
     window.localStorage.removeItem("refreshToken");
   }
+};
+
+
+export const getCartInLocalStorage = (): any => {
+  if (typeof window === "undefined") return [];
+  
+  const cart = localStorage.getItem("cart");
+  return cart ? JSON.parse(cart) : [];
+};
+
+
+export const setCartItemInLocalStorage = (item: any): void => {
+  if (typeof window === "undefined") return;
+
+  const cart = getCartInLocalStorage();
+  cart.push(item);
+  localStorage.setItem("cart", JSON.stringify(cart));
+};
+
+
+export const setCartInLocalStorage = (cart: any): void => {
+  if (typeof window === "undefined") return;
+  
+  localStorage.setItem("cart", JSON.stringify(cart));
+};
+
+
+export const clearCartInLocalStorage = (): void => {
+  if (typeof window === "undefined") return;
+  
+  localStorage.removeItem("cart");
 };

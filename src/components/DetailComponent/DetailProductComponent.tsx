@@ -1,12 +1,16 @@
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { toDiscountPrice } from "../../utils/toDiscountPrice";
 import { toVND } from "../../utils/convertNumberToVND";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateCart } from "../../services/cart";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../hooks/useAuth";
-import AnnouceModalComponent from "../AnnouceModalComponent";
-import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import {
+  getCartInLocalStorage,
+  setCartInLocalStorage,
+  setCartItemInLocalStorage,
+} from "../../utils/localStorage";
+import { PRODUCT } from "../../types/productType";
+import { useCart } from "../../hooks/useCart";
 
 interface TProps {
   item: any;
@@ -16,81 +20,59 @@ const DetailProductComponent = ({ item }: TProps) => {
   const theme = useTheme();
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const [openModal, setOpenModal] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
-
-  const addCart = useMutation({
-    mutationKey: ["get-cart", user?._id],
-    mutationFn: async ({
-      userId,
-      products,
-    }: {
-      userId: string;
-      products?: any;
-    }) => {
-      const response = await updateCart(userId, products);
-      return response;
-    },
-    onMutate: ({ products }) => {
-      queryClient.cancelQueries({ queryKey: ["add-cart"] });
-      const previousData = queryClient.getQueryData(["get-cart"]);
-
-      queryClient.setQueryData(["get-cart"], (old: any) => {
-        const data = old?.cart;
-        const newObject = { ...data };
-        newObject.products = [...products];
-        return newObject;
-      });
-
-      return { previousData };
-    },
-    onError: (error, { userId, products }, context: any) => {
-      queryClient.setQueryData(["get-cart"], context?.previousData);
-    },
-    onSettled: async () => {
-      queryClient.refetchQueries({
-        queryKey: ["get-cart", user?._id],
-      });
-    },
-  });
+  const { addCart } = useCart();
 
   const handleAddProductToCart = async () => {
-    if (!user) {
-      setOpenModal(true);
-      return;
-    }
-
-    const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
-    const data = cart?.products;
     const detailProduct: any = queryClient.getQueryData([
       "detail-product",
       searchParams.get("content"),
     ]);
-    const index = data?.findIndex(
-      (item: any) => item?.productId === detailProduct?._id
-    );
-    if (index !== -1) {
-      data[index].quantity = data[index].quantity + 1;
+    let data;
+    if (!user) {
+      const cart = getCartInLocalStorage();
+      const index = cart?.findIndex(
+        (item: PRODUCT) => item?.productId === detailProduct?._id
+      );
+      if (index === -1) {
+        const tmp = {
+          discount: detailProduct?.discount,
+          price: detailProduct?.price,
+          productId: detailProduct?._id,
+          quantity: 1,
+          thumbnail: detailProduct?.thumbnail,
+          title: detailProduct?.title,
+        };
+        data = [...cart,tmp]
+      
+      } else {
+        if (cart[index]) {
+          cart[index].quantity++;
+        }
+        data = JSON.parse(JSON.stringify(cart));
+      
+      }
     } else {
-      data.push({
-        productId: detailProduct?._id,
-        quantity: 1,
-      });
+      const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
+      data = cart?.products;
+      const index = data?.findIndex(
+        (item: any) => item?.productId === detailProduct?._id
+      );
+      if (index !== -1) {
+        data[index].quantity = data[index].quantity + 1;
+      } else {
+        data.push({
+          productId: detailProduct?._id,
+          quantity: 1,
+        });
+      }
     }
-
-    await addCart.mutate({ userId: user?._id || "", products: [...data] });
+   
+    await addCart?.mutate({ userId: user?._id || "", products: [...data] });
   };
 
   return (
     <>
-      <AnnouceModalComponent
-        header="Thông báo"
-        bodyContent="Vui lòng đăng nhập"
-        open={openModal}
-        setOpen={setOpenModal}
-        doCancel={() => setOpenModal(false)}
-        doOk={() => setOpenModal(false)}
-      />
       <Box
         sx={{
           display: "flex",

@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { TUser } from "../types/userType";
 import { getMeAuth, loginUserAPI, logoutAuth } from "../services/auth";
-import { clearLocalData, setDataInLocalStorage } from "../utils/localStorage";
+import { clearCartInLocalStorage, clearLocalData, setDataInLocalStorage } from "../utils/localStorage";
 import { decodeJwt } from "../utils/decodeJWT";
 
 interface ValuesType {
@@ -45,7 +45,6 @@ const AuthProvider = ({ children }: TProps) => {
   }, []);
 
   const handleLogin = async (data: TUser) => {
-    console.log("Hello")
     await loginUserAPI(data)
       .then((res) => {
         const { accessToken,refreshToken } = res;
@@ -65,6 +64,7 @@ const AuthProvider = ({ children }: TProps) => {
       .then(() => {
         setUser(null);
         clearLocalData();
+        clearCartInLocalStorage();
       })
       .catch((error) => {
         console.log("error at handle logout in auth context");

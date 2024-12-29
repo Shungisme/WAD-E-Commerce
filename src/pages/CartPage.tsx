@@ -13,15 +13,14 @@ import IconifyIcon from "../components/iconifyIcon";
 import { toDiscountPrice } from "../utils/toDiscountPrice";
 import { toVND } from "../utils/convertNumberToVND";
 import { useCart } from "../hooks/useCart";
-import { useState } from "react";
 
 const CartPage = () => {
   const theme = useTheme();
   const { myCart, handleChangeQuantity, handleDelete, totalMoney } = useCart();
-  const [input, setInput] = useState<string>("");
+
 
   const renderProduct = () => {
-    return myCart?.data?.products.map((item: any, index: any) => {
+    return myCart?.data?.products?.map((item: any, index: any) => {
       const price = toDiscountPrice(item);
       const quantity = item.quantity;
       return (
@@ -194,7 +193,7 @@ const CartPage = () => {
           minHeight: "70vh",
         }}
       >
-        {myCart?.data?.products.length !== 0 ? (
+        {myCart?.data?.products?.length !== 0 ? (
           <>
             <Grid2 container justifyContent={"space-around"}>
               <Grid item xs={8} width={"60%"}>

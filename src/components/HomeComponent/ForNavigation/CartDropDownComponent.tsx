@@ -163,7 +163,7 @@ const CartDropDownComponent = () => {
             overflow: "auto",
           }}  
         >
-          {user && myCart?.data?.products?.length > 0 ? (
+          {myCart?.data?.products?.length > 0 ? (
             <>{renderProductsInCart()}</>
           ) : (
             <>

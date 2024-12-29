@@ -28,7 +28,6 @@ export const registerUserAPI = async (user: TUser) => {
 export const loginUserAPI = async (user: TUser) => {
   try {
     const url = BASE_URL + "login";
-    console.log(url)
     const response = await axios(url, {
       method: "POST",
       data: user,

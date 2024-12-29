@@ -11,7 +11,6 @@ interface TProps {
 }
 
 const DropdownComponent = ({ children,contentDrop,dropdownKey,...rest }: TProps) => {  
-  const theme = useTheme();
   const [clickDropDown, setClickDropDown] = useState<boolean>(false);
   const clickRef = useRef<HTMLDivElement | null>(null);
   useClickOutSide({
