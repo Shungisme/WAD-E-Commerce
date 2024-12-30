@@ -7,6 +7,7 @@ import { varAlpha } from "../theme/styles/utils";
 
 export const HomePage = lazy(() => import("../pages/home-admin"));
 export const AccountsPage = lazy(() => import("../pages/account"));
+export const CategoriesPage = lazy(() => import("../pages/product-category"));
 export const SignInPage = lazy(() => import("../pages/sign-in"));
 export const Page404 = lazy(() => import("../pages/page-not-found"));
 
@@ -55,7 +56,7 @@ export const Router = () => {
         },
         {
           path: "categories",
-          element: <></>,
+          element: <CategoriesPage />,
         },
       ],
     },

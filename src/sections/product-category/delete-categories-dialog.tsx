@@ -10,21 +10,20 @@ import {
   alpha,
 } from "@mui/material";
 import { Iconify } from "../../components/iconify/iconify";
-import { AccountProps } from "./account-table-row";
 
-export type DeleteAccountsDialogProps = {
+export type DeleteCategoriesDialogProps = {
   open: boolean;
   onClose: () => void;
   onDelete: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  numAccount: number;
+  numCategory: number;
 };
 
-export default function DeleteAccountsDialog({
+export default function DeleteCategoriesDialog({
   open,
   onClose,
   onDelete,
-  numAccount,
-}: DeleteAccountsDialogProps) {
+  numCategory,
+}: DeleteCategoriesDialogProps) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle
@@ -51,15 +50,15 @@ export default function DeleteAccountsDialog({
           />
         </Box>
         <Typography sx={{ fontSize: (theme) => theme.typography.h6 }}>
-          Delete Accounts
+          Delete Categories
         </Typography>
       </DialogTitle>
 
       <DialogContent>
         <Stack spacing={3} sx={{ pt: 2 }}>
           <Typography>
-            Are you sure you want to delete {numAccount} accounts? This action
-            cannot be undone.
+            Are you sure you want to delete {numCategory} categories? This
+            action cannot be undone.
           </Typography>
         </Stack>
       </DialogContent>

@@ -136,7 +136,7 @@ export default function AddAccountDialog({
             fontSize: (theme) => theme.typography.h6,
           }}
         >
-          Edit Account
+          Add Account
         </Typography>
       </DialogTitle>
 
@@ -264,7 +264,7 @@ export default function AddAccountDialog({
           <DialogActions>
             <Button onClick={onClose}>Cancel</Button>
             <Button type="submit" variant="contained">
-              Save Changes
+              Create Account
             </Button>
           </DialogActions>
         </FormGroup>

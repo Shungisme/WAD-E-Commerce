@@ -6,25 +6,26 @@ import {
   Button,
   Typography,
   Box,
+  Avatar,
   Stack,
   alpha,
 } from "@mui/material";
 import { Iconify } from "../../components/iconify/iconify";
-import { AccountProps } from "./account-table-row";
+import { CategoryProps } from "./category-table-row";
 
-export type DeleteAccountsDialogProps = {
+export type DeleteCategoryDialogProps = {
   open: boolean;
   onClose: () => void;
-  onDelete: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  numAccount: number;
+  onDelete: (category: CategoryProps) => void;
+  category: CategoryProps;
 };
 
-export default function DeleteAccountsDialog({
+export default function DeletecategoryDialog({
   open,
   onClose,
   onDelete,
-  numAccount,
-}: DeleteAccountsDialogProps) {
+  category,
+}: DeleteCategoryDialogProps) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle
@@ -51,16 +52,31 @@ export default function DeleteAccountsDialog({
           />
         </Box>
         <Typography sx={{ fontSize: (theme) => theme.typography.h6 }}>
-          Delete Accounts
+          Delete Category
         </Typography>
       </DialogTitle>
 
       <DialogContent>
         <Stack spacing={3} sx={{ pt: 2 }}>
           <Typography>
-            Are you sure you want to delete {numAccount} accounts? This action
-            cannot be undone.
+            Are you sure you want to delete this category? This action cannot be
+            undone.
           </Typography>
+
+          <Box
+            sx={{
+              p: 2.5,
+              borderRadius: 1,
+              bgcolor: (theme) => alpha(theme.palette.grey[500], 0.08),
+            }}
+          >
+            <Box>
+              <Typography variant="subtitle2">{category.title}</Typography>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                {category.status}
+              </Typography>
+            </Box>
+          </Box>
         </Stack>
       </DialogContent>
 
@@ -71,7 +87,7 @@ export default function DeleteAccountsDialog({
         <Button
           variant="contained"
           color="error"
-          onClick={onDelete}
+          onClick={() => onDelete(category)}
           startIcon={<Iconify icon="eva:trash-2-outline" />}
         >
           Delete
