@@ -21,9 +21,14 @@ import { Scrollbar } from "../../../components/scrollbar/scrollbar";
 import { AccountTableHead } from "../account-table-head";
 import { TableEmptyRows } from "../table-empty-rows";
 import { TableNoData } from "../table-no-data";
+import AddAccountDialog from "../add-account-dialog";
+import DeleteAccountsDialog from "../delete-accounts-dialog";
 
 export function AccountView() {
   const table = useTable();
+
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const [filterName, setFilterName] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
@@ -66,6 +71,7 @@ export function AccountView() {
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
+          onClick={() => setOpenAddDialog(true)}
         >
           New account
         </Button>
@@ -86,6 +92,7 @@ export function AccountView() {
           onFilterRole={(event: SelectChangeEvent<string>) => {
             setFilterRole(event.target.value);
           }}
+          onOpenDeleteDialog={() => setOpenDeleteDialog(true)}
         />
 
         <Scrollbar>
@@ -132,6 +139,12 @@ export function AccountView() {
                       row={row}
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
+                      onEditRow={(account: AccountProps) => {
+                        console.log(account);
+                      }}
+                      onDeleteRow={(account: AccountProps) => {
+                        console.log(account);
+                      }}
                     />
                   ))}
 
@@ -162,6 +175,21 @@ export function AccountView() {
           showLastButton
         />
       </Card>
+
+      <AddAccountDialog
+        open={openAddDialog}
+        onClose={() => {
+          setOpenAddDialog(false);
+        }}
+        onCreate={() => {}}
+      />
+
+      <DeleteAccountsDialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        onDelete={() => {}}
+        numAccount={table.selected.length}
+      />
     </DashboardContent>
   );
 }

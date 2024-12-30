@@ -13,6 +13,8 @@ import {
 import { useCallback, useState } from "react";
 import { Label } from "../../components/label/label";
 import { Iconify } from "../../components/iconify/iconify";
+import EditAccountDialog from "./edit-account-dialog";
+import DeleteAccountDialog from "./delete-account-dialog";
 
 export type AccountProps = {
   id: string;
@@ -27,16 +29,23 @@ export type AccountTableRowProps = {
   row: AccountProps;
   selected: boolean;
   onSelectRow: () => void;
+  onEditRow: (account: AccountProps) => void;
+  onDeleteRow: (account: AccountProps) => void;
 };
 
 export function AccountTableRow({
   row,
   selected,
   onSelectRow,
+  onEditRow,
+  onDeleteRow,
 }: AccountTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
     null
   );
+
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const handleOpenPopover = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -111,17 +120,40 @@ export function AccountTableRow({
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          <MenuItem onClick={() => setOpenEditDialog(true)}>
             <Iconify icon="solar:pen-bold" />
             Edit
           </MenuItem>
 
-          <MenuItem onClick={handleClosePopover} sx={{ color: "error.main" }}>
+          <MenuItem
+            onClick={() => setOpenDeleteDialog(true)}
+            sx={{ color: "error.main" }}
+          >
             <Iconify icon="solar:trash-bin-trash-bold" />
             Delete
           </MenuItem>
         </MenuList>
       </Popover>
+
+      <EditAccountDialog
+        open={openEditDialog}
+        onClose={() => {
+          setOpenEditDialog(false);
+          handleClosePopover();
+        }}
+        account={row}
+        onSave={onEditRow}
+      />
+
+      <DeleteAccountDialog
+        open={openDeleteDialog}
+        onClose={() => {
+          setOpenDeleteDialog(false);
+          handleClosePopover();
+        }}
+        onDelete={onDeleteRow}
+        account={row}
+      />
     </>
   );
 }

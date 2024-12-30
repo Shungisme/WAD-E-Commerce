@@ -66,8 +66,6 @@ export function applyFilter({
     (element, index) => [element, index] as const
   );
 
-  console.log(filter);
-
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;

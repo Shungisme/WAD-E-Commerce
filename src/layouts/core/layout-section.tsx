@@ -1,4 +1,4 @@
-import { Box, GlobalStyles, SxProps, Theme, useTheme } from "@mui/material";
+import { Box, SxProps, Theme } from "@mui/material";
 import { layoutClasses } from "../classes";
 
 export type LayoutSectionProps = {
@@ -16,10 +16,8 @@ export const LayoutSection = ({
   headerSection,
   sidebarSection,
 }: LayoutSectionProps) => {
-  const theme = useTheme();
-
   return (
-    <Box id="root__layout" className={layoutClasses.root}>
+    <Box id="root__layout" className={layoutClasses.root} sx={sx}>
       {sidebarSection}
       <Box
         display="flex"

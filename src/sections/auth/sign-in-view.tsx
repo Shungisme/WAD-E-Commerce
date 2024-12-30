@@ -1,109 +1,100 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useRouter } from "../../hooks/use-router";
 import {
   Box,
-  IconButton,
-  InputAdornment,
-  Link,
+  FormControl,
+  FormHelperText,
   TextField,
   Typography,
 } from "@mui/material";
-import { Iconify } from "../../components/iconify/iconify";
 import LoadingButton from "@mui/lab/LoadingButton";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+
+const validationSchema = new Yup.ObjectSchema({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .matches(
+      /[!@#$%^&*_]/,
+      "Password must contain at least one special character"
+    )
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[0-9]/, "Password must contain at least one number")
+    .required("Password is required"),
+});
 
 export const SignInView = () => {
   const router = useRouter();
 
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleSignIn = useCallback(() => {
-    router.push("/");
-  }, [router]);
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (value) => {
+      router.push("/");
+    },
+  });
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
-      <TextField
-        fullWidth
-        name="email"
-        label="Email address"
-        defaultValue="tqtos@gmail.com"
-        InputLabelProps={{ shrink: true }}
-        sx={{
-          mb: 3,
-          // "& .MuiOutlinedInput-root": {
-          //   "& fieldset": {
-          //     borderColor: "grey",
-          //   },
-          //   "&hover fieldset": {
-          //     borderColor: "info.main",
-          //   },
-          //   "&.Mui-focused fieldset": {
-          //     borderColor: "info.main",
-          //     borderWidth: 2,
-          //   },
-          // },
-          // "& .MuiInputLabel-root.Mui-focused": {
-          //   color: "info.main",
-          // },
-        }}
-      />
+      <form onSubmit={formik.handleSubmit}>
+        <FormControl
+          fullWidth
+          error={!!formik.errors.email && formik.touched.email}
+          sx={{
+            mb: 3,
+          }}
+        >
+          <TextField
+            fullWidth
+            name="email"
+            label="Email address"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
 
-      <TextField
-        fullWidth
-        name="password"
-        label="Password"
-        defaultValue="@tqtos"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        type={showPassword ? "text" : "password"}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() => setShowPassword(!showPassword)}
-                edge="end"
-              >
-                <Iconify
-                  icon={
-                    showPassword ? "solar:eye-bold" : "solar:eye-closed-bold"
-                  }
-                />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-        sx={{
-          mb: 3,
-          // "& .MuiOutlinedInput-root": {
-          //   "& fieldset": {
-          //     borderColor: "grey",
-          //     color: "grey",
-          //   },
-          //   "&hover fieldset": {
-          //     borderColor: "info.main",
-          //   },
-          //   "&.Mui-focused fieldset": {
-          //     borderColor: "info.main",
-          //     borderWidth: 2,
-          //   },
-          // },
-          // "& .MuiInputLabel-root.Mui-focused": {
-          //   color: "info.main",
-          // },
-        }}
-      />
+          {formik.errors.email && formik.touched.email && (
+            <FormHelperText>{formik.errors.email}</FormHelperText>
+          )}
+        </FormControl>
 
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        color="inherit"
-        variant="contained"
-        onClick={handleSignIn}
-      >
-        Sign in
-      </LoadingButton>
+        <FormControl
+          fullWidth
+          error={!!formik.errors.password && formik.touched.password}
+          sx={{
+            mb: 3,
+          }}
+        >
+          <TextField
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+
+          {formik.errors.password && formik.touched.password && (
+            <FormHelperText>{formik.errors.password}</FormHelperText>
+          )}
+        </FormControl>
+
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          color="inherit"
+          variant="contained"
+        >
+          Sign in
+        </LoadingButton>
+      </form>
     </Box>
   );
 

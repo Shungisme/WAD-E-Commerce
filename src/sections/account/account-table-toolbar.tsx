@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { Iconify } from "../../components/iconify/iconify";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 type AccountTableToolbarProps = {
   numSelected: number;
@@ -25,6 +25,7 @@ type AccountTableToolbarProps = {
   onFilterStatus: (event: SelectChangeEvent<string>) => void;
   filterRole: string;
   onFilterRole: (event: SelectChangeEvent<string>) => void;
+  onOpenDeleteDialog: () => void;
 };
 
 export function AccountTableToolbar({
@@ -35,6 +36,7 @@ export function AccountTableToolbar({
   onFilterStatus,
   filterRole,
   onFilterRole,
+  onOpenDeleteDialog,
 }: AccountTableToolbarProps) {
   const theme = useTheme();
 
@@ -92,7 +94,7 @@ export function AccountTableToolbar({
 
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton>
+            <IconButton onClick={() => onOpenDeleteDialog()}>
               <Iconify icon="solar:trash-bin-trash-bold" />
             </IconButton>
           </Tooltip>
