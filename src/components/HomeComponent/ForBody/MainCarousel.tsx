@@ -1,4 +1,4 @@
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, useTheme } from "@mui/material";
 import CarouselComponent from "../../CarouselComponent";
 import { CAROUSEL_MAIN } from "../../../constants/carouselContants";
 import { useNavigate } from "react-router-dom";
@@ -52,36 +52,15 @@ const MainCarousel = () => {
       return (
         <div>
           <Box
-            key={index}
+            key={"MainCarousel" + index}
             onClick={() => navigate(item.link)}
             className="cursor-pointer relative w-screen h-[42rem]"
           >
             <img
               src={item.image}
-              alt={item.title}
+              alt={item.link}
               className="w-full h-full object-cover"
             />
-            {/* <Box
-              sx={{
-                position: "absolute",
-                top: "10%",
-                left: "5%",
-                backgroundColor: `rgba(0, 0, 0, 0.7)` ,
-                borderRadius:"50px",
-                padding:2
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "6rem",
-                  color: theme.palette.common.white,
-                  letterSpacing: "3px",
-                  fontFamily:'Pacifico, cursive'
-                }}
-              >
-                {item.title}
-              </Typography>
-            </Box> */}
           </Box>
         </div>
       );
