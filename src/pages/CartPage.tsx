@@ -13,11 +13,23 @@ import IconifyIcon from "../components/iconifyIcon";
 import { toDiscountPrice } from "../utils/toDiscountPrice";
 import { toVND } from "../utils/convertNumberToVND";
 import { useCart } from "../hooks/useCart";
+import { useAuth } from "../hooks/useAuth";
+import { useState } from "react";
+import AnnouceModalComponent from "../components/AnnouceModalComponent";
 
 const CartPage = () => {
   const theme = useTheme();
   const { myCart, handleChangeQuantity, handleDelete, totalMoney } = useCart();
+  const { user } = useAuth();
+  const [openModal, setOpenModal] = useState(false);
 
+  const handlePayment = () => {
+    if (!user) {
+      setOpenModal(true);
+    } else {
+      //do payment in this block
+    }
+  };
 
   const renderProduct = () => {
     return myCart?.data?.products?.map((item: any, index: any) => {
@@ -185,6 +197,14 @@ const CartPage = () => {
 
   return (
     <>
+      <AnnouceModalComponent
+        header="Thông báo"
+        bodyContent="Vui lòng đăng nhập trước khi thanh toán"
+        open={openModal}
+        setOpen={setOpenModal}
+        doCancel={() => setOpenModal(false)}
+        doOk={() => setOpenModal(false)}
+      />
       <Box
         sx={{
           maxWidth: "90%",
@@ -292,7 +312,9 @@ const CartPage = () => {
                     Thời gian giao hàng từ 3 đến 5 ngày kể từ khi xác nhận đơn
                     hàng.
                   </Typography>
-                  <Button variant="contained">Thanh toán</Button>
+                  <Button onClick={handlePayment} variant="contained">
+                    Thanh toán
+                  </Button>
                 </Box>
               </Grid>
             </Grid2>

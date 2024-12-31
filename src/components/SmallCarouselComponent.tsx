@@ -3,6 +3,9 @@ import { Box, Typography, useTheme, IconButton } from "@mui/material";
 import SmallCarouselComponent from "./SmallCarousel";
 import IconifyIcon from "./iconifyIcon";
 import CardComponent from "./CardComponent";
+import { useNavigate } from "react-router-dom";
+import { ROUTES_CONSTANT } from "../constants/routesConstants";
+import { slugify } from "../utils/slugify";
 
 interface TProps {
   items: Array<any>;
@@ -12,6 +15,7 @@ interface TProps {
 const SmallCarousel = ({ items, type }: TProps) => {
   const smallCarouselref = useRef<any>(null);
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const renderCarousel = () => {
     return items?.map((item) => {
@@ -21,7 +25,7 @@ const SmallCarousel = ({ items, type }: TProps) => {
             style={{
               width: "22rem",
               height: "30rem",
-              margin: "0 auto"
+              margin: "0 auto",
             }}
           >
             <CardComponent item={item} key={item?._id} />
@@ -33,39 +37,44 @@ const SmallCarousel = ({ items, type }: TProps) => {
 
   return (
     <>
-      {items?.length > 0 ? (
-        <>
-          <Box
-            sx={{
-              maxWidth: "85%",
-              margin: "0 auto",
-            }}
+      <Box
+        sx={{
+          maxWidth: "85%",
+          margin: "0 auto",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+            width: "100%",
+          }}
+        >
+          <Typography
+            fontSize={"2rem"}
+            color={theme.palette.primary.main}
+            fontWeight={500}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 2,
-                width:"100%"
-              }}
-            >
-              <Typography
-                fontSize={"2rem"}
-                color={theme.palette.primary.main}
-                fontWeight={500}
-              >
-                {type}
-              </Typography>
-              <Typography
-                sx={{
-                  cursor: "pointer",
-                }}
-              >
-                Xem tất cả
-              </Typography>
-            </Box>
-
+            {type}
+          </Typography>
+          <Typography
+            sx={{
+              cursor: "pointer",
+            }}
+            onClick={() =>
+              navigate(
+                `${ROUTES_CONSTANT.FILTER_PAGE}?content=${slugify(type)}`
+              )
+            }
+          >
+            Xem tất cả
+          </Typography>
+        </Box>
+        {items?.length > 0 ? (
+          <>
+            {" "}
             <Box position={"relative"}>
               <SmallCarouselComponent ref={smallCarouselref}>
                 {renderCarousel()}
@@ -119,21 +128,21 @@ const SmallCarousel = ({ items, type }: TProps) => {
                 />
               </IconButton>
             </Box>
-          </Box>
-        </>
-      ) : (
-        <>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography>Không tồn tại sản phẩm</Typography>
-          </Box>
-        </>
-      )}
+          </>
+        ) : (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography>Không tồn tại sản phẩm</Typography>
+            </Box>
+          </>
+        )}
+      </Box>
     </>
   );
 };

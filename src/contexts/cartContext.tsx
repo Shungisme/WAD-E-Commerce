@@ -107,10 +107,8 @@ const CartProvider = ({ children }: TProps) => {
             productsOfResponse[index].quantity = data[i].quantity;
           }
         }
-
         setTotalMoney(totalPrice(productsOfResponse));
         clearCartInLocalStorage();
-
         return {
           products: productsOfResponse,
         };
@@ -232,6 +230,7 @@ const CartProvider = ({ children }: TProps) => {
   ) => {
     const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
     const data = cart?.products;
+ 
 
     const index = data?.findIndex(
       (item: any) => item.productId === productItem?.productId
@@ -242,7 +241,9 @@ const CartProvider = ({ children }: TProps) => {
     const newProducts = [...data];
 
     if (status === "inscrese") {
-      newProducts[index].quantity++;
+      if (newProducts[index].remainingQuantity > newProducts[index].quantity) {
+        newProducts[index].quantity++;
+      }
     } else if (status === "descrease") {
       if (newProducts[index].quantity <= 1) return;
       newProducts[index].quantity--;

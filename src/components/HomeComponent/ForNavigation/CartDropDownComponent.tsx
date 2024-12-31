@@ -27,7 +27,7 @@ const CartDropDownComponent = () => {
 
 
   const renderProductsInCart = () => {
-    return myCart?.data?.products?.map((item: any, index: any) => {
+    return myCart?.data?.products?.map((item: any) => {
       const quantity = item.quantity;
       const price = toDiscountPrice(item);
       const total = quantity * price;
@@ -38,7 +38,7 @@ const CartDropDownComponent = () => {
             justifyContent={"flex-start"}
             alignItems={"center"}
             container
-            key={index}
+            key={item?.productId}
           >
             <Grid item xs={3}>
               <Box

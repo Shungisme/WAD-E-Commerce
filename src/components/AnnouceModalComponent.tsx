@@ -72,13 +72,15 @@ const AnnouceModalComponent = (props: TProps) => {
                 {header}
               </Typography>
               <Divider />
-              <Typography>
-                {bodyContent}
-              </Typography>
-              <Divider/>
+              <Typography>{bodyContent}</Typography>
+              <Divider />
               <Stack direction={"row"} justifyContent={"space-between"}>
-                <Button onClick={doCancel} variant="contained">Thoát</Button>
-                <Button onClick={doOk} variant="contained">Ok</Button>
+                <Button onClick={doCancel} variant="contained">
+                  Thoát
+                </Button>
+                <Button onClick={doOk} variant="contained">
+                  Ok
+                </Button>
               </Stack>
             </Stack>
           </Box>

@@ -173,8 +173,8 @@ const LayoutFilter = ({ children }: TProps) => {
 
   useEffect(() => {
     const contentParam = searchParams.get("content") as string;
+    setContent(contentParam);
     if (contentParam) {
-      setContent(contentParam);
       categories?.data?.megaMenuTitle?.forEach((item: any) => {
         for (let cate of item[1]) {
           if (slugify(cate) === contentParam) {
