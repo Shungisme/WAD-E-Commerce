@@ -16,6 +16,7 @@ import { useCart } from "../hooks/useCart";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import AnnouceModalComponent from "../components/AnnouceModalComponent";
+import { Helmet } from "react-helmet";
 
 const CartPage = () => {
   const theme = useTheme();
@@ -197,6 +198,15 @@ const CartPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Giỏ hàng của bạn</title>
+        <meta name="description" content="Nơi hiển thị giỏ hàng hiện tại" />
+        <meta
+          property="og:image"
+          content="https://example.com/path-to-your-image.jpg"
+        />
+      </Helmet>
+
       <AnnouceModalComponent
         header="Thông báo"
         bodyContent="Vui lòng đăng nhập trước khi thanh toán"

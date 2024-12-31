@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { getProductBySlug, getProductsByCategory } from "../services/products";
 import { slugify } from "../utils/slugify";
+import { Helmet } from "react-helmet";
 
 const DetailPage = () => {
   const [searchParams] = useSearchParams();
@@ -41,6 +42,14 @@ const DetailPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Chi tiết sản phẩm</title>
+        <meta name="description" content="Trang này hiển thị chi tiết sản phẩm" />
+        <meta
+          property="og:image"
+          content="https://example.com/path-to-your-image.jpg"
+        />
+      </Helmet>
       <Box
         sx={{
           margin: "0 auto",

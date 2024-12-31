@@ -7,6 +7,7 @@ import SpinnerFullScreen from "../components/SpinnerFullScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { filterAsync } from "../stores/actions/filterAction";
 import { AppDispatch, RootState } from "../stores/store";
+import { Helmet } from "react-helmet";
 
 export const PERPAGE_OPITONS = [6, 12, 18, 24];
 
@@ -59,6 +60,14 @@ const FilterPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Tất cả sản phẩm</title>
+        <meta name="description" content="Trang này là nơi hiện tất cả sản phẩm, bạn có thể lọc sản phẩm ở nơi này" />
+        <meta
+          property="og:image"
+          content="https://example.com/path-to-your-image.jpg"
+        />
+      </Helmet>
       {isLoading && <SpinnerFullScreen />}
       <LayoutFilter>
         {data?.length > 0 ? (
