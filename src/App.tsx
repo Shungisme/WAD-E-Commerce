@@ -10,7 +10,6 @@ import InstanceAxiosProvider from "./utils/instanceAxios";
 import CartProvider from "./contexts/cartContext";
 import AuthProvider from "./contexts/authContext";
 const App = () => {
-
   return (
     <ThemeProviderWrapper>
       <RouterProvider
@@ -23,7 +22,7 @@ const App = () => {
                   <AuthProvider>
                     <CartProvider>
                       <NavigationComponent />
-                        <AppContent />
+                      <AppContent />
                       <FooterComponent />
                     </CartProvider>
                   </AuthProvider>

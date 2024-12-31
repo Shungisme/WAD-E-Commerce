@@ -1,7 +1,6 @@
 import {
     Box,
     FormControl,
-    InputLabel,
     MenuItem,
     Pagination,
     Select,
@@ -13,12 +12,13 @@ import {
   interface TProps {
     page: number;
     perPage: number;
+    totalPages: number;
     setPage: React.Dispatch<React.SetStateAction<number>>;
     setPerpage: React.Dispatch<React.SetStateAction<number>>;
   }
   
   const PaginationComponent = (props: TProps) => {
-    const { page, setPage, perPage, setPerpage } = props;
+    const { page, setPage, perPage, setPerpage , totalPages} = props;
   
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
       setPage(value);
@@ -47,7 +47,14 @@ import {
               </Select>
             </FormControl>
           </Box>
-          <Pagination page={page} onChange={handleChange} color="primary" />
+          <Pagination 
+            page={page} 
+            count={totalPages} 
+            onChange={handleChange}
+            siblingCount={0}
+            boundaryCount={1}
+            defaultPage={1}  
+            color="primary" />
         </Stack>
       </>
     );

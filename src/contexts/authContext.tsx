@@ -1,7 +1,12 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { TUser } from "../types/userType";
 import { getMeAuth, loginUserAPI, logoutAuth } from "../services/auth";
-import { clearCartInLocalStorage, clearLocalData, setDataInLocalStorage } from "../utils/localStorage";
+import {
+  clearCartInLocalStorage,
+  clearLocalData,
+  getDataFromLocalStorage,
+  setDataInLocalStorage,
+} from "../utils/localStorage";
 import { decodeJwt } from "../utils/decodeJWT";
 
 interface ValuesType {
@@ -27,11 +32,12 @@ export const AuthContext = createContext<ValuesType>(inititalData);
 const AuthProvider = ({ children }: TProps) => {
   const [user, setUser] = useState<TUser | null>(null);
 
-  
   useEffect(() => {
     const getMe = async () => {
+      const { accessToken, refreshToken } = getDataFromLocalStorage();
+      if (!accessToken || !refreshToken) return;
       await getMeAuth()
-      .then((res) => {
+        .then((res) => {
           const user = res.user;
           setUser(user);
         })
@@ -47,8 +53,8 @@ const AuthProvider = ({ children }: TProps) => {
   const handleLogin = async (data: TUser) => {
     await loginUserAPI(data)
       .then((res) => {
-        const { accessToken,refreshToken } = res;
-        setDataInLocalStorage(accessToken,refreshToken)
+        const { accessToken, refreshToken } = res;
+        setDataInLocalStorage(accessToken, refreshToken);
         const data: any = decodeJwt(accessToken);
         setUser(data.user);
       })
@@ -68,7 +74,7 @@ const AuthProvider = ({ children }: TProps) => {
       })
       .catch((error) => {
         console.log("error at handle logout in auth context");
-        throw(error);
+        throw error;
       });
   };
 

@@ -1,32 +1,56 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import CardComponent from "../components/CardComponent";
 import LayoutFilter from "../components/layouts/LayoutFilter";
-import { BEST_SELLER } from "../mocks/bestSeller";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PaginationComponent from "../components/PaginationComponent";
+import SpinnerFullScreen from "../components/SpinnerFullScreen";
+import { useDispatch, useSelector } from "react-redux";
+import { filterAsync } from "../stores/actions/filterAction";
+import { AppDispatch, RootState } from "../stores/store";
 
-
-export const PERPAGE_OPITONS = [6,12,18,24];
-
+export const PERPAGE_OPITONS = [6, 12, 18, 24];
 
 const FilterPage = () => {
-  const [page, setPage] = useState<number>(1);
+  const [currentPage, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(PERPAGE_OPITONS[0]);
-  const data = BEST_SELLER;
+  const dispatch: AppDispatch = useDispatch();
+  const { data, isLoading, totalPages, categorySlug, sort } = useSelector(
+    (store: RootState) => store.filterData
+  );
+
+  const first = useRef<boolean>(false);
+  useEffect(() => {
+    if (first.current === false) {
+      first.current = true;
+      return;
+    } else {
+      if (!isLoading) {
+        dispatch(
+          filterAsync({
+            limit: perPage,
+            page:currentPage,
+            categorySlug,
+            sort,
+          })
+        );
+      }
+    }
+  }, [currentPage, perPage]);
 
   const renderCards = () => {
-    return data.map((item: any, index) => {
+    return data?.map((item: any) => {
       return (
         <>
-          <Grid justifyItems={"center"} item xs={4} key={index}>
-            <Box
-              sx={{
-                maxWidth: "20rem",
-                height: "28rem",
+          <Grid item xs={4} key={item?._id}>
+            <div
+              style={{
+                maxWidth: "22rem",
+                height: "30rem",
+                margin: "0 auto",
               }}
             >
               <CardComponent item={item} />
-            </Box>
+            </div>
           </Grid>
         </>
       );
@@ -35,23 +59,35 @@ const FilterPage = () => {
 
   return (
     <>
+      {isLoading && <SpinnerFullScreen />}
       <LayoutFilter>
-        {renderCards()}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            width:"100%",
-            mt:2
-          }}
-        >
-          <PaginationComponent
-            page={page}
-            setPerpage={setPerPage}
-            setPage={setPage}
-            perPage={perPage}
-          />
-        </Box>
+        {data?.length > 0 ? (
+          <>
+            {renderCards()}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                width: "100%",
+                mt: 2,
+              }}
+            >
+              <PaginationComponent
+                page={currentPage || 0}
+                totalPages={totalPages || 0}
+                setPerpage={setPerPage}
+                setPage={setPage}
+                perPage={perPage}
+              />
+            </Box>
+          </>
+        ) : (
+          <>
+            <Typography textAlign={"center"} fontWeight={"bold"}>
+              Không có sản phẩm
+            </Typography>
+          </>
+        )}
       </LayoutFilter>
     </>
   );

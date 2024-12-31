@@ -76,6 +76,7 @@ const NavigationComponent = () => {
   const categories = useQuery({
     queryKey: ["categories"],
     queryFn: getAllCategories,
+    staleTime: 5 * 60 * 1000
   });
 
   const renderItemInCarouselHeaderContent = () => {
@@ -83,7 +84,7 @@ const NavigationComponent = () => {
       return (
         <>
           <div
-            key={index}
+            key={"category: "+ index}
             style={{
               color:
                 theme.palette.mode === "dark"

@@ -17,15 +17,15 @@ const SmallCarousel = ({ items, type }: TProps) => {
     return items?.map((item) => {
       return (
         <>
-          <Box
-            sx={{
+          <div
+            style={{
               width: "22rem",
-              height: "30rem", 
-              margin: "0 auto", 
+              height: "30rem",
+              margin: "0 auto"
             }}
           >
             <CardComponent item={item} key={item?._id} />
-          </Box>
+          </div>
         </>
       );
     });
@@ -47,6 +47,7 @@ const SmallCarousel = ({ items, type }: TProps) => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 mb: 2,
+                width:"100%"
               }}
             >
               <Typography
@@ -69,6 +70,7 @@ const SmallCarousel = ({ items, type }: TProps) => {
               <SmallCarouselComponent ref={smallCarouselref}>
                 {renderCarousel()}
               </SmallCarouselComponent>
+
               <IconButton
                 className="prev-arrow"
                 sx={{
@@ -77,7 +79,7 @@ const SmallCarousel = ({ items, type }: TProps) => {
                       ? theme.palette.common.white
                       : theme.palette.common.black,
                   position: "absolute",
-                  left: -30,
+                  left: -20,
                   top: "50%",
                   transform: "translateY(-50%)",
                   zIndex: 1,
@@ -101,7 +103,7 @@ const SmallCarousel = ({ items, type }: TProps) => {
                       ? theme.palette.common.white
                       : theme.palette.common.black,
                   position: "absolute",
-                  right: -30,
+                  right: -20,
                   top: "50%",
                   transform: "translateY(-50%)",
                   zIndex: 1,
