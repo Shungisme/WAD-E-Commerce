@@ -31,7 +31,6 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
         clearLocalData();
         setUser(null);
         logoutAuth();
-        navigate(ROUTES_CONSTANT.HOME_PAGE);
         return Promise.reject(new Error("No access or refresh token"));
       }
 

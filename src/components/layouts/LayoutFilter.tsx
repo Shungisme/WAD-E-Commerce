@@ -1,55 +1,82 @@
 import {
   Box,
   Button,
-  Checkbox,
-  ClickAwayListener,
   Divider,
   FormControlLabel,
-  FormGroup,
   Grid,
-  Grow,
+  Menu,
   MenuItem,
-  MenuList,
-  Paper,
-  Popper,
+  Radio,
+  RadioGroup,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { CATEGORIES_CONTANT } from "../../mocks/categoryContants";
 import IconifyIcon from "../iconifyIcon";
-import { motion, AnimatePresence } from "framer-motion";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { getAllCategories } from "../../services/categories";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../stores/store";
+import SpinnerFullScreen from "../SpinnerFullScreen";
+import { filterAsync } from "../../stores/actions/filterAction";
+import Fade from "@mui/material/Fade";
+import { slugify } from "../../utils/slugify";
+import { useSearchParams } from "react-router-dom";
+import { PERPAGE_OPITONS } from "../../pages/FilterPage";
 
 interface TProps {
   children: ReactNode;
+  filterQuery?: UseQueryResult<any, Error>;
 }
 
 const LayoutFilter = ({ children }: TProps) => {
-  const theme = useTheme();
   const [hideFilter, setHideFilter] = useState<boolean>(true);
-  const category = CATEGORIES_CONTANT;
-  const [open, setOpen] = useState(false);
-  const anchorRef = useRef<HTMLButtonElement>(null);
   const [showCategory, setShowCategory] = useState<Record<string, boolean>>({});
+  const [content, setContent] = useState<string>("");
+  const [sort, setSort] = useState<"newest" | "oldest" | "asc" | "desc">();
+  const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-    category().reduce((curr, currentVal) => {
-      curr[currentVal.parent] = false;
-      return curr;
-    }, {} as Record<string, boolean>);
-  }, []);
+  const theme = useTheme();
+  const dispatch: AppDispatch = useDispatch();
+  const { isLoading, page, limit,categorySlug } = useSelector(
+    (store: RootState) => store.filterData
+  );
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (event: React.MouseEvent<HTMLElement>) => {
+    const value = event.currentTarget.getAttribute("data-value");
+    if (
+      value === "newest" ||
+      value === "oldest" ||
+      value === "asc" ||
+      value === "desc"
+    ) {
+      setSort(value);
+    }
+    setAnchorEl(null);
+  };
+
+  const categories = useQuery({
+    queryKey: ["categories"],
+    queryFn: getAllCategories,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const renderCategories = () => {
-    return category().map((item, index) => {
+    return categories?.data?.megaMenuTitle?.map((item: any, index: number) => {
       return (
         <>
           <Box
-            key={index}
+            key={"category" + index}
             onClick={() =>
               setShowCategory((prev) => ({
-                ...prev,
-                [item.parent]: !prev[item.parent],
+                [item[0]]: !prev[item[0]],
               }))
             }
             sx={{
@@ -64,88 +91,105 @@ const LayoutFilter = ({ children }: TProps) => {
               },
             }}
           >
-            <Typography>{item?.parent}</Typography>
+            <Typography>{item[0]}</Typography>
             <IconifyIcon icon={"mingcute:down-line"} />
           </Box>
-          <AnimatePresence mode="wait">
-            {showCategory[item.parent] && (
-              <motion.div
-                initial={{ y: "-20%", opacity: 0 }}
-                animate={{ y: "0", opacity: 1 }}
-                exit={{ y: "-20%", opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                style={{
-                  cursor: "pointer",
-                  padding: 10,
-                  backgroundColor:
-                    theme.palette.mode === "dark"
-                      ? theme.palette.common.black
-                      : theme.palette.common.white,
-                  boxShadow: `${
-                    theme.palette.mode === "dark"
-                      ? "rgba(255, 255, 255, 0.24)"
-                      : "rgba(0, 0, 0, 0.24)"
-                  } 0px 3px 8px`,
-                }}
-              >
-                <FormGroup>
-                  {item.child &&
-                    item.child.map((item, index) => {
-                      return (
-                        <>
-                          <FormControlLabel
-                            key={index}
-                            control={<Checkbox />}
-                            label={item.name}
-                          />
-                        </>
-                      );
-                    })}
-                </FormGroup>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
-          {index !== category().length - 1 && <Divider />}
+          {showCategory[item[0]] && (
+            <Box
+              style={{
+                cursor: "pointer",
+                padding: 10,
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.common.black
+                    : theme.palette.common.white,
+                boxShadow: `${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.24)"
+                    : "rgba(0, 0, 0, 0.24)"
+                } 0px 3px 8px`,
+              }}
+            >
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                name="radio-buttons-group"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  setContent(slugify((event.target as HTMLInputElement).value))
+                }
+              >
+                {item[1] &&
+                  item[1].map((item: any, index: number) => {
+                    return (
+                      <>
+                        <FormControlLabel
+                          key={"cateChild" + index}
+                          value={item}
+                          control={
+                            <Radio checked={categorySlug === slugify(item)} />
+                          }
+                          label={item}
+                        />
+                      </>
+                    );
+                  })}
+              </RadioGroup>
+            </Box>
+          )}
+
+          {index !== categories?.data?.megaMenuTitle?.length - 1 && <Divider />}
         </>
       );
     });
   };
 
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+  const clearFilter = () => {
+    dispatch(
+      filterAsync({
+        categorySlug: "",
+        limit: PERPAGE_OPITONS[0],
+        page: 1,
+        search: "",
+        sort: "",
+      })
+    );
   };
 
-  const handleClose = (event: Event | React.SyntheticEvent) => {
-    if (
-      anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
-    ) {
+  const firstRender = useRef(false);
+  useEffect(() => {
+    if (firstRender.current === false) {
+      firstRender.current = true;
       return;
     }
+    dispatch(
+      filterAsync({
+        categorySlug: content || "",
+        sort,
+        page,
+        limit,
+      })
+    );
+  }, [sort, content]);
 
-    setOpen(false);
-  };
-
-  function handleListKeyDown(event: React.KeyboardEvent) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen(false);
-    } else if (event.key === "Escape") {
-      setOpen(false);
-    }
-  }
-
-  const prevOpen = useRef(open);
   useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current!.focus();
+    const contentParam = searchParams.get("content") as string;
+    if (contentParam) {
+      setContent(contentParam);
+      categories?.data?.megaMenuTitle?.forEach((item: any) => {
+        for (let cate of item[1]) {
+          if (slugify(cate) === contentParam) {
+            setShowCategory((prev) => ({
+              [item[0]]: true,
+            }));
+          }
+        }
+      });
     }
-    prevOpen.current = open;
-  }, [open]);
+  }, [searchParams]);
 
   return (
     <>
+      {isLoading && <SpinnerFullScreen />}
       <Box
         sx={{
           maxWidth: "90%",
@@ -154,7 +198,7 @@ const LayoutFilter = ({ children }: TProps) => {
           minHeight: "33rem",
         }}
       >
-        <Grid container spacing={1} rowGap={2}>
+        <Grid container rowGap={3} columnGap={5}>
           <Grid xs={12}>
             <Box
               sx={{
@@ -168,7 +212,7 @@ const LayoutFilter = ({ children }: TProps) => {
                 fontSize={"1.2rem"}
                 letterSpacing={"2px"}
               >
-                {"PRODUCT"}
+                {"Sản phẩm"}
               </Typography>
               <Box
                 sx={{
@@ -183,125 +227,91 @@ const LayoutFilter = ({ children }: TProps) => {
                     alignItems: "center",
                     cursor: "pointer",
                   }}
-                  onClick={async () => await setHideFilter(!hideFilter)}
+                  onClick={async () => setHideFilter(!hideFilter)}
                 >
                   <Typography>{!hideFilter ? "Hiện lọc" : "Ẩn lọc"}</Typography>
                   <IconifyIcon icon={"rivet-icons:filter"} />
                 </Box>
+                <Button onClick={clearFilter} variant="contained">
+                  Xóa lọc
+                </Button>
                 <Box>
                   <Button
-                    ref={anchorRef}
-                    id="composition-button"
-                    aria-controls={open ? "composition-menu" : undefined}
-                    aria-expanded={open ? "true" : undefined}
+                    id="fade-button"
+                    aria-controls={open ? "fade-menu" : undefined}
                     aria-haspopup="true"
-                    onClick={handleToggle}
+                    aria-expanded={open ? "true" : undefined}
+                    onClick={handleClick}
                     variant="contained"
                   >
                     Sắp xếp
                   </Button>
-                  <Popper
-                    open={open}
-                    anchorEl={anchorRef.current}
-                    role={undefined}
-                    placement="bottom-start"
-                    transition
-                    disablePortal
-                    sx={{
-                        zIndex:2
+
+                  <Menu
+                    id="fade-menu"
+                    MenuListProps={{
+                      "aria-labelledby": "fade-button",
                     }}
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    TransitionComponent={Fade}
                   >
-                    {({ TransitionProps, placement }) => (
-                      <Grow
-                        {...TransitionProps}
-                        style={{
-                          transformOrigin:
-                            placement === "bottom-start"
-                              ? "left top"
-                              : "left bottom",
-                           
-                        }}
-                      >
-                        <Paper >
-                          <ClickAwayListener onClickAway={handleClose}>
-                            <MenuList
-                              autoFocusItem={open}
-                              id="composition-menu"
-                              aria-labelledby="composition-button"
-                              onKeyDown={handleListKeyDown}
-                              
-                            >
-                              <MenuItem onClick={handleClose}>
-                                Mới nhất
-                              </MenuItem>
-                              <MenuItem onClick={handleClose}>
-                                Giá tăng
-                              </MenuItem>
-                              <MenuItem onClick={handleClose}>
-                                Giá giảm
-                              </MenuItem>
-                            </MenuList>
-                          </ClickAwayListener>
-                        </Paper>
-                      </Grow>
-                    )}
-                  </Popper>
+                    <MenuItem data-value="newest" onClick={handleClose}>
+                      Mới nhất
+                    </MenuItem>
+                    <MenuItem data-value="oldest" onClick={handleClose}>
+                      Cũ nhất
+                    </MenuItem>
+                    <MenuItem data-value="desc" onClick={handleClose}>
+                      Giá cao
+                    </MenuItem>
+                    <MenuItem data-value="asc" onClick={handleClose}>
+                      Giá thấp
+                    </MenuItem>
+                  </Menu>
                 </Box>
               </Box>
             </Box>
           </Grid>
 
-          <Grid xs={3}>
-            <AnimatePresence>
-              {hideFilter && (
-                <motion.div
-                  style={{
-                    padding: "0.7rem",
-                    maxHeight: "40rem",
-                    overflow: "auto",
-                    boxShadow: `${
-                      theme.palette.mode === "dark"
-                        ? "rgba(255, 255, 255, 0.24)"
-                        : "rgba(0, 0, 0, 0.24)"
-                    } 0px 3px 8px`,
-                  }}
-                  initial={{
-                    x: "-100%",
-                    opacity: 0,
-                  }}
-                  animate={{
-                    x: "0",
-                    opacity: 1,
-                  }}
-                  exit={{
-                    x: "-100%",
-                    opacity: 0,
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Stack direction={"column"} gap={1}>
-                    {renderCategories()}
-                  </Stack>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          <Grid xs={2.5}>
+            {hideFilter && (
+              <Box
+                style={{
+                  padding: "0.7rem",
+                  maxHeight: "40rem",
+                  overflow: "auto",
+                  boxShadow: `${
+                    theme.palette.mode === "dark"
+                      ? "rgba(255, 255, 255, 0.24)"
+                      : "rgba(0, 0, 0, 0.24)"
+                  } 0px 3px 8px`,
+                }}
+              >
+                <Stack direction={"column"} gap={1}>
+                  {renderCategories()}
+                </Stack>
+              </Box>
+            )}
           </Grid>
 
-          <AnimatePresence mode="wait">
+          <Grid
+            key={hideFilter ? "filter-visible" : "filter-hidden"}
+            xs={hideFilter ? 9 : 12}
+            width={"100%"}
+            height={"100%"}
+          >
             <Grid
-              key={hideFilter ? "filter-visible" : "filter-hidden"}
-              xs={hideFilter ? 9 : 12}
-              component={motion.div}
-              layout
-              initial={{ opacity: 0, x: hideFilter ? 10 : -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: hideFilter ? 10 : -10 }}
+              spacing={1.5}
+              container
+              justifyContent={"center"}
+              alignContent={"center"}
+              alignItems={"center"}
             >
-              <Grid spacing={1.5} container>
-                {children}
-              </Grid>
+              {children}
             </Grid>
-          </AnimatePresence>
+          </Grid>
         </Grid>
       </Box>
     </>

@@ -58,7 +58,7 @@ export const getProductBySlug = async (slug: string) => {
 
 export const getProductsByFilter = async ({
   categorySlug,
-  page,
+  page = 1,
   limit = 6,
   search,
   sort,
@@ -72,7 +72,7 @@ export const getProductsByFilter = async ({
   try {
     const url = BASE_URL;
     const { accessToken } = getDataFromLocalStorage();
-    const response = await instanceAxios(url, {
+    const response = await axios(url, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",

@@ -104,9 +104,10 @@ const CartDropDownComponent = () => {
                   </IconButton>
                   <input
                     type="text"
-                    className="text-black outline-none w-6 h-6 text-center border border-gray-300 rounded"
+                    className="outline-none w-6 h-6 text-center border border-gray-300 rounded"
                     disabled
                     value={item?.quantity}
+                    color={theme.palette.text.primary}
                   />
                   <IconButton
                     onClick={() => handleChangeQuantity(item, "inscrese")}

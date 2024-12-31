@@ -7,7 +7,7 @@ const InformationComponent = () => {
         return Array.isArray(informationContants()) 
         ? informationContants()?.map((item:any, index: any) => {
             return <>
-                <Grid2 key={index} container columnSpacing={3}>
+                <Grid2 key={"information" + index} container columnSpacing={3}>
                     <Grid item>
                         <IconifyIcon fontSize={"3rem"} icon={item.icon}/>
                     </Grid>
