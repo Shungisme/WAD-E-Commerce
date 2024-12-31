@@ -40,14 +40,12 @@ const SearchDropDownComponent = ({ input }: TProps) => {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const { currentPage, totalPages } = lastPage;
-      console.log(currentPage, totalPages,currentPage < totalPages)
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
     enabled: !!debounceValue,
   });
 
   useEffect(() => {
-    console.log(getSearchData?.hasNextPage)
     if (inView && getSearchData?.hasNextPage && !getSearchData?.isFetching) {
       getSearchData.fetchNextPage();
     }

@@ -7,6 +7,7 @@ import { ROUTES_CONSTANT } from "./constants/routesConstants";
 import CartPage from "./pages/CartPage";
 import DetailPage from "./pages/DetailPage";
 import FilterPage from "./pages/FilterPage";
+import GoogleReturnPage from "./pages/GoogleReturnPage";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -21,7 +22,7 @@ const AppContent: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.2 }}
     >
       <Routes location={location}>
         <Route index path={ROUTES_CONSTANT.HOME_PAGE} element={<HomePage />} />
@@ -32,6 +33,7 @@ const AppContent: React.FC = () => {
           element={<DetailPage />}
         />
         <Route path={ROUTES_CONSTANT.FILTER_PAGE} element={<FilterPage />} />
+        <Route path={ROUTES_CONSTANT.GOOGLE_RETURN}  element={<GoogleReturnPage/>}/>
       </Routes>
     </motion.div>
   );

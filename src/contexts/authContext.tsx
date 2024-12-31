@@ -1,8 +1,15 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { TUser } from "../types/userType";
 import { getMeAuth, loginUserAPI, logoutAuth } from "../services/auth";
-import { clearLocalData, setDataInLocalStorage } from "../utils/localStorage";
+import {
+  clearCartInLocalStorage,
+  clearLocalData,
+  getDataFromLocalStorage,
+  setDataInLocalStorage,
+} from "../utils/localStorage";
 import { decodeJwt } from "../utils/decodeJWT";
+import { ROUTES_CONSTANT } from "../constants/routesConstants";
+import { useNavigate } from "react-router-dom";
 
 interface ValuesType {
   user: TUser | null;
@@ -26,12 +33,14 @@ export const AuthContext = createContext<ValuesType>(inititalData);
 
 const AuthProvider = ({ children }: TProps) => {
   const [user, setUser] = useState<TUser | null>(null);
+  const navigate = useNavigate();
 
-  
   useEffect(() => {
     const getMe = async () => {
+      const { accessToken, refreshToken } = getDataFromLocalStorage();
+      if (!accessToken || !refreshToken) return;
       await getMeAuth()
-      .then((res) => {
+        .then((res) => {
           const user = res.user;
           setUser(user);
         })
@@ -45,11 +54,10 @@ const AuthProvider = ({ children }: TProps) => {
   }, []);
 
   const handleLogin = async (data: TUser) => {
-    console.log("Hello")
     await loginUserAPI(data)
       .then((res) => {
-        const { accessToken,refreshToken } = res;
-        setDataInLocalStorage(accessToken,refreshToken)
+        const { accessToken, refreshToken } = res;
+        setDataInLocalStorage(accessToken, refreshToken);
         const data: any = decodeJwt(accessToken);
         setUser(data.user);
       })
@@ -61,14 +69,18 @@ const AuthProvider = ({ children }: TProps) => {
   };
 
   const handleLogout = async () => {
+    console.log("Hello logout");
     await logoutAuth()
-      .then(() => {
+      .then((res) => {
         setUser(null);
         clearLocalData();
+        clearCartInLocalStorage();
+        navigate(ROUTES_CONSTANT.HOME_PAGE, { replace: true });
+        return res;
       })
       .catch((error) => {
         console.log("error at handle logout in auth context");
-        throw(error);
+        throw error;
       });
   };
 

@@ -215,7 +215,7 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
                   onBlur={onBlur}
                   value={value}
                   id="password"
-                  className="w-full outline-none px-2 py-3 border-2 rounded-md text-[13px] peer"
+                  className="w-full outline-none px-2 py-3 border-2 rounded-md text-[13px] peer text-black"
                   type={showPassword ? "text" : "password"}
                 />
                 <label
@@ -241,6 +241,9 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
                   }}
                 >
                   <IconifyIcon
+                    style={{
+                      color: "black",
+                    }}
                     icon={
                       showPassword
                         ? "ic:sharp-visibility"
@@ -304,6 +307,9 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
                   }}
                 >
                   <IconifyIcon
+                    style={{
+                      color: "black",
+                    }}
                     icon={
                       showConfirmPassword
                         ? "ic:sharp-visibility"

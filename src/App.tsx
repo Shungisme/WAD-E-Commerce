@@ -13,35 +13,30 @@ import { useScrollToTop } from "./hooks/use-scroll-to-top";
 import { Router } from "./routes/sections";
 
 const App = () => {
-  // return (
-  //   <ThemeProviderWrapper>
-  //     <RouterProvider
-  //       router={createBrowserRouter([
-  //         {
-  //           path: "*",
-  //           element: (
-  //             <>
-  //               <InstanceAxiosProvider>
-  //                 <AuthProvider>
-  //                   <CartProvider>
-  //                     <NavigationComponent />
-  //                     <AppContent />
-  //                     <FooterComponent />
-  //                   </CartProvider>
-  //                 </AuthProvider>
-  //               </InstanceAxiosProvider>
-  //             </>
-  //           ),
-  //         },
-  //       ])}
-  //     />
-  //   </ThemeProviderWrapper>
-  // );
-
   useScrollToTop();
 
   return (
     <ThemeProviderWrapper>
+      <RouterProvider
+        router={createBrowserRouter([
+          {
+            path: "*",
+            element: (
+              <>
+                <InstanceAxiosProvider>
+                  <AuthProvider>
+                    <CartProvider>
+                      <NavigationComponent />
+                      <AppContent />
+                      <FooterComponent />
+                    </CartProvider>
+                  </AuthProvider>
+                </InstanceAxiosProvider>
+              </>
+            ),
+          },
+        ])}
+      />
       <Router />
     </ThemeProviderWrapper>
   );

@@ -85,7 +85,7 @@ const BodyHomeComponent = () => {
       >
         <MainCarousel />
         <InformationComponent />
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%"}}>
           <SmallCarousel
             items={shoesProducts?.data?.products}
             type="Sản phẩm giày"

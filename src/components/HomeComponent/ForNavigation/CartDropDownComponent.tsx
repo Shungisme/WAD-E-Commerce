@@ -13,21 +13,19 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES_CONSTANT } from "../../../constants/routesConstants";
 import { toDiscountPrice } from "../../../utils/toDiscountPrice";
 import { toVND } from "../../../utils/convertNumberToVND";
-import { useAuth } from "../../../hooks/useAuth";
 import { slugify } from "../../../utils/slugify";
 import { useCart } from "../../../hooks/useCart";
 
 
 
 const CartDropDownComponent = () => {
-  const { user } = useAuth();
   const { myCart, handleChangeQuantity, handleDelete ,totalMoney} = useCart();
   const theme = useTheme();
   const navigate = useNavigate();
 
 
   const renderProductsInCart = () => {
-    return myCart?.data?.products?.map((item: any, index: any) => {
+    return myCart?.data?.products?.map((item: any) => {
       const quantity = item.quantity;
       const price = toDiscountPrice(item);
       const total = quantity * price;
@@ -38,7 +36,7 @@ const CartDropDownComponent = () => {
             justifyContent={"flex-start"}
             alignItems={"center"}
             container
-            key={index}
+            key={item?.productId}
           >
             <Grid item xs={3}>
               <Box
@@ -104,9 +102,10 @@ const CartDropDownComponent = () => {
                   </IconButton>
                   <input
                     type="text"
-                    className="text-black outline-none w-6 h-6 text-center border border-gray-300 rounded"
+                    className="outline-none w-6 h-6 text-center border border-gray-300 rounded"
                     disabled
                     value={item?.quantity}
+                    color={theme.palette.text.primary}
                   />
                   <IconButton
                     onClick={() => handleChangeQuantity(item, "inscrese")}
@@ -159,11 +158,11 @@ const CartDropDownComponent = () => {
             alignItems: "center",
             flexDirection: "column",
             gap: "1rem",
-            height: "17rem",
+            maxHeight: "17rem",
             overflow: "auto",
           }}  
         >
-          {user && myCart?.data?.products?.length > 0 ? (
+          {myCart?.data?.products?.length > 0 ? (
             <>{renderProductsInCart()}</>
           ) : (
             <>

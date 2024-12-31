@@ -1,21 +1,18 @@
-
+import { ROUTES_CONSTANT } from "./routesConstants";
 
 export const CAROUSEL_MAIN = () => {
   return [
     {
-      title: "Nổi bật",
       image: "/assets/cool-nike-shoe.jpg",
-      link: "#",
+      link: `${ROUTES_CONSTANT.FILTER_PAGE}`,
     },
     {
-      title: "Thời trang",
       image: "/assets/nike2.png",
-      link: "#",
+      link: `${ROUTES_CONSTANT.FILTER_PAGE}`,
     },
     {
-      title: "Đa năng",
       image: "/assets/nike.jpg",
-      link: "#",
+      link: `${ROUTES_CONSTANT.FILTER_PAGE}`,
     },
   ];
 };

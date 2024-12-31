@@ -13,15 +13,27 @@ import IconifyIcon from "../components/iconifyIcon";
 import { toDiscountPrice } from "../utils/toDiscountPrice";
 import { toVND } from "../utils/convertNumberToVND";
 import { useCart } from "../hooks/useCart";
+import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
+import AnnouceModalComponent from "../components/AnnouceModalComponent";
+import { Helmet } from "react-helmet";
 
 const CartPage = () => {
   const theme = useTheme();
   const { myCart, handleChangeQuantity, handleDelete, totalMoney } = useCart();
-  const [input, setInput] = useState<string>("");
+  const { user } = useAuth();
+  const [openModal, setOpenModal] = useState(false);
+
+  const handlePayment = () => {
+    if (!user) {
+      setOpenModal(true);
+    } else {
+      //do payment in this block
+    }
+  };
 
   const renderProduct = () => {
-    return myCart?.data?.products.map((item: any, index: any) => {
+    return myCart?.data?.products?.map((item: any, index: any) => {
       const price = toDiscountPrice(item);
       const quantity = item.quantity;
       return (
@@ -186,6 +198,23 @@ const CartPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Giỏ hàng của bạn</title>
+        <meta name="description" content="Nơi hiển thị giỏ hàng hiện tại" />
+        <meta
+          property="og:image"
+          content="https://example.com/path-to-your-image.jpg"
+        />
+      </Helmet>
+
+      <AnnouceModalComponent
+        header="Thông báo"
+        bodyContent="Vui lòng đăng nhập trước khi thanh toán"
+        open={openModal}
+        setOpen={setOpenModal}
+        doCancel={() => setOpenModal(false)}
+        doOk={() => setOpenModal(false)}
+      />
       <Box
         sx={{
           maxWidth: "90%",
@@ -194,7 +223,7 @@ const CartPage = () => {
           minHeight: "70vh",
         }}
       >
-        {myCart?.data?.products.length !== 0 ? (
+        {myCart?.data?.products?.length !== 0 ? (
           <>
             <Grid2 container justifyContent={"space-around"}>
               <Grid item xs={8} width={"60%"}>
@@ -293,7 +322,9 @@ const CartPage = () => {
                     Thời gian giao hàng từ 3 đến 5 ngày kể từ khi xác nhận đơn
                     hàng.
                   </Typography>
-                  <Button variant="contained">Thanh toán</Button>
+                  <Button onClick={handlePayment} variant="contained">
+                    Thanh toán
+                  </Button>
                 </Box>
               </Grid>
             </Grid2>

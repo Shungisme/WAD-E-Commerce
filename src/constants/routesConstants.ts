@@ -3,5 +3,6 @@ export const ROUTES_CONSTANT = {
     ERROR_PAGE:'*',
     CART_PAGE:'/cart',
     DETAIL_PRODUCT_PAGE:'/detail',
-    FILTER_PAGE:'/filter'
+    FILTER_PAGE:'/filter',
+    GOOGLE_RETURN:'/users/oauth/google',
 }

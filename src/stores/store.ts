@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from './reducers/counterReducer'
+import filterReducer from './reducers/filterReducer'
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer
+    counter: counterReducer,
+    filterData: filterReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

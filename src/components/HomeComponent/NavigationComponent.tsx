@@ -68,14 +68,12 @@ const NavigationComponent = () => {
   const navigate = useNavigate();
   const hoverShopTab = useHover();
 
-  const mutation = useMutation({
-    mutationKey: ["logout-user"],
-    mutationFn: async () => await logoutAuth(),
-  });
+
 
   const categories = useQuery({
     queryKey: ["categories"],
     queryFn: getAllCategories,
+    staleTime: 5 * 60 * 1000
   });
 
   const renderItemInCarouselHeaderContent = () => {
@@ -83,7 +81,7 @@ const NavigationComponent = () => {
       return (
         <>
           <div
-            key={index}
+            key={"category: "+ index}
             style={{
               color:
                 theme.palette.mode === "dark"
@@ -161,8 +159,8 @@ const NavigationComponent = () => {
           </Box>
           <Divider />
           <Button
-            onClick={() => {
-              mutation.mutate();
+            onClick={async () => {
+              await logoutAuth()
             }}
             variant="contained"
             fullWidth
@@ -176,7 +174,7 @@ const NavigationComponent = () => {
 
   return (
     <>
-      {(categories.isFetching || mutation.isPending) && <SpinnerFullScreen />}
+      {(categories.isFetching) && <SpinnerFullScreen />}
       <Box>
         <Box
           sx={{
@@ -432,7 +430,7 @@ const NavigationComponent = () => {
                 dropdownKey="cartDropDown"
               >
                 <Badge
-                  badgeContent={user?._id ? myCart?.data?.products?.length : 0}
+                  badgeContent={myCart?.data?.products?.length}
                   color="primary"
                 >
                   <IconifyIcon icon={"mdi-light:cart"} fontSize={"1.5rem"} />

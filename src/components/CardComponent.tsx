@@ -17,7 +17,6 @@ const CardComponent = ({ item }: TProps) => {
     <>
       <Card
         sx={{
-          mx: 3,
           cursor: "pointer",
           height:"100%",
           width:"100%"

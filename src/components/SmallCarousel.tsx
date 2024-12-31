@@ -18,7 +18,7 @@ const SmallCarouselComponent = forwardRef<Slider, TProps>((props, ref) => {
   };
 
   return (
-    <div className="slider-container w-">
+    <div className="slider-container">
       <Slider  ref={ref} {...settings} {...rest}>
         {children}
       </Slider>
