@@ -8,6 +8,8 @@ import {
   setDataInLocalStorage,
 } from "../utils/localStorage";
 import { decodeJwt } from "../utils/decodeJWT";
+import { ROUTES_CONSTANT } from "../constants/routesConstants";
+import { useNavigate } from "react-router-dom";
 
 interface ValuesType {
   user: TUser | null;
@@ -31,6 +33,7 @@ export const AuthContext = createContext<ValuesType>(inititalData);
 
 const AuthProvider = ({ children }: TProps) => {
   const [user, setUser] = useState<TUser | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getMe = async () => {
@@ -66,11 +69,14 @@ const AuthProvider = ({ children }: TProps) => {
   };
 
   const handleLogout = async () => {
+    console.log("Hello logout");
     await logoutAuth()
-      .then(() => {
+      .then((res) => {
         setUser(null);
         clearLocalData();
         clearCartInLocalStorage();
+        navigate(ROUTES_CONSTANT.HOME_PAGE, { replace: true });
+        return res;
       })
       .catch((error) => {
         console.log("error at handle logout in auth context");

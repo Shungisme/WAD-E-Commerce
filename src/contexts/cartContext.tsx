@@ -68,22 +68,23 @@ const CartProvider = ({ children }: TProps) => {
   const [totalMoney, setTotalMoney] = useState<number>(0);
   const renderRef = useRef<boolean>(false);
 
+
   const myCart = useQuery({
     queryKey: ["get-cart", user?._id],
     queryFn: async () => {
       if (!user?._id) {
         const response = getCartInLocalStorage();
-        setTotalMoney(totalPrice(response));
+        setTotalMoney(totalPrice(response || []));
         return {
-          products: response,
+          products: response || [],
         };
       } else {
         const response = await getProductInCartById(String(user?._id));
-        const productsOfResponse = response?.cart?.products;
-        const data = getCartInLocalStorage();
+        const productsOfResponse = response?.cart?.products || [];
+        const data = getCartInLocalStorage() || [];
 
         if (!data || data?.length <= 0) {
-          setTotalMoney(totalPrice(productsOfResponse));
+          setTotalMoney(totalPrice(productsOfResponse || []));
           return response?.cart;
         }
         renderRef.current = true;
@@ -230,7 +231,6 @@ const CartProvider = ({ children }: TProps) => {
   ) => {
     const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
     const data = cart?.products;
- 
 
     const index = data?.findIndex(
       (item: any) => item.productId === productItem?.productId

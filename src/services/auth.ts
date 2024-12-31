@@ -46,7 +46,7 @@ export const getMeAuth = async () => {
     const url = BASE_URL + "current-user";
     const { accessToken } = getDataFromLocalStorage();
 
-    const response = await instanceAxios(url, {
+    const response = await axios(url, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -125,7 +125,7 @@ export const getAuthForGoogleLogin = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials:true
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {

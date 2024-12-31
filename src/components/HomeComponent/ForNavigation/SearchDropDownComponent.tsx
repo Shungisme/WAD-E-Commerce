@@ -46,7 +46,6 @@ const SearchDropDownComponent = ({ input }: TProps) => {
   });
 
   useEffect(() => {
-    console.log(getSearchData?.hasNextPage)
     if (inView && getSearchData?.hasNextPage && !getSearchData?.isFetching) {
       getSearchData.fetchNextPage();
     }

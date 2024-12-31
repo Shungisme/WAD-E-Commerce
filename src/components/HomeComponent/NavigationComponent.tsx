@@ -68,10 +68,7 @@ const NavigationComponent = () => {
   const navigate = useNavigate();
   const hoverShopTab = useHover();
 
-  const mutation = useMutation({
-    mutationKey: ["logout-user"],
-    mutationFn: async () => await logoutAuth(),
-  });
+
 
   const categories = useQuery({
     queryKey: ["categories"],
@@ -162,8 +159,8 @@ const NavigationComponent = () => {
           </Box>
           <Divider />
           <Button
-            onClick={() => {
-              mutation.mutate();
+            onClick={async () => {
+              await logoutAuth()
             }}
             variant="contained"
             fullWidth
@@ -177,7 +174,7 @@ const NavigationComponent = () => {
 
   return (
     <>
-      {(categories.isFetching || mutation.isPending) && <SpinnerFullScreen />}
+      {(categories.isFetching) && <SpinnerFullScreen />}
       <Box>
         <Box
           sx={{
