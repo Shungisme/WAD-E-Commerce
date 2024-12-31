@@ -13,14 +13,12 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES_CONSTANT } from "../../../constants/routesConstants";
 import { toDiscountPrice } from "../../../utils/toDiscountPrice";
 import { toVND } from "../../../utils/convertNumberToVND";
-import { useAuth } from "../../../hooks/useAuth";
 import { slugify } from "../../../utils/slugify";
 import { useCart } from "../../../hooks/useCart";
 
 
 
 const CartDropDownComponent = () => {
-  const { user } = useAuth();
   const { myCart, handleChangeQuantity, handleDelete ,totalMoney} = useCart();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -160,7 +158,7 @@ const CartDropDownComponent = () => {
             alignItems: "center",
             flexDirection: "column",
             gap: "1rem",
-            height: "17rem",
+            maxHeight: "17rem",
             overflow: "auto",
           }}  
         >

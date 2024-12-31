@@ -6,8 +6,6 @@ import { useAuth } from "../../hooks/useAuth";
 import { useSearchParams } from "react-router-dom";
 import {
   getCartInLocalStorage,
-  setCartInLocalStorage,
-  setCartItemInLocalStorage,
 } from "../../utils/localStorage";
 import { PRODUCT } from "../../types/productType";
 import { useCart } from "../../hooks/useCart";

@@ -18,7 +18,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../../hooks/useAuth";
 import SpinnerFullScreen from "../../SpinnerFullScreen";
 
-
 interface LoginForm {
   email: string;
   password: string;
@@ -47,7 +46,7 @@ const schema = yup
 const LoginComponent = ({ navigateToComponent }: TProps) => {
   const theme = useTheme();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const {loginAuth} = useAuth();
+  const { loginAuth } = useAuth();
 
   const {
     handleSubmit,
@@ -63,12 +62,12 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
   });
 
   const mutation = useMutation({
-    mutationKey:["login-user"],
-    mutationFn: async (data:TUser) => {
-      const response = await loginAuth(data)
-      return response
+    mutationKey: ["login-user"],
+    mutationFn: async (data: TUser) => {
+      const response = await loginAuth(data);
+      return response;
     },
-  })
+  });
 
   const onSubmit: SubmitHandler<any> = async (data: TUser) => {
     const response = await loginAuth(data);
@@ -77,7 +76,7 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
 
   return (
     <>
-      {mutation.isPending && <SpinnerFullScreen/>}
+      {mutation.isPending && <SpinnerFullScreen />}
       <CardContent>
         <Typography fontSize={"1.1rem"} fontWeight={"bold"}>
           Đăng nhập tài khoản
@@ -162,9 +161,9 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
                   }}
                   className={`absolute left-[0.55rem] transition-all duration-200 ease-in-out ${
                     value
-                        ? "text-[10px] top-[2px] translate-y-0"
-                        : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
-                }`}
+                      ? "text-[10px] top-[2px] translate-y-0"
+                      : "text-[0.8rem] top-1/2 translate-y-[-50%] peer-focus:text-[10px] peer-focus:top-[2px] peer-focus:translate-y-0"
+                  }`}
                   htmlFor="password"
                 >
                   Password
@@ -179,6 +178,9 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
                   }}
                 >
                   <IconifyIcon
+                    style={{
+                      color: "black",
+                    }}
                     icon={
                       showPassword
                         ? "ic:sharp-visibility"
@@ -231,7 +233,11 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
         <Typography component={"div"} fontSize={"0.8rem"}>
           Đăng nhập bằng
         </Typography>
-        <IconButton onClick={() => {window.location.href = getAuthGoogleUrl()}}>
+        <IconButton
+          onClick={() => {
+            window.location.href = getAuthGoogleUrl();
+          }}
+        >
           <IconifyIcon icon={"flat-color-icons:google"} />
         </IconButton>
       </Box>
