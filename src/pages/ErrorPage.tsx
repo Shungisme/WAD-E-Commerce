@@ -13,7 +13,7 @@ export default function ErrorPage() {
         justify-center
         items-center
         flex-col,
-        fixed
+        text-xl
     ">
       <h1>Oops!</h1>
       <p>Sorry, an unexpected error has occurred.</p>
