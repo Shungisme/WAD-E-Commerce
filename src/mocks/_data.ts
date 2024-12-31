@@ -67,21 +67,17 @@ export const _products = [...Array(24)].map((_, index) => {
   return {
     id: _id(index),
     price: _price(index),
-    name: _productNames(index),
-    priceSale: setIndex % 3 ? null : _price(index),
-    coverUrl: `/assets/images/product/product-${setIndex}.webp`,
-    colors:
-      (setIndex === 1 && COLORS.slice(0, 2)) ||
-      (setIndex === 2 && COLORS.slice(1, 3)) ||
-      (setIndex === 3 && COLORS.slice(2, 4)) ||
-      (setIndex === 4 && COLORS.slice(3, 6)) ||
-      (setIndex === 23 && COLORS.slice(4, 6)) ||
-      (setIndex === 24 && COLORS.slice(5, 6)) ||
-      COLORS,
+    discount: Math.floor(Math.random() * (50 - 5 + 1)) + 5,
+    quantity: Math.floor(Math.random() * 100000),
+    title: _productNames(index),
+    thumbnail: `/assets/images/product/product-${setIndex}.webp`,
     status:
-      ([1, 3, 5].includes(setIndex) && "sale") ||
-      ([4, 8, 12].includes(setIndex) && "new") ||
-      "",
+      ([1, 3, 5].includes(setIndex) && "active") ||
+      ([4, 8, 12].includes(setIndex) && "inactive") ||
+      "active",
+    description: "",
+    categorySlug: "",
+    images: [],
   };
 });
 
