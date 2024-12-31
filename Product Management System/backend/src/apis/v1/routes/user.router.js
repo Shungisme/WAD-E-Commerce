@@ -8,6 +8,7 @@ const router = Router();
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);
 router.patch('/update/:id', isAuthorized, UserController.updateUser);
+router.post('/change-password', isAuthorized, UserController.changePassword);
 router.post('/logout', UserController.logout);
 router.post('/refresh', UserController.refreshToken);
 router.get('/current-user', isAuthorized, UserController.getCurrentUser);

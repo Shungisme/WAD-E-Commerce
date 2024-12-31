@@ -126,6 +126,35 @@ class UserController {
 		}
 	}
 
+	static async changePassword(req, res) {
+		try {
+			const id = req.userInformation._id;
+			const { oldPassword, newPassword } = req.body;
+
+			if (!oldPassword || !newPassword) {
+				res.StatusCodes.BAD_REQUEST.json({ message: "Missing required fields" });
+			}
+
+			const user = await User.findById(id);
+			if (!user) {
+				res.StatusCodes.NOT_FOUND.json({ message: "User not found" });
+			}
+
+			if (!(await bcrypt.compare(oldPassword, user.password))) {
+				res.StatusCodes.UNAUTHORIZED.json({ message: "Invalid old password" });
+			}
+
+			const salt = await bcrypt.genSalt(13);
+			const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+			await User.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
+			res.status(StatusCodes.OK).json({ message: "Password changed successfully" });
+		}
+		catch (error) {
+			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+		}
+	}
+
 	static async logout(req, res) {
 		const method = req.session.loginMethod;
 		if (method === 'google') {

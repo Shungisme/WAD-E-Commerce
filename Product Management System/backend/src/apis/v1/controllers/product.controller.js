@@ -21,28 +21,26 @@ class ProductController {
 			if (search)
 				options.title = { $regex: search, $options: 'i' };
 
+			const sortOptions = {};
+
+			if (sort) {
+				if (sort === 'newest') {
+					sortOptions.createdAt = -1;
+				} else if (sort === 'oldest') {
+					sortOptions.createdAt = 1;
+				} else if (sort === 'asc') {
+					sortOptions.price = 1;
+				} else if (sort === 'desc') {
+					sortOptions.price = -1;
+				}
+			}
+
 			const totalProducts = await Product.countDocuments(options);
 			const products = await Product.find(options)
+				.sort(sortOptions)
 				.skip(startIndex)
 				.limit(parseInt(limit))
 				.lean();
-
-			if (sort) {
-				products.sort((a, b) => {
-					if (sort === 'newest') {
-						return new Date(b.createdAt) - new Date(a.createdAt);
-					}
-					else if (sort === 'oldest') {
-						return new Date(a.createdAt) - new Date(b.createdAt);
-					}
-					else if (sort === 'asc') {
-						return a.price - b.price;
-					}
-					else if (sort === 'desc') {
-						return b.price - a.price;
-					}
-				});
-			}
 
 			const productsWithCategoryTitle = await Promise.all(
 				products.map(async (product) => {
