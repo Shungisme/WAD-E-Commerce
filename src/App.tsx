@@ -18,15 +18,15 @@ const App = () => {
             path: "*",
             element: (
               <>
-                <InstanceAxiosProvider>
-                  <AuthProvider>
+                <AuthProvider>
+                  <InstanceAxiosProvider>
                     <CartProvider>
                       <NavigationComponent />
                       <AppContent />
                       <FooterComponent />
                     </CartProvider>
-                  </AuthProvider>
-                </InstanceAxiosProvider>
+                  </InstanceAxiosProvider>
+                </AuthProvider>
               </>
             ),
           },
