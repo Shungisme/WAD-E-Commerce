@@ -26,6 +26,7 @@ const sendOtp = async (req, res, next) => {
 
   const email = req.decodedToken.email;
   const userId = req.decodedToken.userId;  
+  console.log(email);
 
   try {
     let otp = await Otp.findByUserId(userId);
@@ -38,7 +39,7 @@ const sendOtp = async (req, res, next) => {
     const expiredAt = new Date();
     expiredAt.setMinutes(expiredAt.getMinutes() + 5);
 
-    const user = await User.findByEmail(email);
+    const user = await User.findByPk(userId);
     const utcExpiredAt = expiredAt.toISOString();
     await Otp.create({
       code: otp,

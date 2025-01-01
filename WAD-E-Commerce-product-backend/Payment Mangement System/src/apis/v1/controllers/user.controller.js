@@ -11,8 +11,6 @@ const getUserPaymentAccount = async (req, res, next) => {
     if (!user) {
       user = await User.create({
         id: decodedTokenUser.userId,
-        email: decodedTokenUser.email,
-        name: decodedTokenUser.name,
       });
     }
 

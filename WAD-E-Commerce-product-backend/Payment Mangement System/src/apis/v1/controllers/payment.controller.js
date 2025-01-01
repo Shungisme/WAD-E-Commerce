@@ -3,8 +3,11 @@ const Otp = require("../models/otp.model");
 const Payment = require("../models/payment.model");
 const ApplicationError = require("../../../error/cerror");
 const errorCode = require("../../../error/errorCode");
+require("dotenv").config();
 
 const ec = errorCode.ErrorCode;
+
+const MONEY_RECEIVER_ID = process.env.MONEY_RECEIVER_ID;
 
 const verifyOtp = async (otp) => {
   const otpData = await Otp.findByPk(otp);
@@ -32,6 +35,8 @@ const createPayment = async (req, res, next) => {
 
     const user = await User.findByPk(otpData.userId);
 
+    const receiver = await User.findByPk(MONEY_RECEIVER_ID);
+
     const payment = await Payment.create({
       userId: user.id,
       orderId: orderId,
@@ -42,6 +47,10 @@ const createPayment = async (req, res, next) => {
     user.balance = user.balance - totalAmount;
 
     await User.update({ balance: user.balance }, { where: { id: user.id } });
+
+    receiver.balance = receiver.balance + totalAmount;
+
+    await User.update({ balance: receiver.balance }, { where: { id: receiver.id } });
 
     res.status(201).json({ message: "Payment successful", payment });
   } catch (err) {
