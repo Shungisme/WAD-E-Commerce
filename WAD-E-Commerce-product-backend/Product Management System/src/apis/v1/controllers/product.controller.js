@@ -4,16 +4,17 @@ import ProductCategory from '../models/product-category.model.js';
 
 class ProductController {
 	static async getAllProducts(req, res) {
-		const { categorySlug = "", page = 1, limit = 100, search = "", sort = "" } = req.query;
+		const { categorySlug = "", page = 1, limit = 100, search = "", sort = "", status = "" } = req.query;
 		const startIndex = (page - 1) * limit;
 
 		try {
-			const options = {
-				status: 'active',
-			};
+			const options = {};
 
 			const allCategorySlugs = ProductCategory.find({ parentSlug: categorySlug }).lean().select('slug');
 			const categorySlugs = [categorySlug, ...(await allCategorySlugs).map((category) => category.slug)];
+
+			if (status)
+				options.status = status
 
 			if (categorySlug)
 				options.categorySlug = { $in: categorySlugs };
@@ -71,7 +72,7 @@ class ProductController {
 	static async getProductById(req, res) {
 		try {
 			const { id } = req.params;
-			const product = await Product.findOne({ _id: id, status: 'active' }).lean();
+			const product = await Product.findOne({ _id: id }).lean();
 			if (!product) return res.status(StatusCodes.NOT_FOUND).json({
 				error: 'Product not found'
 			});
@@ -106,7 +107,7 @@ class ProductController {
 	static async getProductBySlug(req, res) {
 		const { slug } = req.params;
 		try {
-			const product = await Product.findOne({ slug, status: 'active' }).lean();
+			const product = await Product.findOne({ slug }).lean();
 			if (!product) return res.status(StatusCodes.NOT_FOUND).json({
 				error: 'Product not found'
 			});
