@@ -17,7 +17,7 @@ type Props = CardProps & {
   };
 };
 
-export function AnalyticsConversionRates({
+export function AnalyticsOrdersHorizontalBar({
   title,
   subheader,
   chart,

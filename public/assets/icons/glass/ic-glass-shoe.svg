@@ -1,0 +1,54 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <!-- Đế giày -->
+    <path d="M50 200 C100 210 300 210 350 190 L360 220 C300 240 100 240 40 230 Z" fill="url(#sole-gradient)"/>
+    
+    <!-- Thân giày chính -->
+    <path d="M60 190 C120 180 280 180 340 170 C320 140 280 120 240 110 C180 95 120 100 80 130 C60 150 50 170 60 190 Z" fill="url(#body-gradient)"/>
+    
+    <!-- Lớp phủ bên trên -->
+    <path d="M80 130 C140 110 200 105 240 110 C200 115 140 120 80 140 Z" fill="url(#overlay-gradient)" opacity="0.8"/>
+    
+    <!-- Dây giày -->
+    <path d="M120 140 L220 125 M110 150 L230 135 M100 160 L240 145" 
+          stroke="white" 
+          stroke-width="3" 
+          stroke-linecap="round"
+          fill="none"/>
+    
+    <!-- Lỗ xỏ dây -->
+    <circle cx="120" cy="140" r="3" fill="#444"/>
+    <circle cx="220" cy="125" r="3" fill="#444"/>
+    <circle cx="110" cy="150" r="3" fill="#444"/>
+    <circle cx="230" cy="135" r="3" fill="#444"/>
+    <circle cx="100" cy="160" r="3" fill="#444"/>
+    <circle cx="240" cy="145" r="3" fill="#444"/>
+    
+    <!-- Logo (hình tròn đơn giản) -->
+    <circle cx="290" cy="150" r="15" fill="url(#logo-gradient)"/>
+    
+    <!-- Định nghĩa gradients -->
+    <defs>
+        <linearGradient id="sole-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#333"/>
+            <stop offset="100%" stop-color="#666"/>
+        </linearGradient>
+        
+        <linearGradient id="body-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#73BAFB"/>
+            <stop offset="100%" stop-color="#1877F2"/>
+        </linearGradient>
+        
+        <linearGradient id="overlay-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="white" stop-opacity="0.16"/>
+            <stop offset="100%" stop-color="white" stop-opacity="0.64"/>
+        </linearGradient>
+        
+        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFF" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#FFF" stop-opacity="0.4"/>
+        </linearGradient>
+    </defs>
+    
+    <!-- Hiệu ứng bóng đổ -->
+    <ellipse cx="200" cy="240" rx="150" ry="20" fill="rgba(0,0,0,0.1)"/>
+</svg>

@@ -17,7 +17,7 @@ type Props = CardProps & {
   };
 };
 
-export function AnalyticsCurrentSubject({
+export function AnalyticsOrdersRadar({
   title,
   subheader,
   chart,
@@ -29,6 +29,8 @@ export function AnalyticsCurrentSubject({
     theme.palette.primary.main,
     theme.palette.warning.main,
     theme.palette.info.main,
+    theme.palette.success.main,
+    theme.palette.error.main,
   ];
 
   const chartOptions = useChart({

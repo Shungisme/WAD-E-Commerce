@@ -1,0 +1,94 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+    <!-- Thân quần chính -->
+    <path d="M150 50 
+             L250 50 
+             C260 100 270 150 280 400
+             L220 450
+             C210 300 200 200 190 150
+             C180 200 170 300 160 450
+             L100 400
+             C110 150 120 100 130 50Z" 
+          fill="url(#pants-gradient)"/>
+    
+    <!-- Túi quần phải -->
+    <path d="M220 150
+             C220 170 230 190 240 200
+             L235 250
+             C225 240 215 230 210 220
+             Z"
+          fill="url(#pocket-gradient)"
+          opacity="0.8"/>
+    
+    <!-- Túi quần trái -->
+    <path d="M180 150
+             C180 170 170 190 160 200
+             L165 250
+             C175 240 185 230 190 220
+             Z"
+          fill="url(#pocket-gradient)"
+          opacity="0.8"/>
+    
+    <!-- Phần thắt lưng -->
+    <path d="M140 40
+             L260 40
+             C265 42 265 48 260 50
+             L140 50
+             C135 48 135 42 140 40Z"
+          fill="url(#belt-gradient)"/>
+    
+    <!-- Đường may bên phải -->
+    <path d="M220 100 C230 200 240 300 250 400" 
+          stroke="rgba(255,255,255,0.3)" 
+          stroke-width="2"
+          fill="none"
+          stroke-dasharray="5,5"/>
+    
+    <!-- Đường may bên trái -->
+    <path d="M180 100 C170 200 160 300 150 400" 
+          stroke="rgba(255,255,255,0.3)" 
+          stroke-width="2"
+          fill="none"
+          stroke-dasharray="5,5"/>
+    
+    <!-- Đường gấp nếp -->
+    <path d="M200 50 L200 150" 
+          stroke="rgba(255,255,255,0.2)" 
+          stroke-width="3"
+          fill="none"/>
+    
+    <!-- Định nghĩa gradients -->
+    <defs>
+        <linearGradient id="pants-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#C684FF"/>
+            <stop offset="100%" stop-color="#8E33FF"/>
+        </linearGradient>
+        
+        <linearGradient id="pocket-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8E33FF"/>
+            <stop offset="100%" stop-color="#5119B7"/>
+        </linearGradient>
+        
+        <linearGradient id="belt-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#8E33FF"/>
+            <stop offset="100%" stop-color="#5119B7"/>
+        </linearGradient>
+        
+        <!-- Hiệu ứng overlay -->
+        <linearGradient id="overlay-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="white" stop-opacity="0.48"/>
+            <stop offset="100%" stop-color="white" stop-opacity="0.04"/>
+        </linearGradient>
+    </defs>
+    
+    <!-- Lớp overlay để tạo hiệu ứng bóng -->
+    <path d="M150 50 
+             L250 50 
+             C260 100 270 150 280 400
+             L220 450
+             C210 300 200 200 190 150
+             C180 200 170 300 160 450
+             L100 400
+             C110 150 120 100 130 50Z" 
+          fill="url(#overlay-gradient)"
+          opacity="0.48"/>
+</svg>
