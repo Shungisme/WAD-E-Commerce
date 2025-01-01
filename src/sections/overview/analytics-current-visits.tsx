@@ -17,7 +17,7 @@ type Props = CardProps & {
   };
 };
 
-export function AnalyticsCurrentVisits({
+export function AnalyticsOrdersPie({
   title,
   subheader,
   chart,
@@ -32,6 +32,7 @@ export function AnalyticsCurrentVisits({
     theme.palette.warning.main,
     theme.palette.secondary.dark,
     theme.palette.error.main,
+    theme.palette.info.main,
   ];
 
   const chartOptions = useChart({

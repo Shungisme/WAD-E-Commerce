@@ -16,7 +16,7 @@ type Props = CardProps & {
   };
 };
 
-export function AnalyticsWebsiteVisits({
+export function AnalyticsOrdersBar({
   title,
   subheader,
   chart,
