@@ -34,12 +34,52 @@ const themeConfig = (mode: "light" | "dark"): ThemeOptions => {
     shape: {
       borderRadius: 8,
     },
-    components: components,
+    components: {
+      ...components,
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            backgroundColor: customColors.bodyBg,
+            color:
+              mode === "light"
+                ? "rgba(0, 0, 0, 0.87)"
+                : "rgba(255, 255, 255, 0.87)",
+          },
+        },
+      },
+    },
     typography: typography,
     shadows: shadows(),
     palette: {
       mode,
-      ...lightPalette,
+      primary: lightPalette.primary,
+      secondary: lightPalette.secondary,
+      info: lightPalette.info,
+      success: lightPalette.success,
+      warning: lightPalette.warning,
+      error: lightPalette.error,
+      grey: lightPalette.grey,
+      common: lightPalette.common,
+      divider: lightPalette.divider,
+      action: lightPalette.action,
+      text: {
+        ...lightPalette.text,
+        primary:
+          mode === "light"
+            ? "rgba(0, 0, 0, 0.87)"
+            : "rgba(255, 255, 255, 0.87)",
+        secondary:
+          mode === "light" ? "rgba(0, 0, 0, 0.6)" : "rgba(255, 255, 255, 0.6)",
+        disabled:
+          mode === "light"
+            ? "rgba(0, 0, 0, 0.38)"
+            : "rgba(255, 255, 255, 0.38)",
+      },
+      background: {
+        ...lightPalette.background,
+        paper: mode === "light" ? whiteColor : darkPaperBgColor,
+        default: mode === "light" ? lightColor : darkColor,
+      },
 
       // primary: {
       //   light: "#5eb8f7",
