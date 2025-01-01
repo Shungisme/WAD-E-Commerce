@@ -23,8 +23,8 @@ const SmallCarousel = ({ items, type }: TProps) => {
         <>
           <div
             style={{
-              width: "22rem",
-              height: "30rem",
+              maxWidth: "22rem",
+              height: "34rem",
               margin: "0 auto",
             }}
           >
@@ -65,7 +65,7 @@ const SmallCarousel = ({ items, type }: TProps) => {
             }}
             onClick={() =>
               navigate(
-                `${ROUTES_CONSTANT.FILTER_PAGE}?content=${slugify(type)}`
+                `/${ROUTES_CONSTANT.FILTER_PAGE}?content=${slugify(type)}`
               )
             }
           >

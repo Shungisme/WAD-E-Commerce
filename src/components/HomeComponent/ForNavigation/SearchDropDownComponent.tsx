@@ -68,7 +68,7 @@ const SearchDropDownComponent = ({ input }: TProps) => {
           <Grid
             sx={{
               "&:hover": {
-                backgroundColor: theme.palette.grey[200],
+                backgroundColor: theme.palette.primary.main,
               },
               p: 1,
             }}

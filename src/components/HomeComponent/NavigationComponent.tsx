@@ -28,7 +28,7 @@ import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { ROUTES_CONSTANT } from "../../constants/routesConstants";
 import { useAuth } from "../../hooks/useAuth";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import SpinnerFullScreen from "../SpinnerFullScreen";
 import { getAllCategories } from "../../services/categories";
 import { useCart } from "../../hooks/useCart";
@@ -68,12 +68,10 @@ const NavigationComponent = () => {
   const navigate = useNavigate();
   const hoverShopTab = useHover();
 
-
-
   const categories = useQuery({
     queryKey: ["categories"],
     queryFn: getAllCategories,
-    staleTime: 5 * 60 * 1000
+    staleTime: 5 * 60 * 1000,
   });
 
   const renderItemInCarouselHeaderContent = () => {
@@ -81,7 +79,7 @@ const NavigationComponent = () => {
       return (
         <>
           <div
-            key={"category: "+ index}
+            key={"category: " + index}
             style={{
               color:
                 theme.palette.mode === "dark"
@@ -117,7 +115,7 @@ const NavigationComponent = () => {
                   textTransform: "capitalize",
                   fontSize: "12px",
                 }}
-                onClick={() => navigate(ROUTES_CONSTANT.FILTER_PAGE)}
+                onClick={() => navigate(`/${ROUTES_CONSTANT.FILTER_PAGE}`)}
               >
                 Shop
               </Button>
@@ -160,7 +158,7 @@ const NavigationComponent = () => {
           <Divider />
           <Button
             onClick={async () => {
-              await logoutAuth()
+              await logoutAuth();
             }}
             variant="contained"
             fullWidth
@@ -174,7 +172,7 @@ const NavigationComponent = () => {
 
   return (
     <>
-      {(categories.isFetching) && <SpinnerFullScreen />}
+      {categories.isFetching && <SpinnerFullScreen />}
       <Box>
         <Box
           sx={{
@@ -371,7 +369,7 @@ const NavigationComponent = () => {
                       py: 1.5,
                     }}
                     component={"div"}
-                    onClick={() => navigate(ROUTES_CONSTANT.FILTER_PAGE)}
+                    onClick={() => navigate(`/${ROUTES_CONSTANT.FILTER_PAGE}`)}
                   >
                     Cửa hàng
                   </Typography>
@@ -399,14 +397,6 @@ const NavigationComponent = () => {
                     },
                   }}
                 >
-                  <Typography
-                    sx={{
-                      cursor: "pointer",
-                      py: 1.5,
-                    }}
-                  >
-                    Hỗ trợ
-                  </Typography>
                 </Box>
               </Box>
             </Box>

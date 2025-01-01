@@ -69,7 +69,6 @@ const AuthProvider = ({ children }: TProps) => {
   };
 
   const handleLogout = async () => {
-    console.log("Hello logout");
     await logoutAuth()
       .then((res) => {
         setUser(null);

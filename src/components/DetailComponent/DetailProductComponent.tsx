@@ -1,13 +1,6 @@
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { toDiscountPrice } from "../../utils/toDiscountPrice";
 import { toVND } from "../../utils/convertNumberToVND";
-import { useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "../../hooks/useAuth";
-import { useSearchParams } from "react-router-dom";
-import {
-  getCartInLocalStorage,
-} from "../../utils/localStorage";
-import { PRODUCT } from "../../types/productType";
 import { useCart } from "../../hooks/useCart";
 
 interface TProps {
@@ -16,58 +9,7 @@ interface TProps {
 
 const DetailProductComponent = ({ item }: TProps) => {
   const theme = useTheme();
-  const queryClient = useQueryClient();
-  const { user } = useAuth();
-  const [searchParams] = useSearchParams();
-  const { addCart } = useCart();
-
-  const handleAddProductToCart = async () => {
-    const detailProduct: any = queryClient.getQueryData([
-      "detail-product",
-      searchParams.get("content"),
-    ]);
-    let data;
-    if (!user) {
-      const cart = getCartInLocalStorage();
-      const index = cart?.findIndex(
-        (item: PRODUCT) => item?.productId === detailProduct?._id
-      );
-      if (index === -1) {
-        const tmp = {
-          discount: detailProduct?.discount,
-          price: detailProduct?.price,
-          productId: detailProduct?._id,
-          quantity: 1,
-          thumbnail: detailProduct?.thumbnail,
-          title: detailProduct?.title,
-        };
-        data = [...cart,tmp]
-      
-      } else {
-        if (cart[index]) {
-          cart[index].quantity++;
-        }
-        data = JSON.parse(JSON.stringify(cart));
-      
-      }
-    } else {
-      const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
-      data = cart?.products;
-      const index = data?.findIndex(
-        (item: any) => item?.productId === detailProduct?._id
-      );
-      if (index !== -1) {
-        data[index].quantity = data[index].quantity + 1;
-      } else {
-        data.push({
-          productId: detailProduct?._id,
-          quantity: 1,
-        });
-      }
-    }
-   
-    await addCart?.mutate({ userId: user?._id || "", products: [...data] });
-  };
+  const { handleAddProductToCart } = useCart();
 
   return (
     <>

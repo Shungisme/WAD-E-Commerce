@@ -13,17 +13,17 @@ import {
   useTheme,
 } from "@mui/material";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import IconifyIcon from "../iconifyIcon";
+import IconifyIcon from "../components/iconifyIcon";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { getAllCategories } from "../../services/categories";
+import { getAllCategories } from "../services/categories";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../stores/store";
-import SpinnerFullScreen from "../SpinnerFullScreen";
-import { filterAsync } from "../../stores/actions/filterAction";
+import { AppDispatch, RootState } from "../stores/store";
+import SpinnerFullScreen from "../components/SpinnerFullScreen";
+import { filterAsync } from "../stores/actions/filterAction";
 import Fade from "@mui/material/Fade";
-import { slugify } from "../../utils/slugify";
+import { slugify } from "../utils/slugify";
 import { useSearchParams } from "react-router-dom";
-import { PERPAGE_OPITONS } from "../../pages/FilterPage";
+import { PERPAGE_OPITONS } from "../pages/FilterPage";
 
 interface TProps {
   children: ReactNode;
@@ -39,7 +39,7 @@ const LayoutFilter = ({ children }: TProps) => {
 
   const theme = useTheme();
   const dispatch: AppDispatch = useDispatch();
-  const { isLoading, page, limit,categorySlug } = useSelector(
+  const { isLoading, page, limit, categorySlug } = useSelector(
     (store: RootState) => store.filterData
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -87,7 +87,7 @@ const LayoutFilter = ({ children }: TProps) => {
               cursor: "pointer",
               p: 1,
               "&:hover": {
-                backgroundColor: theme.palette.grey[300],
+                backgroundColor: theme.palette.primary.main,
               },
             }}
           >
@@ -151,6 +151,7 @@ const LayoutFilter = ({ children }: TProps) => {
         page: 1,
         search: "",
         sort: "",
+        status: "active"
       })
     );
   };
@@ -167,6 +168,7 @@ const LayoutFilter = ({ children }: TProps) => {
         sort,
         page,
         limit,
+        status: "active"
       })
     );
   }, [sort, content]);
@@ -203,17 +205,10 @@ const LayoutFilter = ({ children }: TProps) => {
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "flex-end",
                 alignItems: "center",
               }}
             >
-              <Typography
-                fontWeight={"bold"}
-                fontSize={"1.2rem"}
-                letterSpacing={"2px"}
-              >
-                {"Sản phẩm"}
-              </Typography>
               <Box
                 sx={{
                   display: "flex",
@@ -301,11 +296,13 @@ const LayoutFilter = ({ children }: TProps) => {
             xs={hideFilter ? 9 : 12}
             width={"100%"}
             height={"100%"}
+            justifyContent={"center"}
           >
             <Grid
               spacing={1.5}
               container
-              justifyContent={"center"}
+              width={"100%"}
+              justifyContent={"flex-start"}
               alignContent={"center"}
               alignItems={"center"}
             >
