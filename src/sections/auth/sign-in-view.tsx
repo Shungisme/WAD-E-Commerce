@@ -1,15 +1,17 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "../../hooks/use-router";
 import {
   Box,
   FormControl,
   FormHelperText,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import useAuthAdmin from "../../hooks/use-auth-admin";
 
 const validationSchema = new Yup.ObjectSchema({
   email: Yup.string()
@@ -29,6 +31,8 @@ const validationSchema = new Yup.ObjectSchema({
 
 export const SignInView = () => {
   const router = useRouter();
+  const { loginAdmin } = useAuthAdmin();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -36,10 +40,19 @@ export const SignInView = () => {
       password: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (value) => {
-      router.push("/");
+    onSubmit: async (value) => {
+      try {
+        await loginAdmin(value);
+        router.replace("/admin");
+      } catch (error) {
+        setOpenSnackbar(true);
+      }
     },
   });
+
+  const handleClose = useCallback(() => {
+    setOpenSnackbar(false);
+  }, []);
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
@@ -57,6 +70,7 @@ export const SignInView = () => {
             label="Email address"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            autoComplete="email"
           />
 
           {formik.errors.email && formik.touched.email && (
@@ -78,6 +92,7 @@ export const SignInView = () => {
             type="password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            autoComplete="current-password"
           />
 
           {formik.errors.password && formik.touched.password && (
@@ -111,6 +126,13 @@ export const SignInView = () => {
       </Box>
 
       {renderForm}
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Email or password is incorrect"
+      />
     </>
   );
 };

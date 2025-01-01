@@ -13,7 +13,7 @@ export const Logo = forwardRef<HTMLDivElement, LogoProps>(
   (
     {
       width,
-      href = "/",
+      href = "/admin",
       height,
       isSingle = true,
       disableLink = false,

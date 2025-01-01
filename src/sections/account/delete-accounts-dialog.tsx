@@ -10,7 +10,6 @@ import {
   alpha,
 } from "@mui/material";
 import { Iconify } from "../../components/iconify/iconify";
-import { AccountProps } from "./account-table-row";
 
 export type DeleteAccountsDialogProps = {
   open: boolean;

@@ -12,9 +12,6 @@ import { HeaderSection } from "../core/header-section";
 import { MenuButton } from "../components/menu-button";
 import { NavDesktop, NavMobile } from "./nav";
 import { navData } from "../config-nav-dashboard";
-import { Searchbar } from "../components/searchbar";
-import { NotificationsPopover } from "../components/notifications-popover";
-import { _notifications } from "../../mocks/_data";
 import { AccountPopover } from "../components/account-popover";
 import { Iconify } from "../../components/iconify/iconify";
 import { Main } from "./main";
@@ -86,37 +83,17 @@ export const DashboardLayout = ({
             ),
             rightArea: (
               <Box gap={1} display="flex" alignItems="center">
-                <Searchbar />
-                <NotificationsPopover data={_notifications} />
+                {/* <Searchbar /> */}
+                {/* <NotificationsPopover data={_notifications} /> */}
                 <AccountPopover
                   data={[
                     {
                       label: "Home",
-                      href: "/",
+                      href: "/admin",
                       icon: (
                         <Iconify
                           width={22}
                           icon="solar:home-angle-bold-duotone"
-                        />
-                      ),
-                    },
-                    {
-                      label: "Profile",
-                      href: "#",
-                      icon: (
-                        <Iconify
-                          width={22}
-                          icon="solar:shield-keyhole-bold-duotone"
-                        />
-                      ),
-                    },
-                    {
-                      label: "Settings",
-                      href: "#",
-                      icon: (
-                        <Iconify
-                          width={22}
-                          icon="solar:settings-bold-duotone"
                         />
                       ),
                     },

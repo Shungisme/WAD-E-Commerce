@@ -26,7 +26,7 @@ import { useFormik } from "formik";
 export type AddAccountDialogProps = {
   open: boolean;
   onClose: () => void;
-  onCreate: (account: Partial<AccountProps & { password: string }>) => void;
+  onCreate: (account: AccountProps) => void;
 };
 
 const cloudinaryConfig = {
@@ -69,10 +69,11 @@ export default function AddAccountDialog({
       avatar: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (
-      value: Omit<AccountProps, "id" | "status"> & { password: string }
-    ) => {
+    onSubmit: async (value: AccountProps) => {
+      if (!value.avatar) return;
+
       const formData = new FormData();
+
       formData.append("file", value.avatar);
       formData.append("upload_preset", cloudinaryConfig.uploadPreset);
 
@@ -82,6 +83,7 @@ export default function AddAccountDialog({
       );
 
       const avatar = await response.data;
+      console.log(avatar);
 
       onCreate({
         name: value.name,

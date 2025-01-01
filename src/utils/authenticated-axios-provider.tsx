@@ -1,35 +1,41 @@
 import axios from "axios";
-import { ReactNode } from "react";
+import { useRouter } from "../hooks/use-router";
+import useAuthAdmin from "../hooks/use-auth-admin";
 import { getDataFromLocalStorage, setDataInLocalStorage } from "./localStorage";
-import { useAuth } from "../hooks/useAuth";
 import { decodeJwt } from "./decodeJWT";
 import { newAccessToken } from "../services/auth";
+import { ROUTES_ADMIN_CONSTANT } from "../constants/routesConstants";
 
-interface TProps {
-  children: ReactNode;
-}
+type Props = {
+  children: React.ReactNode;
+};
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-export const instanceAxios = axios.create({ baseURL: BASE_URL });
+export const instanceAxios = axios.create({
+  baseURL: BASE_URL,
+});
 
-const InstanceAxiosProvider = ({ children }: TProps) => {
-  const { logoutAuth } = useAuth();
+export default function AuthenticatedAxiosProvider({ children }: Props) {
+  const router = useRouter();
+  const { logoutAdmin } = useAuthAdmin();
 
   instanceAxios.interceptors.request.use(
     async (request: any) => {
       const { accessToken, refreshToken } = getDataFromLocalStorage();
 
       if (!accessToken || !refreshToken) {
-        await logoutAuth();
+        await logoutAdmin();
+        router.replace(`/admin/${ROUTES_ADMIN_CONSTANT.SIGN_IN}`);
         return Promise.reject(new Error("No access or refresh token"));
       }
 
-      const decondeRefresh = decodeJwt(refreshToken);
+      const decodeRefresh = decodeJwt(refreshToken);
       const refreshExpired =
-        decondeRefresh.exp && decondeRefresh.exp * 1000 < Date.now();
+        decodeRefresh.exp && decodeRefresh.exp * 1000 < Date.now();
+
       if (refreshExpired) {
-        const response = await logoutAuth();
-        console.log(response);
+        await logoutAdmin();
+        router.replace(`/admin/${ROUTES_ADMIN_CONSTANT.SIGN_IN}`);
         return Promise.reject(new Error("Refresh token has expired"));
       } else {
         const decodedAccess = decodeJwt(accessToken);
@@ -40,13 +46,14 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
           try {
             const newToken = await newAccessToken(refreshToken);
             setDataInLocalStorage(newToken, refreshToken);
-            request.headers.authorization = `Bearer ${newToken}`;
+            request.headers.Authorization = `Bearer ${newToken}`;
           } catch (error) {
-            await logoutAuth();
+            await logoutAdmin();
+            router.replace(`/admin/${ROUTES_ADMIN_CONSTANT.SIGN_IN}`);
             return Promise.reject(new Error("Failed to refresh token"));
           }
         } else {
-          request.headers.authorization = `Bearer ${accessToken}`;
+          request.headers.Authorization = `Bearer ${accessToken}`;
         }
       }
 
@@ -58,6 +65,4 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
   );
 
   return <>{children}</>;
-};
-
-export default InstanceAxiosProvider;
+}

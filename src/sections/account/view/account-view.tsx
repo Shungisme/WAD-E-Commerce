@@ -1,14 +1,14 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTable } from "../../use-table";
 import { AccountProps, AccountTableRow } from "../account-table-row";
 import { applyFilter, getComparator, emptyRows } from "../utils";
-import { _users } from "../../../mocks/_data";
 import { DashboardContent } from "../../../layouts/dashboard/main";
 import { Box } from "@mui/system";
 import {
   Button,
   Card,
   SelectChangeEvent,
+  Snackbar,
   Table,
   TableBody,
   TableContainer,
@@ -23,16 +23,31 @@ import { TableEmptyRows } from "../table-empty-rows";
 import { TableNoData } from "../table-no-data";
 import AddAccountDialog from "../add-account-dialog";
 import DeleteAccountsDialog from "../delete-accounts-dialog";
+import useAccountsAdmin from "../../../hooks/use-accounts-admin";
 
 export function AccountView() {
+  const {
+    getAccounts,
+    addAccount,
+    deleteAccounts,
+    updateAccount,
+    deleteAccount,
+  } = useAccountsAdmin();
+
   const table = useTable("name");
 
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [messageSnackbar, setMessageSnackbar] = useState("");
 
   const [filterName, setFilterName] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterRole, setFilterRole] = useState("");
+
+  const handleCloseSnackbar = useCallback(() => {
+    setOpenSnackbar(false);
+  }, []);
 
   const filter = useMemo(
     () => [
@@ -53,7 +68,7 @@ export function AccountView() {
   );
 
   const dataFiltered: AccountProps[] = applyFilter({
-    inputData: _users,
+    inputData: getAccounts?.data ?? [],
     comparator: getComparator(table.order, table.orderBy),
     filter: filter,
   });
@@ -109,13 +124,13 @@ export function AccountView() {
               <AccountTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_users.length}
+                rowCount={getAccounts?.data?.length ?? 0}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) => {
                   table.onSelectAllRows(
                     checked,
-                    _users.map((user) => user.id)
+                    getAccounts?.data?.map((account) => account._id) ?? []
                   );
                 }}
                 headLabel={[
@@ -123,7 +138,7 @@ export function AccountView() {
                   { id: "email", label: "Email" },
                   { id: "role", label: "Role" },
                   { id: "status", label: "Status" },
-                  { id: "" },
+                  { id: "all", label: "" },
                 ]}
               />
 
@@ -135,15 +150,33 @@ export function AccountView() {
                   )
                   .map((row) => (
                     <AccountTableRow
-                      key={row.id}
+                      key={row._id}
                       row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
+                      selected={!!row?._id && table.selected.includes(row?._id)}
+                      onSelectRow={() =>
+                        !!row?._id && table.onSelectRow(row?._id)
+                      }
                       onEditRow={(account: AccountProps) => {
-                        console.log(account);
+                        try {
+                          updateAccount?.mutateAsync({ account });
+                          console.log("onEditRow: update account", account);
+                          setMessageSnackbar("Account updated successfully");
+                        } catch (error) {
+                          console.log(error);
+                          setMessageSnackbar("Error updating account");
+                        }
+                        setOpenSnackbar(true);
                       }}
                       onDeleteRow={(account: AccountProps) => {
-                        console.log(account);
+                        try {
+                          if (!account?._id) return;
+                          deleteAccount?.mutateAsync({ userId: account._id });
+                          setMessageSnackbar("Account deleted successfully");
+                        } catch (error) {
+                          console.log(error);
+                          setMessageSnackbar("Error deleting account");
+                        }
+                        setOpenSnackbar(true);
                       }}
                     />
                   ))}
@@ -153,7 +186,7 @@ export function AccountView() {
                   emptyRows={emptyRows(
                     table.page,
                     table.rowsPerPage,
-                    _users.length
+                    getAccounts?.data?.map((account) => account._id).length ?? 0
                   )}
                 />
 
@@ -166,7 +199,7 @@ export function AccountView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={getAccounts?.data?.map((account) => account._id).length ?? 0}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -181,14 +214,42 @@ export function AccountView() {
         onClose={() => {
           setOpenAddDialog(false);
         }}
-        onCreate={() => {}}
+        onCreate={async (account: AccountProps) => {
+          try {
+            await addAccount?.mutateAsync({ account });
+            console.log("onCreate: add account", account);
+            setMessageSnackbar("Account created successfully");
+          } catch (error) {
+            console.log(error);
+            setMessageSnackbar("Error creating account");
+          }
+          setOpenSnackbar(true);
+        }}
       />
 
       <DeleteAccountsDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
-        onDelete={() => {}}
+        onDelete={() => {
+          try {
+            deleteAccounts?.mutateAsync({ userIds: table.selected });
+            setMessageSnackbar("Accounts deleted successfully");
+            setOpenDeleteDialog(false);
+            table.onSelectAllRows(false, []);
+          } catch (error) {
+            console.log(error);
+            setMessageSnackbar("Error deleting accounts");
+          }
+          setOpenSnackbar(true);
+        }}
         numAccount={table.selected.length}
+      />
+
+      <Snackbar
+        open={openSnackbar}
+        message={messageSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
       />
     </DashboardContent>
   );

@@ -35,7 +35,7 @@ export const NotFoundView = () => {
 
         <Button
           component={RouterLink}
-          href="/"
+          href="/admin"
           size="large"
           variant="contained"
           color="inherit"

@@ -9,6 +9,7 @@ import {
   menuItemClasses,
   MenuList,
   Popover,
+  Snackbar,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -16,6 +17,7 @@ import { useRouter } from "../../hooks/use-router";
 import { usePathname } from "../../routes/hooks/use-pathname";
 import { useCallback, useState } from "react";
 import { _myAccount } from "../../mocks/_data";
+import useAuthAdmin from "../../hooks/use-auth-admin";
 
 export type AccountPopoverProps = IconButtonProps & {
   data?: {
@@ -32,14 +34,14 @@ export const AccountPopover = ({
   ...other
 }: AccountPopoverProps) => {
   const theme = useTheme();
-
   const router = useRouter();
-
   const pathname = usePathname();
+  const { admin, logoutAdmin } = useAuthAdmin();
 
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
     null
   );
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleOpenPopover = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,12 +62,26 @@ export const AccountPopover = ({
     [handleClosePopover, router]
   );
 
+  const handleLogout = useCallback(async () => {
+    setOpenPopover(null);
+    try {
+      await logoutAdmin();
+      router.replace("/admin/sign-in");
+    } catch (error) {
+      setOpenSnackbar(true);
+    }
+  }, [admin, router, logoutAdmin]);
+
+  const handleCloseSnackbar = useCallback(() => {
+    setOpenSnackbar(false);
+  }, []);
+
   return (
     <>
       <IconButton
         onClick={handleOpenPopover}
         sx={{
-          p: "2px",
+          p: "0px",
           width: 40,
           height: 40,
           background: `conic-gradient(${theme.palette.primary.light},
@@ -76,14 +92,14 @@ export const AccountPopover = ({
         {...other}
       >
         <Avatar
-          src={_myAccount.photoURL}
-          alt={_myAccount.displayName}
+          src={admin?.avatar}
+          alt={admin?.name}
           sx={{
             width: 1,
             height: 1,
           }}
         >
-          {_myAccount.displayName.charAt(0).toUpperCase()}
+          {admin?.name?.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -103,7 +119,7 @@ export const AccountPopover = ({
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {_myAccount?.displayName}
+            {admin?.name}
           </Typography>
 
           <Typography
@@ -113,7 +129,7 @@ export const AccountPopover = ({
             }}
             noWrap
           >
-            {_myAccount?.email}
+            {admin?.email}
           </Typography>
         </Box>
 
@@ -157,11 +173,24 @@ export const AccountPopover = ({
         <Divider sx={{ borderStyle: "dashed" }} />
 
         <Box sx={{ p: 1 }}>
-          <Button fullWidth color="error" size="medium" variant="text">
+          <Button
+            fullWidth
+            color="error"
+            size="medium"
+            variant="text"
+            onClick={handleLogout}
+          >
             Logout
           </Button>
         </Box>
       </Popover>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message="Logout failed"
+      />
     </>
   );
 };

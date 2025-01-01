@@ -17,11 +17,16 @@ export function useTable(_orderBy: string) {
   );
 
   const onSelectAllRows = useCallback(
-    (checked: boolean, newSelected: string[]) => {
-      if (checked) {
-        setSelected(newSelected);
+    (checked: boolean, newSelected: (string | undefined)[] | undefined) => {
+      if (!newSelected) {
         return;
       }
+
+      if (checked) {
+        const newSelecteds = newSelected.filter((value) => value !== undefined);
+        setSelected(newSelecteds as string[]);
+      }
+
       setSelected([]);
     },
     []

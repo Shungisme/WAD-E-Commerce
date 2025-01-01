@@ -43,7 +43,7 @@ const validationSchema = new Yup.ObjectSchema({
     .required("Status is required"),
 });
 
-export default function AddAccountDialog({
+export default function AddCategoryDialog({
   open,
   onClose,
   onCreate,

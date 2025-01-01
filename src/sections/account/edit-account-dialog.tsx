@@ -16,12 +16,12 @@ import {
   Typography,
   FormHelperText,
 } from "@mui/material";
-import { AccountProps } from "./account-table-row";
 import axios from "axios";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Iconify } from "../../components/iconify/iconify";
 import { alpha } from "@mui/material";
+import { AccountProps } from "./account-table-row";
 
 export type EditAccountDialogProps = {
   open: boolean;
@@ -58,8 +58,10 @@ export default function EditAccountDialog({
     },
     validationSchema,
     onSubmit: async (values) => {
+      if (!values?.avatar) return;
+
       const formData = new FormData();
-      formData.append("file", values.avatar);
+      formData.append("file", values?.avatar);
       formData.append("upload_preset", cloudinaryConfig.uploadPreset);
 
       const response = await axios.post(

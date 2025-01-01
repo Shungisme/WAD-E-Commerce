@@ -16,14 +16,17 @@ import { Iconify } from "../../components/iconify/iconify";
 import EditAccountDialog from "./edit-account-dialog";
 import DeleteAccountDialog from "./delete-account-dialog";
 
-export type AccountProps = {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  role: string;
-  status: string;
-};
+export interface AccountProps {
+  _id?: string;
+  name?: string;
+  email?: string;
+  password?: string;
+  avatar?: string;
+  role?: string;
+  status?: string;
+  updatedAt?: string;
+  createdAt?: string;
+}
 
 export type AccountTableRowProps = {
   row: AccountProps;
@@ -60,7 +63,13 @@ export function AccountTableRow({
 
   return (
     <>
-      <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
+      <TableRow
+        key={row._id}
+        hover
+        tabIndex={-1}
+        role="checkbox"
+        selected={selected}
+      >
         <TableCell padding="checkbox">
           <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
         </TableCell>
@@ -74,7 +83,7 @@ export function AccountTableRow({
 
         <TableCell>{row.email}</TableCell>
 
-        <TableCell>{sentenceCase(row.role)}</TableCell>
+        <TableCell>{sentenceCase(row?.role)}</TableCell>
 
         <TableCell>
           <Label color={row.status === "active" ? "success" : "error"}>
@@ -158,6 +167,10 @@ export function AccountTableRow({
   );
 }
 
-function sentenceCase(string: string): string {
+function sentenceCase(string: string | undefined): string {
+  if (!string) {
+    return "";
+  }
+
   return string.charAt(0).toUpperCase() + string.slice(1);
 }

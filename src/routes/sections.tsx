@@ -1,15 +1,26 @@
 import { Box, LinearProgress, linearProgressClasses } from "@mui/material";
 import { lazy, Suspense } from "react";
-import { Navigate, Outlet, useRoutes } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { AuthLayout } from "../layouts/auth/layout";
 import { DashboardLayout } from "../layouts/dashboard/layout";
 import { varAlpha } from "../theme/styles/utils";
+import { ROUTES_ADMIN_CONSTANT } from "../constants/routesConstants";
+import AuthProviderAdmin from "../contexts/auth-context-admin";
+import InstanceAxiosProvider from "../utils/instanceAxios";
+import AuthProvider from "../contexts/authContext";
+import CartProvider from "../contexts/cartContext";
+import NavigationComponent from "../components/HomeComponent/NavigationComponent";
+import FooterComponent from "../components/HomeComponent/FooterComponent";
+import AppContent from "../AppContent";
+import AuthenticatedAxiosProvider from "../utils/authenticated-axios-provider";
 
-export const HomePage = lazy(() => import("../pages/home-admin"));
-export const AccountsPage = lazy(() => import("../pages/account"));
-export const CategoriesPage = lazy(() => import("../pages/product-category"));
-export const SignInPage = lazy(() => import("../pages/sign-in"));
-export const ProductsPage = lazy(() => import("../pages/products-admin"));
+export const HomePageAdmin = lazy(() => import("../pages/home-admin"));
+export const AccountsPageAdmin = lazy(() => import("../pages/account"));
+export const CategoriesPageAdmin = lazy(
+  () => import("../pages/product-category")
+);
+export const SignInPageAdmin = lazy(() => import("../pages/sign-in"));
+export const ProductsPageAdmin = lazy(() => import("../pages/products-admin"));
 export const Page404 = lazy(() => import("../pages/page-not-found"));
 
 const renderFallback = (
@@ -33,49 +44,71 @@ const renderFallback = (
 );
 
 export const Router = () => {
-  return useRoutes([
+  const router = createBrowserRouter([
     {
+      path: "/admin",
       element: (
-        <DashboardLayout>
-          <Suspense fallback={renderFallback}>
+        <AuthenticatedAxiosProvider>
+          <AuthProviderAdmin>
             <Outlet />
-          </Suspense>
-        </DashboardLayout>
+          </AuthProviderAdmin>
+        </AuthenticatedAxiosProvider>
       ),
       children: [
         {
-          element: <HomePage />,
-          index: true,
+          element: (
+            <DashboardLayout>
+              <Suspense fallback={renderFallback}>
+                <Outlet />
+              </Suspense>
+            </DashboardLayout>
+          ),
+          children: [
+            {
+              element: <HomePageAdmin />,
+              index: true,
+            },
+            {
+              path: ROUTES_ADMIN_CONSTANT.ACCOUNTS,
+              element: <AccountsPageAdmin />,
+            },
+            {
+              path: ROUTES_ADMIN_CONSTANT.PRODUCTS,
+              element: <ProductsPageAdmin />,
+            },
+            {
+              path: ROUTES_ADMIN_CONSTANT.CATEGORIES,
+              element: <CategoriesPageAdmin />,
+            },
+          ],
         },
         {
-          path: "accounts",
-          element: <AccountsPage />,
-        },
-        {
-          path: "products",
-          element: <ProductsPage />,
-        },
-        {
-          path: "categories",
-          element: <CategoriesPage />,
+          path: ROUTES_ADMIN_CONSTANT.SIGN_IN,
+          element: (
+            <AuthLayout>
+              <SignInPageAdmin />
+            </AuthLayout>
+          ),
         },
       ],
     },
     {
-      path: "sign-in",
+      path: "*",
       element: (
-        <AuthLayout>
-          <SignInPage />
-        </AuthLayout>
+        <>
+          <InstanceAxiosProvider>
+            <AuthProvider>
+              <CartProvider>
+                <NavigationComponent />
+                <AppContent />
+                <FooterComponent />
+              </CartProvider>
+            </AuthProvider>
+          </InstanceAxiosProvider>
+        </>
       ),
     },
-    {
-      path: "404",
-      element: <Page404 />,
-    },
-    {
-      path: "*",
-      element: <Navigate to="/404" replace />,
-    },
   ]);
+
+  return <RouterProvider router={router}></RouterProvider>;
 };

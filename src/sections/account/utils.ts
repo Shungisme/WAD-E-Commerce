@@ -81,8 +81,10 @@ export function applyFilter({
           return account[key] === value;
         }
 
+        const accountValue = account[key];
         return (
-          account[key]
+          typeof accountValue === "string" &&
+          accountValue
             .toLowerCase()
             .trim()
             .indexOf(value.toLowerCase().trim()) !== -1
