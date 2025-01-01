@@ -33,7 +33,10 @@ const AppContent: React.FC = () => {
           element={<DetailPage />}
         />
         <Route path={ROUTES_CONSTANT.FILTER_PAGE} element={<FilterPage />} />
-        <Route path={ROUTES_CONSTANT.GOOGLE_RETURN}  element={<GoogleReturnPage/>}/>
+        <Route
+          path={ROUTES_CONSTANT.GOOGLE_RETURN}
+          element={<GoogleReturnPage />}
+        />
       </Routes>
     </motion.div>
   );

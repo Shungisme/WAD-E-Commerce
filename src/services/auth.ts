@@ -1,8 +1,13 @@
 import axios from "axios";
-import { API_CONSTANTS, API_URL, ROOT_URL } from "../constants/apiContants";
+import { API_CONSTANTS, ROOT_URL } from "../constants/apiContants";
 import { TUser } from "../types/userType";
-import { getDataFromLocalStorage } from "../utils/localStorage";
-import { instanceAxios } from "../utils/instanceAxios";
+import {
+  clearLocalData,
+  getDataFromLocalStorage,
+  setDataInLocalStorage,
+} from "../utils/localStorage";
+import { instanceAxios } from "../utils/authenticated-axios-provider";
+import { decodeJwt } from "../utils/decodeJWT";
 
 const BASE_URL = API_CONSTANTS.auth;
 
@@ -44,16 +49,53 @@ export const loginUserAPI = async (user: TUser) => {
 export const getMeAuth = async () => {
   try {
     const url = BASE_URL + "current-user";
-    const { accessToken } = getDataFromLocalStorage();
+    const { accessToken, refreshToken } = getDataFromLocalStorage();
 
-    const response = await axios(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    if (!accessToken || !refreshToken) {
+      clearLocalData();
+      return { user: null };
+    }
 
-    return response.data;
+    const decodedRefresh = decodeJwt(refreshToken);
+    const refreshExpired =
+      decodedRefresh.exp && decodedRefresh.exp * 1000 < Date.now();
+
+    if (refreshExpired) {
+      clearLocalData();
+      return { user: null };
+    } else {
+      const decodedAccess = decodeJwt(accessToken);
+      const accessExpired =
+        decodedAccess.exp && decodedAccess.exp * 1000 < Date.now();
+
+      if (accessExpired) {
+        try {
+          const newToken = await newAccessToken(refreshToken);
+          setDataInLocalStorage(newToken, refreshToken);
+
+          const response = await axios(url, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${newToken}`,
+            },
+          });
+
+          return response.data;
+        } catch (error) {
+          clearLocalData();
+          return { user: null };
+        }
+      } else {
+        const response = await axios(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        return response.data;
+      }
+    }
   } catch (error: any) {
     console.log("error at getMeAuth in services");
     throw error;
@@ -130,6 +172,81 @@ export const getAuthForGoogleLogin = async () => {
     return response.data;
   } catch (error) {
     console.log("Error at getAuthForGoogleLogin at service");
+    throw error;
+  }
+};
+
+export const addUserApi = async (user: TUser) => {
+  try {
+    const url = BASE_URL + "register";
+    const response = await instanceAxios(url, {
+      method: "POST",
+      data: user,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    await updateUserApi({ ...user, _id: response.data._id });
+
+    return { message: "Account created successfully" };
+  } catch (error) {
+    console.log("error at addUserApi in services");
+    throw error;
+  }
+};
+
+export const updateUserApi = async (user: TUser) => {
+  try {
+    const url = BASE_URL + "update/" + user._id;
+
+    const response = await instanceAxios(url, {
+      method: "PATCH",
+      data: user,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return await response.data;
+  } catch (error) {
+    console.log("error at updateUserApi in services");
+    throw error;
+  }
+};
+
+export const getUsersApi = async () => {
+  try {
+    const url = BASE_URL + "users";
+
+    const response = await instanceAxios(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return await response.data;
+  } catch (error) {
+    console.log("error at getUsersApi in services");
+    throw error;
+  }
+};
+
+export const deleteUserApi = async (userId: string) => {
+  try {
+    const url = BASE_URL + "delete/" + userId;
+
+    const response = await instanceAxios(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return await response.data;
+  } catch (error) {
+    console.log("error at deleteUserApi in services");
     throw error;
   }
 };

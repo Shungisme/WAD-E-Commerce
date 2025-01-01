@@ -29,7 +29,7 @@ const FilterPage = () => {
         dispatch(
           filterAsync({
             limit: perPage,
-            page:currentPage,
+            page: currentPage,
             categorySlug,
             sort,
           })
@@ -62,7 +62,10 @@ const FilterPage = () => {
     <>
       <Helmet>
         <title>Tất cả sản phẩm</title>
-        <meta name="description" content="Trang này là nơi hiện tất cả sản phẩm, bạn có thể lọc sản phẩm ở nơi này" />
+        <meta
+          name="description"
+          content="Trang này là nơi hiện tất cả sản phẩm, bạn có thể lọc sản phẩm ở nơi này"
+        />
         <meta
           property="og:image"
           content="https://example.com/path-to-your-image.jpg"

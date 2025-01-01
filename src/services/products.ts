@@ -1,7 +1,8 @@
 import axios from "axios";
 import { API_CONSTANTS } from "../constants/apiContants";
 import { getDataFromLocalStorage } from "../utils/localStorage";
-import { instanceAxios } from "../utils/instanceAxios";
+import { ProductItemProps } from "../sections/product/product-item";
+import { instanceAxios } from "../utils/authenticated-axios-provider";
 
 const BASE_URL = API_CONSTANTS.products;
 
@@ -86,10 +87,47 @@ export const getProductsByFilter = async ({
         sort,
       },
     });
+    console.log("getData", response.data);
 
     return response.data;
   } catch (error) {
     console.log("Error at getProductsByFilter in servers", error);
+    throw error;
+  }
+};
+
+export const addProductApi = async (product: Partial<ProductItemProps>) => {
+  try {
+    const url = BASE_URL + "/create";
+    const response = await instanceAxios.post(url, product);
+
+    return await response.data;
+  } catch (error) {
+    console.log("Error at addProduct in services", error);
+    throw error;
+  }
+};
+
+export const updateProductApi = async (product: Partial<ProductItemProps>) => {
+  try {
+    const url = BASE_URL + "/update/" + product._id;
+    const response = await instanceAxios.patch(url, product);
+
+    return await response.data;
+  } catch (error) {
+    console.log("Error at updateProduct in services", error);
+    throw error;
+  }
+};
+
+export const deleteProductApi = async (productId: string) => {
+  try {
+    const url = BASE_URL + "/delete/" + productId;
+    const response = await instanceAxios.delete(url);
+
+    return await response.data;
+  } catch (error) {
+    console.log("Error at deleteProduct in services", error);
     throw error;
   }
 };

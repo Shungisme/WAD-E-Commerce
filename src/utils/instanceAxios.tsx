@@ -16,7 +16,7 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
   const { logoutAuth } = useAuth();
 
   instanceAxios.interceptors.request.use(
-    async (request) => {
+    async (request: any) => {
       const { accessToken, refreshToken } = getDataFromLocalStorage();
 
       if (!accessToken || !refreshToken) {
@@ -40,19 +40,19 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
           try {
             const newToken = await newAccessToken(refreshToken);
             setDataInLocalStorage(newToken, refreshToken);
-            request.headers.Authorization = `Bearer ${newToken}`;
+            request.headers.authorization = `Bearer ${newToken}`;
           } catch (error) {
             await logoutAuth();
             return Promise.reject(new Error("Failed to refresh token"));
           }
         } else {
-          request.headers.Authorization = `Bearer ${accessToken}`;
+          request.headers.authorization = `Bearer ${accessToken}`;
         }
       }
 
       return request;
     },
-    (error) => {
+    (error: any) => {
       return Promise.reject(error);
     }
   );

@@ -6,15 +6,15 @@ interface TProps {
 }
 
 const useDebounce = ({ value, delay = 500 }: TProps) => {
-  const [debounceValue, setDebouceValue] = useState(value);
+  const [debounceValue, setDebounceValue] = useState(value);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouceValue(value);
+      setDebounceValue(value);
     }, delay);
 
     return () => clearTimeout(timer);
-  }, [value,delay]);
+  }, [value, delay]);
 
   return debounceValue;
 };
