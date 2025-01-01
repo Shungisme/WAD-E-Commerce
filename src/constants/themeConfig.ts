@@ -52,8 +52,18 @@ const themeConfig = (mode: "light" | "dark"): ThemeOptions => {
     shadows: shadows(),
     palette: {
       mode,
-      ...lightPalette,
+      primary: lightPalette.primary,
+      secondary: lightPalette.secondary,
+      info: lightPalette.info,
+      success: lightPalette.success,
+      warning: lightPalette.warning,
+      error: lightPalette.error,
+      grey: lightPalette.grey,
+      common: lightPalette.common,
+      divider: lightPalette.divider,
+      action: lightPalette.action,
       text: {
+        ...lightPalette.text,
         primary:
           mode === "light"
             ? "rgba(0, 0, 0, 0.87)"
@@ -66,6 +76,7 @@ const themeConfig = (mode: "light" | "dark"): ThemeOptions => {
             : "rgba(255, 255, 255, 0.38)",
       },
       background: {
+        ...lightPalette.background,
         paper: mode === "light" ? whiteColor : darkPaperBgColor,
         default: mode === "light" ? lightColor : darkColor,
       },
