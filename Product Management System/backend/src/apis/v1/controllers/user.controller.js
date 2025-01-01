@@ -80,6 +80,7 @@ class UserController {
 			await user.save();
 
 			res.status(StatusCodes.CREATED).json({
+				_id: user._id,
 				message: 'User created successfully'
 			});
 		}
