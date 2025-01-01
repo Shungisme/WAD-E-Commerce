@@ -2,6 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 import Order from '../models/order.model.js';
 import Product from '../models/product.model.js';
 import ProductCategory from '../models/product-category.model.js';
+import axios from 'axios';
+import JWTHelper from '../../../helpers/jwt.helper.js';
 
 class OrderController {
 	static async getAllOrders(req, res) {
@@ -72,15 +74,30 @@ class OrderController {
 
 	static async createOrder(req, res) {
 		try {
+			const { products } = req.body;
+			const totalAmount = products.reduce((total, item) => total + item.price * item.quantity * item.discount / 100, 0);
+			const totalQuantity = products.reduce((total, item) => total + item.quantity, 0);
+
 			const orderData = {
-				...req.body,
-				totalAmount: Number(req.body.totalAmount),
-				quantity: Number(req.body.quantity),
+				products,
+				totalAmount,
+				totalQuantity,
 			};
+
 			const order = new Order(orderData);
 			await order.save();
+
+			const user = req.userInformation;
+			const token = await JWTHelper.generateTokenForPaymentSystem({ userId: user._id, email: user.email }, process.env.SYSTEM_SIGNER_KEY);
+
+			const userPaymentInformation = await axios.get(`${PAYMENT_URL}/users`, {
+				headers: {
+					'payment-system-auth': `${token}`
+				}
+			});
 			return res.status(StatusCodes.CREATED).json({
-				order
+				order,
+				userPaymentInformation
 			});
 		} catch (error) {
 			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -130,7 +147,6 @@ class OrderController {
 		try {
 			const { year } = req.query;
 
-			// Validate year
 			const yearNum = parseInt(year);
 			if (!yearNum || isNaN(yearNum)) {
 				return res.status(StatusCodes.BAD_REQUEST).json({
@@ -221,6 +237,62 @@ class OrderController {
 			return res.status(StatusCodes.OK).json({
 				yearlyTotalQuantityByCategory,
 				monthlyTotalQuantityByCategory,
+			});
+		}
+		catch (error) {
+			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
+
+	static async getOTP(req, res) {
+		try {
+			const user = req.userInformation;
+			const token = await JWTHelper.generateTokenForPaymentSystem({ userId: user._id, email: user.email }, process.env.SYSTEM_SIGNER_KEY);
+
+			await axios.get(`${PAYMENT_URL}/otps`, {
+				headers: {
+					'payment-system-auth': `${token}`
+				}
+			});
+
+			return res.status(StatusCodes.OK).json({
+				message: 'OTP sent successfully'
+			});
+
+		} catch (error) {
+			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
+
+	static async checkout(req, res) {
+		try {
+			const orderId = req.body.orderId;
+			const order = await Order.findById(orderId);
+
+			const user = req.userInformation;
+			const token = await JWTHelper.generateTokenForPaymentSystem({ userId: user._id, email: user.email }, process.env.SYSTEM_SIGNER_KEY);
+
+			await axios.post(`${PAYMENT_URL}/payments`,
+				{
+					totalAmount: order.totalAmount,
+					orderId: req.body.orderId,
+					otp: req.body.otp
+				},
+				{
+					headers: {
+						'payment-system-auth': `${token}`
+					}
+				}
+			);
+
+			await Order.updateOne({ _id: orderId }, { status: 'completed' });
+
+			return res.status(StatusCodes.OK).json({
+				message: 'Payment successful'
 			});
 		}
 		catch (error) {
