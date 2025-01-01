@@ -20,7 +20,7 @@ export type DeleteCategoryDialogProps = {
   category: CategoryProps;
 };
 
-export default function DeletecategoryDialog({
+export default function DeleteCategoryDialog({
   open,
   onClose,
   onDelete,

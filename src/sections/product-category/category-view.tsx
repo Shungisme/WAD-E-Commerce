@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTable } from "../use-table";
 import { DashboardContent } from "../../layouts/dashboard/main";
 import { Box } from "@mui/system";
@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   SelectChangeEvent,
+  Snackbar,
   Table,
   TableBody,
   TableContainer,
@@ -15,7 +16,6 @@ import {
 import { Iconify } from "../../components/iconify/iconify";
 import { CategoryProps, CategoryTableRow } from "./category-table-row";
 import { applyFilter } from "./utils";
-import { _categories } from "../../mocks/_data";
 import { emptyRows, getComparator } from "../account/utils";
 import { CategoryTableToolbar } from "./category-table-toolbar";
 import { Scrollbar } from "../../components/scrollbar/scrollbar";
@@ -24,15 +24,30 @@ import { TableEmptyRows } from "../account/table-empty-rows";
 import { TableNoData } from "../account/table-no-data";
 import AddCategoryDialog from "./add-category-dialog";
 import DeleteCategoriesDialog from "./delete-categories-dialog";
+import useCategoriesAdmin from "../../hooks/use-categories-admin";
 
 export function CategoryView() {
+  const {
+    getCategories,
+    addCategory,
+    deleteCategories,
+    updateCategory,
+    deleteCategory,
+  } = useCategoriesAdmin();
+
   const table = useTable("title");
 
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [messageSnackbar, setMessageSnackbar] = useState("");
 
   const [filterTitle, setFilterTitle] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
+
+  const handleCloseSnackbar = useCallback(() => {
+    setOpenSnackbar(false);
+  }, []);
 
   const filter = useMemo(
     () => [
@@ -48,13 +63,17 @@ export function CategoryView() {
     [filterTitle, filterStatus]
   );
 
-  const dataFiltered: CategoryProps[] = applyFilter({
-    inputData: _categories,
-    comparator: getComparator(table.order, table.orderBy),
-    filter: filter,
-  });
+  const dataFiltered: CategoryProps[] = useMemo(
+    () =>
+      applyFilter({
+        inputData: getCategories?.data ?? [],
+        comparator: getComparator(table.order, table.orderBy),
+        filter: filter,
+      }),
+    [getCategories?.data, table.order, table.orderBy, filter]
+  );
 
-  const notFound = !dataFiltered.length && !filterTitle;
+  const notFound = !dataFiltered.length && !!filterTitle;
 
   return (
     <DashboardContent>
@@ -97,13 +116,13 @@ export function CategoryView() {
               <CategoryTableHead
                 orderBy={table.orderBy}
                 order={table.order}
-                rowCount={_categories.length}
+                rowCount={dataFiltered.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) => {
                   table.onSelectAllRows(
                     checked,
-                    _categories.map((category) => category.id)
+                    dataFiltered.map((category) => category._id)
                   );
                 }}
                 headLabel={[
@@ -111,7 +130,7 @@ export function CategoryView() {
                   { id: "parentSlug", label: "Parent Slug" },
                   { id: "status", label: "Status" },
                   { id: "timestamps", label: "Timestamps" },
-                  { id: "" },
+                  { id: "action", label: "" },
                 ]}
               />
 
@@ -123,15 +142,36 @@ export function CategoryView() {
                   )
                   .map((row) => (
                     <CategoryTableRow
-                      key={row.id}
+                      key={row._id}
                       row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
-                      onEditRow={(account: CategoryProps) => {
-                        console.log(account);
+                      selected={!!row?._id && table.selected.includes(row?._id)}
+                      onSelectRow={() =>
+                        !!row?._id && table.onSelectRow(row?._id)
+                      }
+                      onEditRow={async (category: CategoryProps) => {
+                        try {
+                          await updateCategory?.mutateAsync({
+                            category: category,
+                          });
+                          setMessageSnackbar("Category updated successfully");
+                        } catch (error) {
+                          console.log(error);
+                          setMessageSnackbar("Error updating category");
+                        }
+                        setOpenSnackbar(true);
                       }}
-                      onDeleteRow={(account: CategoryProps) => {
-                        console.log(account);
+                      onDeleteRow={async (category: CategoryProps) => {
+                        try {
+                          if (!category._id) return;
+                          await deleteCategory?.mutateAsync({
+                            categoryId: category._id,
+                          });
+
+                          setMessageSnackbar("Category deleted successfully");
+                        } catch (error) {
+                          setMessageSnackbar("Error deleting category");
+                        }
+                        setOpenSnackbar(true);
                       }}
                     />
                   ))}
@@ -141,7 +181,7 @@ export function CategoryView() {
                   emptyRows={emptyRows(
                     table.page,
                     table.rowsPerPage,
-                    _categories.length
+                    dataFiltered.length
                   )}
                 />
 
@@ -154,7 +194,7 @@ export function CategoryView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_categories.length}
+          count={dataFiltered.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -169,14 +209,41 @@ export function CategoryView() {
         onClose={() => {
           setOpenAddDialog(false);
         }}
-        onCreate={() => {}}
+        onCreate={async (category: CategoryProps) => {
+          try {
+            await addCategory?.mutateAsync({ category });
+            setMessageSnackbar("Category created successfully");
+          } catch (error) {
+            setMessageSnackbar("Error creating category");
+          }
+          setOpenSnackbar(true);
+        }}
       />
 
       <DeleteCategoriesDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
-        onDelete={() => {}}
+        onDelete={async () => {
+          try {
+            await deleteCategories?.mutateAsync({
+              categoryIds: table.selected,
+            });
+            setMessageSnackbar("Category deleted successfully");
+            setOpenDeleteDialog(false);
+            table.onSelectAllRows(false, []);
+          } catch (error) {
+            setMessageSnackbar("Error deleting category");
+          }
+          setOpenSnackbar(true);
+        }}
         numCategory={table.selected.length}
+      />
+
+      <Snackbar
+        open={openSnackbar}
+        message={messageSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
       />
     </DashboardContent>
   );

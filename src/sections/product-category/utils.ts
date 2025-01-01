@@ -28,17 +28,19 @@ export function applyFilter({
 
   for (const { key, value } of filter) {
     if (value) {
-      inputData.filter((category) => {
-        if (key === "title") {
-          return (
-            category[key]
-              .toLowerCase()
-              .trim()
-              .indexOf(value.toLowerCase().trim()) !== -1
-          );
+      inputData = inputData.filter((category) => {
+        if (key === "status") {
+          return category[key] === value;
         }
 
-        return category[key] === value;
+        const categoryValue = category[key];
+        return (
+          typeof categoryValue === "string" &&
+          categoryValue
+            .toLowerCase()
+            .trim()
+            .indexOf(value.toLowerCase().trim()) !== -1
+        );
       });
     }
   }

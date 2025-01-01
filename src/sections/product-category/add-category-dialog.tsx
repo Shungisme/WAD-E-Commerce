@@ -10,8 +10,6 @@ import {
   Select,
   MenuItem,
   Box,
-  Avatar,
-  IconButton,
   Typography,
   FormGroup,
   FormHelperText,
@@ -21,42 +19,57 @@ import { alpha } from "@mui/material";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { CategoryProps } from "./category-table-row";
+import { useMemo } from "react";
+import useCategoriesAdmin from "../../hooks/use-categories-admin";
 
 export type AddCategoryDialogProps = {
   open: boolean;
   onClose: () => void;
-  onCreate: (category: Partial<CategoryProps>) => void;
+  onCreate: (category: CategoryProps) => void;
 };
-
-const validationSchema = new Yup.ObjectSchema({
-  title: Yup.string()
-    .required("Title is required")
-    .min(6, "Title must be at least 6 characters")
-    .max(255, "Title must be at most 255 characters"),
-  parentSlug: Yup.string().required("Parent Slug is required"),
-  description: Yup.string()
-    .min(6, "Description must be at least 6 characters")
-    .max(255, "Description must be at most 255 characters")
-    .required("Description is required"),
-  status: Yup.string()
-    .oneOf(["active", "inactive"], "Invalid status")
-    .required("Status is required"),
-});
 
 export default function AddCategoryDialog({
   open,
   onClose,
   onCreate,
 }: AddCategoryDialogProps) {
+  const { getCategories } = useCategoriesAdmin();
+
+  const validationSchema = useMemo(() => {
+    const rootCategories = getCategories?.data?.filter(
+      (category) => category.parentSlug === ""
+    );
+
+    const schema = new Yup.ObjectSchema({
+      title: Yup.string()
+        .required("Title is required")
+        .min(6, "Title must be at least 6 characters")
+        .max(255, "Title must be at most 255 characters"),
+      parentSlug: Yup.string().oneOf(
+        rootCategories?.map((category) => category.slug) ?? [],
+        "Invalid parent slug"
+      ),
+      description: Yup.string()
+        .min(6, "Description must be at least 6 characters")
+        .max(255, "Description must be at most 255 characters")
+        .required("Description is required"),
+      status: Yup.string()
+        .oneOf(["active", "inactive"], "Invalid status")
+        .required("Status is required"),
+    });
+    return schema;
+  }, [getCategories?.data]);
+
   const formik = useFormik({
     initialValues: {
       title: "",
       parentSlug: "",
       description: "",
       status: "active",
+      childSlugs: [],
     },
     validationSchema: validationSchema,
-    onSubmit: async (value: Partial<CategoryProps>) => {
+    onSubmit: async (value: CategoryProps) => {
       onCreate(value);
       onClose();
     },
@@ -122,19 +135,25 @@ export default function AddCategoryDialog({
               </FormControl>
 
               <FormControl
-                fullWidth
-                required
                 error={!!formik.errors.parentSlug && formik.touched.parentSlug}
+                fullWidth
               >
-                <TextField
+                <InputLabel>Parent Slug</InputLabel>
+                <Select
                   name="parentSlug"
-                  fullWidth
+                  value={formik.values.parentSlug}
                   label="Parent Slug"
-                  type="parentSlug"
-                  autoComplete="parentSlug"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                />
+                >
+                  {getCategories?.data
+                    ?.filter((category: any) => category.parentSlug === "")
+                    .map((category: any) => (
+                      <MenuItem key={category.slug} value={category.slug}>
+                        {category.title}
+                      </MenuItem>
+                    ))}
+                </Select>
 
                 {formik.errors.parentSlug && formik.touched.parentSlug && (
                   <FormHelperText>{formik.errors.parentSlug}</FormHelperText>

@@ -15,15 +15,17 @@ import { formatDateTime } from "../../utils/format-time";
 import EditCategoryDialog from "./edit-category-dialog";
 import DeleteCategoryDialog from "./delete-category-dialog";
 
-export type CategoryProps = {
-  id: string;
-  title: string;
-  parentSlug: string;
-  description: string;
-  status: string;
-  slug: string;
-  timestamps: string;
-};
+export interface CategoryProps {
+  _id?: string;
+  title?: string;
+  parentSlug?: string;
+  description?: string;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  slug?: string;
+  childSlugs?: string[];
+}
 
 export type CategoryTableRowProps = {
   row: CategoryProps;
@@ -60,7 +62,13 @@ export function CategoryTableRow({
 
   return (
     <>
-      <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
+      <TableRow
+        key={row._id}
+        hover
+        tabIndex={-1}
+        role="checkbox"
+        selected={selected}
+      >
         <TableCell padding="checkbox">
           <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
         </TableCell>
@@ -69,7 +77,7 @@ export function CategoryTableRow({
           {row.title}
         </TableCell>
 
-        <TableCell>{row.parentSlug}</TableCell>
+        <TableCell>{row?.parentSlug}</TableCell>
 
         <TableCell>
           <Label color={row.status === "active" ? "success" : "error"}>
@@ -77,7 +85,7 @@ export function CategoryTableRow({
           </Label>
         </TableCell>
 
-        <TableCell>{formatDateTime(row.timestamps)}</TableCell>
+        <TableCell>{formatDateTime(row.updatedAt)}</TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>

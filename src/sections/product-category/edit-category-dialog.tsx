@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -22,6 +22,7 @@ import { useFormik } from "formik";
 import { Iconify } from "../../components/iconify/iconify";
 import { alpha } from "@mui/material";
 import { CategoryProps } from "./category-table-row";
+import useCategoriesAdmin from "../../hooks/use-categories-admin";
 
 export type EditCategoryDialogProps = {
   open: boolean;
@@ -30,27 +31,39 @@ export type EditCategoryDialogProps = {
   onSave: (account: CategoryProps) => void;
 };
 
-const validationSchema = new Yup.ObjectSchema({
-  title: Yup.string()
-    .required("Title is required")
-    .min(6, "Title must be at least 6 characters")
-    .max(255, "Title must be at most 255 characters"),
-  parentSlug: Yup.string().required("Parent Slug is required"),
-  description: Yup.string()
-    .min(6, "Description must be at least 6 characters")
-    .max(255, "Description must be at most 255 characters")
-    .required("Description is required"),
-  status: Yup.string()
-    .oneOf(["active", "inactive"], "Invalid status")
-    .required("Status is required"),
-});
-
 export default function EditAccountDialog({
   open,
   onClose,
   category,
   onSave,
 }: EditCategoryDialogProps) {
+  const { getCategories } = useCategoriesAdmin();
+
+  const validationSchema = useMemo(() => {
+    const rootCategories = getCategories?.data?.filter(
+      (category) => category.parentSlug === ""
+    );
+
+    const schema = new Yup.ObjectSchema({
+      title: Yup.string()
+        .required("Title is required")
+        .min(6, "Title must be at least 6 characters")
+        .max(255, "Title must be at most 255 characters"),
+      parentSlug: Yup.string().oneOf(
+        rootCategories?.map((category) => category.slug) ?? [],
+        "Invalid parent slug"
+      ),
+      description: Yup.string()
+        .min(6, "Description must be at least 6 characters")
+        .max(255, "Description must be at most 255 characters")
+        .required("Description is required"),
+      status: Yup.string()
+        .oneOf(["active", "inactive"], "Invalid status")
+        .required("Status is required"),
+    });
+    return schema;
+  }, [getCategories?.data]);
+
   const formik = useFormik({
     initialValues: {
       ...category,
@@ -129,14 +142,13 @@ export default function EditAccountDialog({
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
-                <MenuItem value="admin">
-                  <Iconify icon="ri:admin-fill" />
-                  &nbsp; Admin
-                </MenuItem>
-                <MenuItem value="user">
-                  <Iconify icon="mdi:user" />
-                  &nbsp; User
-                </MenuItem>
+                {getCategories?.data
+                  ?.filter((category) => category.parentSlug === "")
+                  .map((category) => (
+                    <MenuItem key={category.slug} value={category.slug}>
+                      {category.title}
+                    </MenuItem>
+                  ))}
               </Select>
 
               {formik.errors.parentSlug && formik.touched.parentSlug && (

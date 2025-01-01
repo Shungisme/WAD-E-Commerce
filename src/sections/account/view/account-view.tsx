@@ -67,11 +67,15 @@ export function AccountView() {
     [filterName, filterStatus, filterRole]
   );
 
-  const dataFiltered: AccountProps[] = applyFilter({
-    inputData: getAccounts?.data ?? [],
-    comparator: getComparator(table.order, table.orderBy),
-    filter: filter,
-  });
+  const dataFiltered: AccountProps[] = useMemo(
+    () =>
+      applyFilter({
+        inputData: getAccounts?.data ?? [],
+        comparator: getComparator(table.order, table.orderBy),
+        filter: filter,
+      }),
+    [getAccounts, table.order, table.orderBy, filter]
+  );
 
   const notFound = !dataFiltered.length && !!filterName;
 
@@ -124,13 +128,13 @@ export function AccountView() {
               <AccountTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={getAccounts?.data?.length ?? 0}
+                rowCount={dataFiltered.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) => {
                   table.onSelectAllRows(
                     checked,
-                    getAccounts?.data?.map((account) => account._id) ?? []
+                    dataFiltered.map((acc) => acc._id)
                   );
                 }}
                 headLabel={[
@@ -138,7 +142,7 @@ export function AccountView() {
                   { id: "email", label: "Email" },
                   { id: "role", label: "Role" },
                   { id: "status", label: "Status" },
-                  { id: "all", label: "" },
+                  { id: "action", label: "" },
                 ]}
               />
 
@@ -156,9 +160,9 @@ export function AccountView() {
                       onSelectRow={() =>
                         !!row?._id && table.onSelectRow(row?._id)
                       }
-                      onEditRow={(account: AccountProps) => {
+                      onEditRow={async (account: AccountProps) => {
                         try {
-                          updateAccount?.mutateAsync({ account });
+                          await updateAccount?.mutateAsync({ account });
                           console.log("onEditRow: update account", account);
                           setMessageSnackbar("Account updated successfully");
                         } catch (error) {
@@ -167,10 +171,12 @@ export function AccountView() {
                         }
                         setOpenSnackbar(true);
                       }}
-                      onDeleteRow={(account: AccountProps) => {
+                      onDeleteRow={async (account: AccountProps) => {
                         try {
                           if (!account?._id) return;
-                          deleteAccount?.mutateAsync({ userId: account._id });
+                          await deleteAccount?.mutateAsync({
+                            userId: account._id,
+                          });
                           setMessageSnackbar("Account deleted successfully");
                         } catch (error) {
                           console.log(error);
@@ -186,7 +192,7 @@ export function AccountView() {
                   emptyRows={emptyRows(
                     table.page,
                     table.rowsPerPage,
-                    getAccounts?.data?.map((account) => account._id).length ?? 0
+                    dataFiltered.length
                   )}
                 />
 
@@ -199,7 +205,7 @@ export function AccountView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={getAccounts?.data?.map((account) => account._id).length ?? 0}
+          count={dataFiltered.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -230,9 +236,9 @@ export function AccountView() {
       <DeleteAccountsDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
-        onDelete={() => {
+        onDelete={async () => {
           try {
-            deleteAccounts?.mutateAsync({ userIds: table.selected });
+            await deleteAccounts?.mutateAsync({ userIds: table.selected });
             setMessageSnackbar("Accounts deleted successfully");
             setOpenDeleteDialog(false);
             table.onSelectAllRows(false, []);

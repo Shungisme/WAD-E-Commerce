@@ -25,6 +25,7 @@ export function useTable(_orderBy: string) {
       if (checked) {
         const newSelecteds = newSelected.filter((value) => value !== undefined);
         setSelected(newSelecteds as string[]);
+        return;
       }
 
       setSelected([]);
