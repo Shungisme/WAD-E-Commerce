@@ -25,6 +25,7 @@ import { useFormik } from "formik";
 import { Iconify } from "../../components/iconify/iconify";
 import { alpha } from "@mui/material";
 import { ProductItemProps } from "./product-item";
+import useProductsAdmin from "../../hooks/use-products-admin";
 
 export type EditProductDialogProps = {
   open: boolean;
@@ -34,8 +35,8 @@ export type EditProductDialogProps = {
 };
 
 const cloudinaryConfig = {
-  cloudName: "dwkunsgly",
-  uploadPreset: "WAD-Ecommerce",
+  cloudName: String(process.env.REACT_APP_CLOUDINARY_CLOUD_NAME) || "",
+  uploadPreset: String(process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET) || "",
 };
 
 const validationSchema = new Yup.ObjectSchema({
@@ -81,6 +82,8 @@ export default function EditAccountDialog({
   product,
   onSave,
 }: EditProductDialogProps) {
+  const { getCategories } = useProductsAdmin();
+
   const formik = useFormik({
     initialValues: {
       ...product,
@@ -317,10 +320,13 @@ export default function EditAccountDialog({
                   </InputAdornment>
                 }
               >
-                <MenuItem value="electronics">Electronics</MenuItem>
-                <MenuItem value="clothing">Clothing</MenuItem>
-                <MenuItem value="books">Books</MenuItem>
-                {/* Add more categories as needed */}
+                {getCategories?.data?.map((category) =>
+                  category.parentSlug === "" ? null : (
+                    <MenuItem key={category.slug} value={category.slug}>
+                      {category.title}
+                    </MenuItem>
+                  )
+                )}
               </Select>
               {formik.errors.categorySlug && formik.touched.categorySlug && (
                 <FormHelperText>{formik.errors.categorySlug}</FormHelperText>

@@ -38,8 +38,8 @@ export type AddProductDialogProps = {
 };
 
 const cloudinaryConfig = {
-  cloudName: "dwkunsgly",
-  uploadPreset: "WAD-Ecommerce",
+  cloudName: String(process.env.REACT_APP_CLOUDINARY_CLOUD_NAME) || "",
+  uploadPreset: String(process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET) || "",
 };
 
 const validationSchema = new Yup.ObjectSchema({
@@ -351,11 +351,13 @@ export default function AddProductDialog({
                   </InputAdornment>
                 }
               >
-                {getCategories?.data?.map((category) => (
-                  <MenuItem key={category.slug} value={category.slug}>
-                    {category.title}
-                  </MenuItem>
-                ))}
+                {getCategories?.data?.map((category) =>
+                  category.parentSlug === "" ? null : (
+                    <MenuItem key={category.slug} value={category.slug}>
+                      {category.title}
+                    </MenuItem>
+                  )
+                )}
               </Select>
               {formik.errors.categorySlug && formik.touched.categorySlug && (
                 <FormHelperText>{formik.errors.categorySlug}</FormHelperText>

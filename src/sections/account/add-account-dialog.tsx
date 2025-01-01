@@ -30,8 +30,8 @@ export type AddAccountDialogProps = {
 };
 
 const cloudinaryConfig = {
-  cloudName: "dwkunsgly",
-  uploadPreset: "WAD-Ecommerce",
+  cloudName: String(process.env.REACT_APP_CLOUDINARY_CLOUD_NAME) || "",
+  uploadPreset: String(process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET) || "",
 };
 
 const validationSchema = new Yup.ObjectSchema({

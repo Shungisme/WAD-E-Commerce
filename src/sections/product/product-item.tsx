@@ -137,25 +137,33 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
 
   const renderPrice = (
     <Typography variant="subtitle1">
-      <Typography
-        component="span"
-        variant="body1"
-        sx={{
-          color: "text.disabled",
-          textDecoration: "line-through",
-        }}
-      >
-        {formatCurrency(product.price)}
-      </Typography>
-      &nbsp;
-      {product.discount &&
-        formatCurrency((product.price * (100 - product.discount)) / 100)}
+      <Stack direction="column">
+        {product.discount !== 0 && (
+          <Typography
+            component="span"
+            variant="body1"
+            sx={{
+              color: "text.disabled",
+              textDecoration: "line-through",
+            }}
+          >
+            {formatCurrency(product.price)}
+          </Typography>
+        )}
+
+        {product.discount !== 0
+          ? formatCurrency((product.price * (100 - product.discount)) / 100)
+          : formatCurrency(product.price)}
+      </Stack>
     </Typography>
   );
 
   const renderQuantity = (
     <Typography variant="subtitle2" sx={{ color: "text.disabled" }}>
-      {formatShortenNumber(product.quantity)} in stock
+      {formatShortenNumber(product.quantity, {
+        maximumFractionDigits: 1,
+      })}
+      &nbsp; in stock
     </Typography>
   );
 
