@@ -10,17 +10,6 @@ const User = sequelize.define(
       defaultValue: DataTypes.UUIDV4,
       field: "id",
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      field: "email",
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      field: "name",
-    },
     balance: {
       type: DataTypes.BIGINT,
       defaultValue: "999999999999999999",
@@ -32,9 +21,5 @@ const User = sequelize.define(
     timestamps: false,
   }
 );
-
-User.findByEmail = async (email) => {
-  return await User.findOne({ where: { email } });
-};
 
 module.exports = User;

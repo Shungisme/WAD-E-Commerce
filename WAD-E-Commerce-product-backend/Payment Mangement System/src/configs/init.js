@@ -1,14 +1,13 @@
 const User = require("../apis/v1/models/user.model");
 require("dotenv").config();
 
-const MONEY_RECEIVER_EMAIL = process.env.MONEY_RECEIVER_EMAIL;
+const MONEY_RECEIVER_ID = process.env.MONEY_RECEIVER_ID;
 
 const init = async () => {
-  User.findByEmail(MONEY_RECEIVER_EMAIL).then(async (user) => {
+  User.findByPk(MONEY_RECEIVER_ID).then(async (user) => {
     if (!user) {
       await User.create({
-        email: MONEY_RECEIVER_EMAIL,
-        name: "Money Receiver",
+        id: MONEY_RECEIVER_ID,
         balance: BigInt(0),
       });
     }
