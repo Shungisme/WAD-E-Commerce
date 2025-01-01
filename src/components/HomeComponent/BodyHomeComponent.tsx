@@ -13,6 +13,7 @@ const BodyHomeComponent = () => {
         categorySlug: "san-pham-giay",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -26,6 +27,7 @@ const BodyHomeComponent = () => {
         categorySlug: "san-pham-ao",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -39,6 +41,7 @@ const BodyHomeComponent = () => {
         categorySlug: "san-pham-quan",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -52,6 +55,7 @@ const BodyHomeComponent = () => {
         categorySlug: "phu-kien",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -65,6 +69,7 @@ const BodyHomeComponent = () => {
         categorySlug: "qua-luu-niem",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -85,7 +90,7 @@ const BodyHomeComponent = () => {
       >
         <MainCarousel />
         <InformationComponent />
-        <Box sx={{ width: "100%"}}>
+        <Box sx={{ width: "100%" }}>
           <SmallCarousel
             items={shoesProducts?.data?.products}
             type="Sản phẩm giày"

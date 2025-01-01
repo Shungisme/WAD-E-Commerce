@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { getProductBySlug, getProductsByCategory } from "../services/products";
 import { slugify } from "../utils/slugify";
 import { Helmet } from "react-helmet";
+import SpinnerFullScreen from "../components/SpinnerFullScreen";
 
 const DetailPage = () => {
   const [searchParams] = useSearchParams();
@@ -50,6 +51,7 @@ const DetailPage = () => {
           content="https://example.com/path-to-your-image.jpg"
         />
       </Helmet>
+      {detailProduct.isFetching && <SpinnerFullScreen/>}
       <Box
         sx={{
           margin: "0 auto",

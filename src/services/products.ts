@@ -11,11 +11,13 @@ export const getProductsByCategory = async ({
   page,
   limit,
   search,
+  status,
 }: {
   categorySlug: string;
   page: number;
   limit: number;
   search?: string;
+  status?: string;
 }) => {
   try {
     const url = BASE_URL;
@@ -31,6 +33,7 @@ export const getProductsByCategory = async ({
         page,
         limit,
         search,
+        status,
       },
     });
     return response.data;
@@ -63,12 +66,14 @@ export const getProductsByFilter = async ({
   limit = 6,
   search,
   sort,
+  status,
 }: {
   categorySlug?: string;
   page?: number;
   limit?: number;
   search?: string;
   sort?: string;
+  status?: string;
 }) => {
   try {
     const url = BASE_URL;
@@ -85,9 +90,9 @@ export const getProductsByFilter = async ({
         limit,
         search,
         sort,
+        status,
       },
     });
-    console.log("getData", response.data);
 
     return response.data;
   } catch (error) {

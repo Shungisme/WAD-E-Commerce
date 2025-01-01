@@ -14,6 +14,8 @@ import {
   getCartInLocalStorage,
   setCartInLocalStorage,
 } from "../utils/localStorage";
+import { PRODUCT } from "../types/productType";
+import { useSearchParams } from "react-router-dom";
 
 interface TProps {
   children: ReactNode;
@@ -47,6 +49,7 @@ interface TDefault {
     },
     any
   > | null;
+  handleAddProductToCart: any;
 }
 
 const defaultValue: TDefault = {
@@ -57,6 +60,7 @@ const defaultValue: TDefault = {
   setTotalMoney: () => {},
   handleChangeQuantity: async (productItem: any, status: string) => {},
   handleDelete: async (productItem: any) => {},
+  handleAddProductToCart: async () => {},
 };
 
 export const cartContext = createContext(defaultValue);
@@ -67,7 +71,7 @@ const CartProvider = ({ children }: TProps) => {
   const queryClient = useQueryClient();
   const [totalMoney, setTotalMoney] = useState<number>(0);
   const renderRef = useRef<boolean>(false);
-
+  const [searchParams] = useSearchParams();
 
   const myCart = useQuery({
     queryKey: ["get-cart", user?._id],
@@ -105,6 +109,13 @@ const CartProvider = ({ children }: TProps) => {
           if (index === -1) {
             productsOfResponse.push(data[i]);
           } else if (productsOfResponse[index].quantity < data[i].quantity) {
+            if (
+              productsOfResponse[index].remainingQuantity <= data[i].quantity
+            ) {
+              productsOfResponse[index].quantity =
+                productsOfResponse[index].remainingQuantity;
+            }
+          } else {
             productsOfResponse[index].quantity = data[i].quantity;
           }
         }
@@ -243,6 +254,8 @@ const CartProvider = ({ children }: TProps) => {
     if (status === "inscrese") {
       if (newProducts[index].remainingQuantity > newProducts[index].quantity) {
         newProducts[index].quantity++;
+      } else if (!user) {
+        newProducts[index].quantity++;
       }
     } else if (status === "descrease") {
       if (newProducts[index].quantity <= 1) return;
@@ -256,6 +269,52 @@ const CartProvider = ({ children }: TProps) => {
       userId: user?._id || "",
       products: newProducts,
     });
+  };
+
+  const handleAddProductToCart = async () => {
+    const detailProduct: any = queryClient.getQueryData([
+      "detail-product",
+      searchParams.get("content"),
+    ]);
+    let data;
+    if (!user) {
+      const cart = getCartInLocalStorage();
+      const index = cart?.findIndex(
+        (item: PRODUCT) => item?.productId === detailProduct?._id
+      );
+      if (index === -1) {
+        const tmp = {
+          discount: detailProduct?.discount,
+          price: detailProduct?.price,
+          productId: detailProduct?._id,
+          quantity: 1,
+          thumbnail: detailProduct?.thumbnail,
+          title: detailProduct?.title,
+        };
+        data = [...cart, tmp];
+      } else {
+        if (cart[index]) {
+          cart[index].quantity++;
+        }
+        data = JSON.parse(JSON.stringify(cart));
+      }
+    } else {
+      const cart: any = queryClient.getQueryData(["get-cart", user?._id]);
+      data = cart?.products;
+      const index = data?.findIndex(
+        (item: any) => item?.productId === detailProduct?._id
+      );
+      if (index !== -1) {
+        data[index].quantity = data[index].quantity + 1;
+      } else {
+        data.push({
+          productId: detailProduct?._id,
+          quantity: 1,
+        });
+      }
+    }
+
+    await addCart?.mutate({ userId: user?._id || "", products: [...data] });
   };
 
   const handleDelete = async (productItem: any) => {
@@ -288,6 +347,7 @@ const CartProvider = ({ children }: TProps) => {
     handleDelete,
     setTotalMoney,
     addCart,
+    handleAddProductToCart,
   };
 
   return <cartContext.Provider value={value}>{children}</cartContext.Provider>;

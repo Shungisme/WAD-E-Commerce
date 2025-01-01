@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import CardComponent from "../components/CardComponent";
-import LayoutFilter from "../components/layouts/LayoutFilter";
+import LayoutFilter from "../layouts/LayoutFilter";
 import { useEffect, useRef, useState } from "react";
 import PaginationComponent from "../components/PaginationComponent";
 import SpinnerFullScreen from "../components/SpinnerFullScreen";
@@ -32,6 +32,7 @@ const FilterPage = () => {
             page: currentPage,
             categorySlug,
             sort,
+            status: "active"
           })
         );
       }
@@ -46,7 +47,7 @@ const FilterPage = () => {
             <div
               style={{
                 maxWidth: "22rem",
-                height: "30rem",
+                height: "34rem",
                 margin: "0 auto",
               }}
             >
@@ -95,7 +96,7 @@ const FilterPage = () => {
           </>
         ) : (
           <>
-            <Typography textAlign={"center"} fontWeight={"bold"}>
+            <Typography textAlign={"center"} width={"100%"} fontWeight={"bold"}>
               Không có sản phẩm
             </Typography>
           </>

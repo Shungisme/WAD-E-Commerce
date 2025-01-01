@@ -48,6 +48,7 @@ const CartDropDownComponent = () => {
               >
                 <Box
                   onClick={() =>
+                    
                     navigate(`/detail?content=${slugify(item?.title)}`)
                   }
                   sx={{
