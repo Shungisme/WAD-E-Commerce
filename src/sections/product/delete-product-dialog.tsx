@@ -79,7 +79,7 @@ export default function DeleteAccountDialog({
               <Box>
                 <Typography variant="subtitle2">{product.title}</Typography>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  {product.categorySlug}
+                  {product.categoryTitle}
                 </Typography>
               </Box>
             </Stack>

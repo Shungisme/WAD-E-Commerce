@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 
 import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
@@ -6,45 +6,84 @@ import Typography from "@mui/material/Typography";
 import { FiltersProps, ProductFilters } from "../product-filters";
 import { DashboardContent } from "../../../layouts/dashboard/main";
 import { ProductSort } from "../product-sort";
-import { _products } from "../../../mocks/_data";
-import { ProductItem } from "../product-item";
-import { Button, Grid2, InputAdornment, OutlinedInput } from "@mui/material";
+import { ProductItem, ProductItemProps } from "../product-item";
+import {
+  Button,
+  FormControl,
+  Grid2,
+  InputAdornment,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  Stack,
+} from "@mui/material";
 import { Iconify } from "../../../components/iconify/iconify";
 import AddProductDialog from "../add-product-dialog";
+import { AppDispatch, RootState } from "../../../stores/store";
+import { useDispatch, useSelector } from "react-redux";
+import { filterAsync } from "../../../stores/actions/filterAction";
+import SpinnerFullScreen from "../../../components/SpinnerFullScreen";
+import useProductsAdmin from "../../../hooks/use-products-admin";
+import { createProductAsync } from "../../../stores/actions/create-product-action";
 
-const CATEGORY_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "shose", label: "Shose" },
-  { value: "apparel", label: "Apparel" },
-  { value: "accessories", label: "Accessories" },
-];
-
-const PRICE_OPTIONS = [
-  { value: "below", label: "Below $25" },
-  { value: "between", label: "Between $25 - $75" },
-  { value: "above", label: "Above $75" },
-];
-
-const SALE_OPTIONS = [
-  { value: "below", label: "Below 25%" },
-  { value: "between", label: "Between 25% - 50%" },
-  { value: "above", label: "Above 50%" },
-];
+export const PER_PAGE_OPTIONS = [8, 16, 24, 32];
 
 const defaultFilters = {
-  price: "",
-  category: CATEGORY_OPTIONS[0].value,
-  sale: "",
+  limit: PER_PAGE_OPTIONS[0],
+  page: 1,
+  categorySlug: "",
+  sort: "",
+  search: "",
 };
 
 export function ProductsView() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(PER_PAGE_OPTIONS[0]);
+  const [categorySlug, setCategorySlug] = useState("");
+  const [filters, setFilters] = useState<FiltersProps>(defaultFilters);
+
   const [openAddDialog, setOpenAddDialog] = useState(false);
-
-  const [sortBy, setSortBy] = useState("price");
-
   const [openFilter, setOpenFilter] = useState(false);
 
-  const [filters, setFilters] = useState<FiltersProps>(defaultFilters);
+  const { getMegaMenuCategories } = useProductsAdmin();
+
+  const dispatch: AppDispatch = useDispatch();
+  const {
+    data: products,
+    isLoading,
+    totalPages,
+    sort,
+  } = useSelector((store: RootState) => store.filterData);
+
+  useEffect(() => {
+    if (!isLoading) {
+      dispatch(
+        filterAsync({
+          limit: perPage,
+          page: currentPage,
+          categorySlug,
+          sort,
+        })
+      );
+    }
+  }, [currentPage, perPage]);
+
+  const handleSearch = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCurrentPage(1);
+      dispatch(
+        filterAsync({
+          limit: perPage,
+          page: 1,
+          categorySlug,
+          sort,
+          search: event.target.value,
+        })
+      );
+    },
+    [perPage, categorySlug, sort]
+  );
 
   const handleOpenFilter = useCallback(() => {
     setOpenFilter(true);
@@ -54,12 +93,55 @@ export function ProductsView() {
     setOpenFilter(false);
   }, []);
 
-  const handleSort = useCallback((newSort: string) => {
-    setSortBy(newSort);
+  const handleSort = useCallback((newSort: any) => {
+    dispatch(
+      filterAsync({
+        limit: perPage,
+        page: currentPage,
+        categorySlug,
+        sort: newSort,
+      })
+    );
   }, []);
 
   const handleSetFilters = useCallback((updateState: Partial<FiltersProps>) => {
+    dispatch(
+      filterAsync({
+        limit: perPage,
+        page: 1,
+        categorySlug,
+        sort,
+        ...updateState,
+      })
+    );
     setFilters((prevValue) => ({ ...prevValue, ...updateState }));
+  }, []);
+
+  const handleResetFilters = useCallback(() => {
+    setCurrentPage(1);
+    setCategorySlug("");
+    setFilters(defaultFilters);
+    setPerPage(PER_PAGE_OPTIONS[0]);
+    dispatch(
+      filterAsync({
+        limit: PER_PAGE_OPTIONS[0],
+        page: 1,
+        categorySlug: "",
+        sort: "",
+        search: "",
+      })
+    );
+  }, []);
+
+  const handlePageChange = useCallback(
+    (event: React.ChangeEvent<unknown>, value: number) => {
+      setCurrentPage(value);
+    },
+    []
+  );
+
+  const handlePerPageChange = useCallback((event: SelectChangeEvent) => {
+    setPerPage(Number(event.target.value));
   }, []);
 
   const canReset = Object.keys(filters).some(
@@ -68,102 +150,128 @@ export function ProductsView() {
       defaultFilters[key as keyof FiltersProps]
   );
 
+  const handleAddProduct = useCallback(
+    (product: Partial<ProductItemProps>) => {
+      setOpenAddDialog(false);
+      dispatch(createProductAsync(product));
+    },
+    [dispatch]
+  );
+
   return (
-    <DashboardContent>
-      <Box display="flex" alignItems="center" mb={5}>
-        <Typography variant="h4" flexGrow={1}>
-          Products
-        </Typography>
+    <>
+      {isLoading && <SpinnerFullScreen />}
+      <DashboardContent>
+        <Box display="flex" alignItems="center" mb={5}>
+          <Typography variant="h4" flexGrow={1}>
+            Products
+          </Typography>
 
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-          onClick={() => {
-            setOpenAddDialog(true);
-          }}
-        >
-          New product
-        </Button>
-      </Box>
-
-      <Box
-        display="flex"
-        alignItems="center"
-        flexWrap="wrap-reverse"
-        justifyContent="flex-end"
-        sx={{ mb: 5 }}
-      >
-        <OutlinedInput
-          fullWidth
-          placeholder="Search product…"
-          startAdornment={
-            <InputAdornment position="start">
-              <Iconify
-                width={20}
-                icon="eva:search-fill"
-                sx={{
-                  color: "text.disabled",
-                }}
-              />
-            </InputAdornment>
-          }
-          sx={{ maxWidth: 320 }}
-        />
-
-        <Box gap={1} display="flex" flexShrink={0} sx={{ my: 1 }}>
-          <ProductFilters
-            canReset={canReset}
-            filters={filters}
-            onSetFilters={handleSetFilters}
-            openFilter={openFilter}
-            onOpenFilter={handleOpenFilter}
-            onCloseFilter={handleCloseFilter}
-            onResetFilter={() => setFilters(defaultFilters)}
-            options={{
-              categories: CATEGORY_OPTIONS,
-              price: PRICE_OPTIONS,
-              sale: SALE_OPTIONS,
-            }}
-          />
-
-          <ProductSort
-            sortBy={sortBy}
-            onSort={handleSort}
-            options={[
-              { value: "saleDesc", label: "Sale: High-Low" },
-              { value: "saleAsc", label: "Sale: Low-High" },
-              { value: "priceDesc", label: "Price: High-Low" },
-              { value: "priceAsc", label: "Price: Low-High" },
-            ]}
-          />
-        </Box>
-      </Box>
-
-      <Grid2 container spacing={3}>
-        {_products.map((product) => (
-          <Grid2
-            key={product.id}
-            size={{
-              xs: 12,
-              sm: 6,
-              md: 3,
+          <Button
+            variant="contained"
+            color="inherit"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+            onClick={() => {
+              setOpenAddDialog(true);
             }}
           >
-            <ProductItem product={product} />
-          </Grid2>
-        ))}
-      </Grid2>
+            New product
+          </Button>
+        </Box>
+        <Box
+          display="flex"
+          alignItems="center"
+          flexWrap="wrap-reverse"
+          justifyContent="flex-end"
+          sx={{ mb: 5 }}
+        >
+          <OutlinedInput
+            fullWidth
+            placeholder="Search product…"
+            onChange={handleSearch}
+            startAdornment={
+              <InputAdornment position="start">
+                <Iconify
+                  width={20}
+                  icon="eva:search-fill"
+                  sx={{
+                    color: "text.disabled",
+                  }}
+                />
+              </InputAdornment>
+            }
+            sx={{ maxWidth: 320 }}
+          />
 
-      <Pagination count={10} color="primary" sx={{ mt: 8, mx: "auto" }} />
+          <Box gap={1} display="flex" flexShrink={0} sx={{ my: 1 }}>
+            <ProductFilters
+              canReset={canReset}
+              filters={filters}
+              onSetFilters={handleSetFilters}
+              openFilter={openFilter}
+              onOpenFilter={handleOpenFilter}
+              onCloseFilter={handleCloseFilter}
+              onResetFilter={handleResetFilters}
+              options={{
+                categories: getMegaMenuCategories?.data,
+              }}
+            />
 
-      <AddProductDialog
-        open={openAddDialog}
-        onClose={() => {
-          setOpenAddDialog(false);
-        }}
-        onCreate={() => {}}
-      />
-    </DashboardContent>
+            <ProductSort
+              sort={sort}
+              onSort={handleSort}
+              options={[
+                { value: "oldest", label: "Oldest" },
+                { value: "newest", label: "Newest" },
+                { value: "desc", label: "Price: High-Low" },
+                { value: "asc", label: "Price: Low-High" },
+              ]}
+            />
+          </Box>
+        </Box>
+        <Grid2 container spacing={3}>
+          {products.map((product: any) => (
+            <Grid2
+              key={product?._id}
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3,
+              }}
+            >
+              <ProductItem product={product} />
+            </Grid2>
+          ))}
+        </Grid2>
+
+        <Stack direction="row" alignItems="center" sx={{ mt: 8, mx: "auto" }}>
+          <Box sx={{ minWidth: 80 }}>
+            <FormControl fullWidth>
+              <Select value={perPage.toString()} onChange={handlePerPageChange}>
+                {PER_PAGE_OPTIONS.map((item, index) => (
+                  <MenuItem key={index} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Pagination
+            color="primary"
+            page={currentPage}
+            count={totalPages}
+            onChange={handlePageChange}
+            defaultPage={1}
+          />
+        </Stack>
+        <AddProductDialog
+          open={openAddDialog}
+          onClose={() => {
+            setOpenAddDialog(false);
+          }}
+          onCreate={handleAddProduct}
+        />
+      </DashboardContent>
+    </>
   );
 }

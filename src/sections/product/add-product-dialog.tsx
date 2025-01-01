@@ -13,7 +13,6 @@ import {
   Avatar,
   IconButton,
   Typography,
-  FormGroup,
   FormHelperText,
   InputAdornment,
   ImageListItem,
@@ -25,11 +24,17 @@ import { alpha } from "@mui/material";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { ProductItemProps } from "./product-item";
+import useProductsAdmin from "../../hooks/use-products-admin";
 
 export type AddProductDialogProps = {
   open: boolean;
   onClose: () => void;
-  onCreate: (product: Omit<ProductItemProps, "id">) => void;
+  onCreate: (
+    product: Omit<
+      ProductItemProps,
+      "_id" | "createdAt" | "updatedAt" | "slug" | "categoryTitle"
+    >
+  ) => void;
 };
 
 const cloudinaryConfig = {
@@ -79,6 +84,8 @@ export default function AddProductDialog({
   onClose,
   onCreate,
 }: AddProductDialogProps) {
+  const { getCategories } = useProductsAdmin();
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -87,12 +94,17 @@ export default function AddProductDialog({
       price: 0,
       quantity: 0,
       discount: 0,
-      categorySlug: "",
       status: "active",
       images: [],
+      categorySlug: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (values: Omit<ProductItemProps, "id">) => {
+    onSubmit: async (
+      values: Omit<
+        ProductItemProps,
+        "_id" | "createdAt" | "updatedAt" | "slug" | "categoryTitle"
+      >
+    ) => {
       const images = [];
 
       for (let i = 0; i < values.images.length; i++) {
@@ -339,10 +351,11 @@ export default function AddProductDialog({
                   </InputAdornment>
                 }
               >
-                <MenuItem value="electronics">Electronics</MenuItem>
-                <MenuItem value="clothing">Clothing</MenuItem>
-                <MenuItem value="books">Books</MenuItem>
-                {/* Add more categories as needed */}
+                {getCategories?.data?.map((category) => (
+                  <MenuItem key={category.slug} value={category.slug}>
+                    {category.title}
+                  </MenuItem>
+                ))}
               </Select>
               {formik.errors.categorySlug && formik.touched.categorySlug && (
                 <FormHelperText>{formik.errors.categorySlug}</FormHelperText>

@@ -10,14 +10,14 @@ import MenuItem, { menuItemClasses } from "@mui/material/MenuItem";
 import { Iconify } from "../../components/iconify/iconify";
 
 type ProductSortProps = ButtonProps & {
-  sortBy: string;
+  sort: string;
   onSort: (newSort: string) => void;
   options: { value: string; label: string }[];
 };
 
 export function ProductSort({
   options,
-  sortBy,
+  sort,
   onSort,
   sx,
   ...other
@@ -57,7 +57,7 @@ export function ProductSort({
           variant="subtitle2"
           sx={{ color: "text.secondary" }}
         >
-          {options.find((option) => option.value === sortBy)?.label}
+          {options.find((option) => option.value === sort)?.label}
         </Typography>
       </Button>
 
@@ -87,7 +87,7 @@ export function ProductSort({
           {options.map((option) => (
             <MenuItem
               key={option.value}
-              selected={option.value === sortBy}
+              selected={option.value === sort}
               onClick={() => {
                 onSort(option.value);
                 handleClosePopover();

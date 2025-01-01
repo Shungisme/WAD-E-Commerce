@@ -21,9 +21,13 @@ import {
 import { Iconify } from "../../components/iconify/iconify";
 import EditProductDialog from "./edit-product-dialog";
 import DeleteProductDialog from "./delete-product-dialog";
+import { AppDispatch } from "../../stores/store";
+import { useDispatch } from "react-redux";
+import { updateProductAsync } from "../../stores/actions/update-product-action";
+import { deleteProductAsync } from "../../stores/actions/delete-product-action";
 
 export type ProductItemProps = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   thumbnail: string;
@@ -33,6 +37,10 @@ export type ProductItemProps = {
   discount: number;
   categorySlug: string;
   images: string[];
+  createdAt: string;
+  updatedAt: string;
+  slug: string;
+  categoryTitle: string;
 };
 
 export function ProductItem({ product }: { product: ProductItemProps }) {
@@ -42,6 +50,8 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  const dispatch: AppDispatch = useDispatch();
 
   const handleOpenPopover = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,6 +63,26 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
   }, []);
+
+  const handleUpdateProduct = useCallback(
+    (product: ProductItemProps) => {
+      setOpenEditDialog(false);
+      setOpenPopover(null);
+
+      dispatch(updateProductAsync(product));
+    },
+    [dispatch]
+  );
+
+  const handleDeleteProduct = useCallback(
+    (product: ProductItemProps) => {
+      setOpenDeleteDialog(false);
+      setOpenPopover(null);
+
+      dispatch(deleteProductAsync(product._id));
+    },
+    [dispatch]
+  );
 
   const renderStatus = (
     <Label
@@ -131,7 +161,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
 
   return (
     <>
-      <Card>
+      <Card key={product._id}>
         <Box sx={{ pt: "100%", position: "relative" }}>
           {product.status && renderStatus}
           {product.discount && renderDiscount}
@@ -234,7 +264,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
           handleClosePopover();
         }}
         product={product}
-        onSave={() => {}}
+        onSave={handleUpdateProduct}
       />
 
       <DeleteProductDialog
@@ -243,7 +273,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
           setOpenDeleteDialog(false);
           handleClosePopover();
         }}
-        onDelete={() => {}}
+        onDelete={handleDeleteProduct}
         product={product}
       />
     </>

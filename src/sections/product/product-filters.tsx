@@ -4,21 +4,24 @@ import Radio from "@mui/material/Radio";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
-import Rating from "@mui/material/Rating";
 import Divider from "@mui/material/Divider";
-import Checkbox from "@mui/material/Checkbox";
-import FormGroup from "@mui/material/FormGroup";
 import RadioGroup from "@mui/material/RadioGroup";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Iconify } from "../../components/iconify/iconify";
 import { Scrollbar } from "../../components/scrollbar/scrollbar";
+import { useTheme } from "@mui/material";
+import { useState } from "react";
+import IconifyIcon from "../../components/iconifyIcon";
+import { slugify } from "../../utils/slugify";
 
 export type FiltersProps = {
-  price: string;
-  category: string;
-  sale: string;
+  limit: number;
+  page: number;
+  categorySlug: string;
+  sort: string;
+  search: string;
 };
 
 type ProductFiltersProps = {
@@ -30,9 +33,7 @@ type ProductFiltersProps = {
   onResetFilter: () => void;
   onSetFilters: (updateState: Partial<FiltersProps>) => void;
   options: {
-    categories: { value: string; label: string }[];
-    price: { value: string; label: string }[];
-    sale: { value: string; label: string }[];
+    categories: any;
   };
 };
 
@@ -46,65 +47,91 @@ export function ProductFilters({
   onCloseFilter,
   onResetFilter,
 }: ProductFiltersProps) {
+  const theme = useTheme();
+  const [showCategory, setShowCategory] = useState<Record<string, boolean>>({});
+
   const renderCategory = (
     <Stack spacing={1}>
       <Typography variant="subtitle2">Category</Typography>
-      <RadioGroup>
-        {options.categories.map((option) => (
-          <FormControlLabel
-            key={option.value}
-            value={option.value}
-            control={
-              <Radio
-                checked={filters.category.includes(option.value)}
-                onChange={() => onSetFilters({ category: option.value })}
-              />
-            }
-            label={option.label}
-          />
-        ))}
-      </RadioGroup>
-    </Stack>
-  );
+      {options.categories?.map((item: any, index: number) => {
+        return (
+          <>
+            <Box
+              key={"category" + index}
+              onClick={() =>
+                setShowCategory((prev) => ({
+                  [item[0]]: !prev[item[0]],
+                }))
+              }
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "3rem",
+                cursor: "pointer",
+                p: 1,
+                "&:hover": {
+                  backgroundColor: theme.palette.grey[300],
+                },
+              }}
+            >
+              <Typography>{item[0]}</Typography>
+              <IconifyIcon icon={"mingcute:down-line"} />
+            </Box>
 
-  const renderPrice = (
-    <Stack spacing={1}>
-      <Typography variant="subtitle2">Price</Typography>
-      <RadioGroup>
-        {options.price.map((option) => (
-          <FormControlLabel
-            key={option.value}
-            value={option.value}
-            control={
-              <Radio
-                checked={filters.price.includes(option.value)}
-                onChange={() => onSetFilters({ price: option.value })}
-              />
-            }
-            label={option.label}
-          />
-        ))}
-      </RadioGroup>
-    </Stack>
-  );
+            {showCategory[item[0]] && (
+              <Box
+                style={{
+                  cursor: "pointer",
+                  padding: 10,
+                  backgroundColor:
+                    theme.palette.mode === "dark"
+                      ? theme.palette.common.black
+                      : theme.palette.common.white,
+                  boxShadow: `${
+                    theme.palette.mode === "dark"
+                      ? "rgba(255, 255, 255, 0.24)"
+                      : "rgba(0, 0, 0, 0.24)"
+                  } 0px 3px 8px`,
+                }}
+              >
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  name="radio-buttons-group"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    onSetFilters({
+                      ...filters,
+                      categorySlug: slugify(
+                        (event.target as HTMLInputElement).value
+                      ),
+                    })
+                  }
+                >
+                  {item[1] &&
+                    item[1].map((item: any, index: number) => {
+                      return (
+                        <>
+                          <FormControlLabel
+                            key={"cateChild" + index}
+                            value={item}
+                            control={
+                              <Radio
+                                checked={filters.categorySlug === slugify(item)}
+                              />
+                            }
+                            label={item}
+                          />
+                        </>
+                      );
+                    })}
+                </RadioGroup>
+              </Box>
+            )}
 
-  const renderSale = (
-    <Stack spacing={1}>
-      <Typography variant="subtitle2">Sale</Typography>
-      <FormGroup>
-        {options.sale.map((option) => (
-          <FormControlLabel
-            key={option.value}
-            control={
-              <Checkbox
-                checked={filters.sale.includes(option.value)}
-                onChange={() => onSetFilters({ sale: option.value })}
-              />
-            }
-            label={option.label}
-          />
-        ))}
-      </FormGroup>
+            {index !== options.categories?.length - 1 && <Divider />}
+          </>
+        );
+      })}
     </Stack>
   );
 
@@ -156,8 +183,6 @@ export function ProductFilters({
         <Scrollbar>
           <Stack spacing={3} sx={{ p: 3 }}>
             {renderCategory}
-            {renderPrice}
-            {renderSale}
           </Stack>
         </Scrollbar>
       </Drawer>

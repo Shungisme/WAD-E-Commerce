@@ -30,7 +30,7 @@ export type EditProductDialogProps = {
   open: boolean;
   onClose: () => void;
   product: ProductItemProps;
-  onSave: (account: ProductItemProps) => void;
+  onSave: (product: ProductItemProps) => void;
 };
 
 const cloudinaryConfig = {
