@@ -17,11 +17,19 @@ const orderSchema = new mongoose.Schema({
 			quantity: {
 				type: Number,
 				required: true
-			}
+			},
+			discount: {
+				type: Number,
+				required: true
+			},
 		}],
 		required: true
 	},
-	total: {
+	totalAmount: {
+		type: Number,
+		required: true
+	},
+	totalQuantity: {
 		type: Number,
 		required: true
 	},

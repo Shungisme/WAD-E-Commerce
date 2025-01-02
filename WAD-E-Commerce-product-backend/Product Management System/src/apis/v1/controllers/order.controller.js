@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import Order from '../models/order.model.js';
 import Product from '../models/product.model.js';
 import ProductCategory from '../models/product-category.model.js';
+import Cart from '../models/cart.model.js';
 import axios from 'axios';
 import JWTHelper from '../../../helpers/jwt.helper.js';
 
@@ -74,11 +75,22 @@ class OrderController {
 
 	static async createOrder(req, res) {
 		try {
-			const { products } = req.body;
+			const user = req.userInformation;
+			const cart = Cart.findOne({ userId: user._id }).lean();
+			const products = cart.products.map(product => {
+				const discount = Product.findById(product.productId).lean().discount;
+				return {
+					productId: product.productId,
+					quantity: product.quantity,
+					discount: discount
+				};
+			});
+
 			const totalAmount = products.reduce((total, item) => total + item.price * item.quantity * item.discount / 100, 0);
 			const totalQuantity = products.reduce((total, item) => total + item.quantity, 0);
 
 			const orderData = {
+				userId: user._id,
 				products,
 				totalAmount,
 				totalQuantity,
@@ -87,7 +99,8 @@ class OrderController {
 			const order = new Order(orderData);
 			await order.save();
 
-			const user = req.userInformation;
+			await Cart.updateOne({ userId: user._id }, { products: [] });
+
 			const token = await JWTHelper.generateTokenForPaymentSystem({ userId: user._id, email: user.email }, process.env.SYSTEM_SIGNER_KEY);
 
 			const userPaymentInformation = await axios.get(`${PAYMENT_URL}/users`, {
