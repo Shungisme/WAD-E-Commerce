@@ -77,12 +77,15 @@ class OrderController {
 		try {
 			const user = req.userInformation;
 			const cart = Cart.findOne({ userId: user._id }).lean();
-			const products = cart.products.map(product => {
-				const discount = Product.findById(product.productId).lean().discount;
+			const products = cart.products.map(item => {
+				const product = Product.findById(item.productId).select('title price discount thunmbnail').lean();
 				return {
-					productId: product.productId,
-					quantity: product.quantity,
-					discount: discount
+					productId: product._id,
+					quantity: item.quantity,
+					discount: product.discount,
+					price: product.price,
+					thumbnail: product.thumbnail,
+					title: product.title
 				};
 			});
 
@@ -91,13 +94,20 @@ class OrderController {
 
 			const orderData = {
 				userId: user._id,
-				products,
+				products: {
+					$each: products.map(item => ({
+						productId: item.productId,
+						quantity: item.quantity,
+						discount: item.discount,
+					})),
+				},
 				totalAmount,
 				totalQuantity,
 			};
 
 			const order = new Order(orderData);
 			await order.save();
+
 
 			await Cart.updateOne({ userId: user._id }, { products: [] });
 
@@ -110,6 +120,7 @@ class OrderController {
 			});
 			return res.status(StatusCodes.CREATED).json({
 				order,
+				products,
 				userPaymentInformation
 			});
 		} catch (error) {
