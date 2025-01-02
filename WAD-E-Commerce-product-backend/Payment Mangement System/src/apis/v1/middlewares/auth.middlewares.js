@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const ec = errorCode.ErrorCode;
 const secretKey = process.env.SYSTEM_SIGNER_KEY;
+const duration = process.env.TOKEN_DURATION;
 
 const jwtVerifier = (req, res, next) => {
   const token = req.headers["payment-system-auth"];
@@ -14,6 +15,12 @@ const jwtVerifier = (req, res, next) => {
   }
 
   try {
+    const iat = jwt.decode(token).iat;
+
+    if (Date.now() - iat > duration) {
+      return res.status(401).json(new ApplicationError(ec.INVALID_TOKEN));
+    }
+
     const decodedToken = jwt.verify(token, secretKey);
 
     req.decodedToken = decodedToken;

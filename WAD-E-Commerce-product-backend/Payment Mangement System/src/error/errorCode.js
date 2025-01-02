@@ -40,7 +40,7 @@ export const ErrorCode = {
   TOKEN_MISSING: {
     message: "Token missing",
     statusCode: HttpStatus.UNAUTHORIZED,
-    desc: "Token missing",
+    desc: "Unauthorized access",
   },
 
   INVALID_TOKEN: {
