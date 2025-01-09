@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
 	},
 	avatar: {
 		type: String,
+		default: "https://img.icons8.com/?size=100&id=20563&format=png&color=000000"
 	},
 	role: {
 		type: String,
@@ -29,8 +30,8 @@ const userSchema = new mongoose.Schema({
 	},
 	status: {
 		type: String,
-		default: 'active',
-		enum: ['active', 'inactive']
+		default: 'unverified',
+		enum: ['unverified', 'active', 'inactive']
 	},
 },
 	{
