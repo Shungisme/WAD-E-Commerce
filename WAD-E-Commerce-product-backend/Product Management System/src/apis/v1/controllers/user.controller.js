@@ -2,6 +2,9 @@ import User from '../models/user.model.js';
 import { StatusCodes } from 'http-status-codes';
 import JWTHelper from '../../../helpers/jwt.helper.js';
 import bcrypt from 'bcrypt';
+import verificationCodeModel from '../models/verification-code.model.js';
+import SendMailHelper from '../../../helpers/sendMail.helper.js';
+import GenerateHelper from '../../../helpers/generate.helper.js';
 
 class UserController {
 	static async login(req, res) {
@@ -28,12 +31,20 @@ class UserController {
 				});
 			}
 
+			if (user.status === 'unverified') {
+				return res.status(StatusCodes.FORBIDDEN).json({
+					code: 'ACCOUNT_NOT_VERIFIED',
+					message: 'User is unverified'
+				});
+			}
+
 			const userInformation = {
 				user: {
 					_id: user._id,
 					email: user.email,
 					name: user.name,
-					role: user.role
+					role: user.role,
+					avatar: user?.avatar
 				}
 			};
 
@@ -79,10 +90,21 @@ class UserController {
 			});
 			await user.save();
 
+			const verificationCode = new verificationCodeModel({
+				email,
+				type: 'verify'
+			});
+			await verificationCode.save();
+
+			const sendMailHelper = new SendMailHelper();
+			sendMailHelper.sendVerificationCode(email, verificationCode.code, 'verify');
+
 			res.status(StatusCodes.CREATED).json({
 				_id: user._id,
-				message: 'User created successfully'
+				message: 'User created successfully, please verify your email.'
 			});
+
+
 		}
 		catch (error) {
 			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -94,6 +116,12 @@ class UserController {
 	static async updateUser(req, res) {
 		try {
 			const { id } = req.params;
+
+			if (req.body.password) {
+				const salt = await bcrypt.genSalt(13);
+				req.body.password = await bcrypt.hash(req.body.password, salt);
+			}
+
 			const user = await User.findByIdAndUpdate(id, req.body, { new: true });
 			if (!user) return res.status(StatusCodes.NOT_FOUND).json({
 				message: 'User not found'
@@ -128,27 +156,40 @@ class UserController {
 	}
 
 	static async changePassword(req, res) {
+		debugger;
 		try {
 			const id = req.userInformation._id;
-			const { oldPassword, newPassword } = req.body;
+			const email = req.userInformation.email;
+			const { oldPassword, newPassword, code } = req.body;
 
-			if (!oldPassword || !newPassword) {
-				res.StatusCodes.BAD_REQUEST.json({ message: "Missing required fields" });
+			if (!oldPassword || !newPassword || !code) {
+				return res.status(StatusCodes.BAD_REQUEST).json({ message: "Missing required fields" });
+			}
+
+			if (oldPassword === newPassword) {
+				return res.status(StatusCodes.BAD_REQUEST).json({ message: "New password must be different from the old password" });
+			}
+
+			const checkCode = await verificationCodeModel.findOne({ email, code, type: 'change-password' });
+			if (!checkCode) {
+				return res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid verification code" });
 			}
 
 			const user = await User.findById(id);
 			if (!user) {
-				res.StatusCodes.NOT_FOUND.json({ message: "User not found" });
+				return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
 			}
 
 			if (!(await bcrypt.compare(oldPassword, user.password))) {
-				res.StatusCodes.UNAUTHORIZED.json({ message: "Invalid old password" });
+				return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid old password" });
 			}
 
 			const salt = await bcrypt.genSalt(13);
 			const hashedPassword = await bcrypt.hash(newPassword, salt);
 
 			await User.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
+			await verificationCodeModel.findOneAndDelete({ code, type: 'change-password' });
+
 			res.status(StatusCodes.OK).json({ message: "Password changed successfully" });
 		}
 		catch (error) {
