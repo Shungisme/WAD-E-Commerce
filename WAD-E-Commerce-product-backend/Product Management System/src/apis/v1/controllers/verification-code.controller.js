@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
-import verificationCodeModel from '../models/verification-code.model.js';
+import VerificationCode from '../models/verification-code.model.js';
+import User from '../models/user.model.js';
 import SendMailHelper from '../../../helpers/sendMail.helper.js';
 
 class VerificationCodeController {
@@ -12,9 +13,9 @@ class VerificationCodeController {
 				});
 			}
 
-			await verificationCodeModel.findOneAndDelete({ email, type });
+			await VerificationCode.findOneAndDelete({ email, type });
 
-			const verificationCode = new verificationCodeModel({
+			const verificationCode = new VerificationCode({
 				email,
 				type
 			});
@@ -26,6 +27,37 @@ class VerificationCodeController {
 
 			res.status(StatusCodes.CREATED).json({
 				message: 'Verification code sent'
+			});
+		} catch (error) {
+			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
+
+	static async verifyAccount(req, res) {
+		try {
+			const { email, code } = req.body;
+
+			if (!email || !code) {
+				return res.status(StatusCodes.BAD_REQUEST).json({
+					message: 'Missing required fields'
+				});
+			}
+
+			const verificationCode = await VerificationCode.findOne({ email, code, type: 'verify' });
+
+			if (!verificationCode) {
+				return res.status(StatusCodes.BAD_REQUEST).json({
+					message: 'Invalid verification code'
+				});
+			}
+
+			await VerificationCode.findOneAndDelete({ email, code, type: 'verify' });
+			await User.findOneAndUpdate({ email }, { status: 'active' });
+
+			res.status(StatusCodes.OK).json({
+				message: 'Verification successful'
 			});
 		} catch (error) {
 			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

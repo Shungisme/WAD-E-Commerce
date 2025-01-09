@@ -3,6 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 import JWTHelper from '../../../helpers/jwt.helper.js';
 import bcrypt from 'bcrypt';
 import verificationCodeModel from '../models/verification-code.model.js';
+import SendMailHelper from '../../../helpers/sendMail.helper.js';
+import GenerateHelper from '../../../helpers/generate.helper.js';
 
 class UserController {
 	static async login(req, res) {
@@ -26,6 +28,13 @@ class UserController {
 			if (user.status === 'inactive') {
 				return res.status(StatusCodes.FORBIDDEN).json({
 					message: 'User is inactive'
+				});
+			}
+
+			if (user.status === 'unverified') {
+				return res.status(StatusCodes.FORBIDDEN).json({
+					code: 'ACCOUNT_NOT_VERIFIED',
+					message: 'User is unverified'
 				});
 			}
 
@@ -80,10 +89,21 @@ class UserController {
 			});
 			await user.save();
 
+			const verificationCode = new verificationCodeModel({
+				email,
+				type: 'verify'
+			});
+			await verificationCode.save();
+
+			const sendMailHelper = new SendMailHelper();
+			sendMailHelper.sendVerificationCode(email, verificationCode.code, 'verify');
+
 			res.status(StatusCodes.CREATED).json({
 				_id: user._id,
-				message: 'User created successfully'
+				message: 'User created successfully, please verify your email.'
 			});
+
+
 		}
 		catch (error) {
 			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
