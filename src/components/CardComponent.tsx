@@ -31,7 +31,7 @@ const CardComponent = ({ item }: TProps) => {
           border: `1.5px solid`,
         }}
         component={"div"}
-        onClick={() => navigate(`/detail?content=${slugify(item.title)}`)}
+        onClick={() => navigate(`/detail?content=${item?.slug}`)}
       >
         <Box position={"relative"}>
           <CardMedia

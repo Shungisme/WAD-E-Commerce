@@ -38,6 +38,8 @@ const NavigationComponent = () => {
   const [isSticky, setIsSticky] = useState(false);
   const { user, logoutAuth } = useAuth();
   const { myCart } = useCart();
+  const [openModalUpdate, setOpenModalUpdate] = useState(false);
+  const [openForgotPassword, setOpenForgotPassword] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -153,6 +155,10 @@ const NavigationComponent = () => {
               <strong>Name: </strong> {user?.name}
             </Typography>
           </Box>
+          <Stack>
+            <Button>Cập nhật thông tin</Button>
+            <Button>Đổi mật khẩu</Button>
+          </Stack>
           <Divider />
           <Button
             onClick={async () => {
@@ -455,7 +461,6 @@ const NavigationComponent = () => {
                       alt={"Anonymous"}
                       src={undefined}
                     />
-                
                   </DropdownComponent>
                 </>
               )}
