@@ -179,6 +179,7 @@ export function ProductsView() {
           </Button>
         </Box>
         <Box
+          gap={1}
           display="flex"
           alignItems="center"
           flexWrap="wrap-reverse"

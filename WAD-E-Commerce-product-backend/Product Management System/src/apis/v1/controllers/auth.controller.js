@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import passport from "../../../configs/passport.js";
 import JWTHelper from "../../../helpers/jwt.helper.js";
+import { Avatar } from "@mui/material";
 
 class AuthController {
 	static auth = (req, res) => {
@@ -18,7 +19,8 @@ class AuthController {
 				_id: user._id,
 				email: user.email,
 				name: user.name,
-				role: user.role
+				role: user.role,
+				avatar: user?.avatar
 			}
 		};
 

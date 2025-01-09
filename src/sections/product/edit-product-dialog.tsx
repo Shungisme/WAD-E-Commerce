@@ -11,7 +11,6 @@ import {
   Select,
   MenuItem,
   Box,
-  Avatar,
   IconButton,
   Typography,
   FormHelperText,
