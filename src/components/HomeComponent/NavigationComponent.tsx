@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Badge,
   Box,
   Button,
@@ -396,8 +397,7 @@ const NavigationComponent = () => {
                       width: "100%",
                     },
                   }}
-                >
-                </Box>
+                ></Box>
               </Box>
             </Box>
 
@@ -434,8 +434,14 @@ const NavigationComponent = () => {
                     contentDrop={renderHasLogin()}
                     dropdownKey={nameComponent}
                   >
-                    <IconifyIcon icon={"ph:user-light"} fontSize={"1.5rem"} />
-                    <Typography fontSize={"0.8rem"}>{user?.name}</Typography>
+                    <Avatar
+                      sx={{
+                        width: "2.3rem",
+                        height: "2.3rem",
+                      }}
+                      alt={user?.name ?? "Anonymous"}
+                      src={user?.avatar ?? undefined}
+                    />
                   </DropdownComponent>
                 </>
               ) : (
@@ -444,8 +450,15 @@ const NavigationComponent = () => {
                     contentDrop={renderComponentAuthentication()}
                     dropdownKey={nameComponent}
                   >
-                    <IconifyIcon icon={"ph:user-light"} fontSize={"1.5rem"} />
-                    <Typography fontSize={"0.8rem"}>Tài khoản</Typography>
+                    <Avatar
+                      sx={{
+                        width: "2.3rem",
+                        height: "2.3rem",
+                      }}
+                      alt={"Anonymous"}
+                      src={undefined}
+                    />
+                
                   </DropdownComponent>
                 </>
               )}

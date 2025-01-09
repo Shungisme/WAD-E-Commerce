@@ -28,7 +28,7 @@ const CardComponent = ({ item }: TProps) => {
           height: "100%",
           width: "100%",
           boxShadow: 0,
-          border: `1.5px solid`
+          border: `1.5px solid`,
         }}
         component={"div"}
         onClick={() => navigate(`/detail?content=${slugify(item.title)}`)}
@@ -81,7 +81,7 @@ const CardComponent = ({ item }: TProps) => {
           <Box
             sx={{
               display: "flex",
-              gap: 2,
+              gap: 1,
             }}
           >
             <Typography fontWeight={"bold"} color={theme.palette.primary.main}>
@@ -94,7 +94,7 @@ const CardComponent = ({ item }: TProps) => {
                     textDecoration: "line-through",
                   }}
                 >
-                  {item.price}
+                  {toVND(item.price)}
                 </Typography>
               </>
             )}

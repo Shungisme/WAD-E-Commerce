@@ -24,6 +24,7 @@ import Fade from "@mui/material/Fade";
 import { slugify } from "../utils/slugify";
 import { useSearchParams } from "react-router-dom";
 import { PERPAGE_OPITONS } from "../pages/FilterPage";
+import PaginationComponent from "../components/PaginationComponent";
 
 interface TProps {
   children: ReactNode;
@@ -31,6 +32,8 @@ interface TProps {
 }
 
 const LayoutFilter = ({ children }: TProps) => {
+  const [currentPage, setPage] = useState<number>(1);
+  const [perPage, setPerPage] = useState<number>(PERPAGE_OPITONS[0]);
   const [hideFilter, setHideFilter] = useState<boolean>(true);
   const [showCategory, setShowCategory] = useState<Record<string, boolean>>({});
   const [content, setContent] = useState<string>("");
@@ -39,7 +42,7 @@ const LayoutFilter = ({ children }: TProps) => {
 
   const theme = useTheme();
   const dispatch: AppDispatch = useDispatch();
-  const { isLoading, page, limit, categorySlug } = useSelector(
+  const { isLoading, limit, categorySlug, totalPages, data } = useSelector(
     (store: RootState) => store.filterData
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -143,34 +146,41 @@ const LayoutFilter = ({ children }: TProps) => {
     });
   };
 
-  const clearFilter = () => {
-    dispatch(
+  const comeClearFilter = useRef<boolean>(false);
+  const clearFilter = async () => {
+    await dispatch(
       filterAsync({
         categorySlug: "",
         limit: PERPAGE_OPITONS[0],
         page: 1,
         search: "",
         sort: "",
-        status: "active"
+        status: "active",
       })
     );
+    setPage(1);
+    comeClearFilter.current = true;
   };
 
   const firstRender = useRef(false);
+  const comeFilter = useRef(false);
   useEffect(() => {
     if (firstRender.current === false) {
       firstRender.current = true;
       return;
+    } else {
+      comeFilter.current = true;
+      dispatch(
+        filterAsync({
+          categorySlug: content || "",
+          sort,
+          page: 1,
+          limit,
+          status: "active",
+        })
+      );
+      setPage(1);
     }
-    dispatch(
-      filterAsync({
-        categorySlug: content || "",
-        sort,
-        page,
-        limit,
-        status: "active"
-      })
-    );
   }, [sort, content]);
 
   useEffect(() => {
@@ -188,6 +198,26 @@ const LayoutFilter = ({ children }: TProps) => {
       });
     }
   }, [searchParams]);
+
+  const first = useRef<boolean>(false);
+  useEffect(() => {
+    if (first.current === false) {
+      first.current = true;
+      return;
+    } else {
+      if (!isLoading) {
+        dispatch(
+          filterAsync({
+            limit: perPage,
+            page: currentPage,
+            categorySlug,
+            sort,
+            status: "active",
+          })
+        );
+      }
+    }
+  }, [currentPage, perPage]);
 
   return (
     <>
@@ -307,6 +337,24 @@ const LayoutFilter = ({ children }: TProps) => {
               alignItems={"center"}
             >
               {children}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  width: "100%",
+                  mt: 2,
+                }}
+              >
+                {data.length && (
+                  <PaginationComponent
+                    page={currentPage || 0}
+                    totalPages={totalPages || 0}
+                    setPerpage={setPerPage}
+                    setPage={setPage}
+                    perPage={perPage}
+                  />
+                )}
+              </Box>
             </Grid>
           </Grid>
         </Grid>
