@@ -2,6 +2,7 @@ import User from '../models/user.model.js';
 import { StatusCodes } from 'http-status-codes';
 import JWTHelper from '../../../helpers/jwt.helper.js';
 import bcrypt from 'bcrypt';
+import verificationCodeModel from '../models/verification-code.model.js';
 
 class UserController {
 	static async login(req, res) {
@@ -134,27 +135,40 @@ class UserController {
 	}
 
 	static async changePassword(req, res) {
+		debugger;
 		try {
 			const id = req.userInformation._id;
-			const { oldPassword, newPassword } = req.body;
+			const email = req.userInformation.email;
+			const { oldPassword, newPassword, code } = req.body;
 
-			if (!oldPassword || !newPassword) {
-				res.StatusCodes.BAD_REQUEST.json({ message: "Missing required fields" });
+			if (!oldPassword || !newPassword || !code) {
+				return res.status(StatusCodes.BAD_REQUEST).json({ message: "Missing required fields" });
+			}
+
+			if (oldPassword === newPassword) {
+				return res.status(StatusCodes.BAD_REQUEST).json({ message: "New password must be different from the old password" });
+			}
+
+			const checkCode = await verificationCodeModel.findOne({ email, code, type: 'change-password' });
+			if (!checkCode) {
+				return res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid verification code" });
 			}
 
 			const user = await User.findById(id);
 			if (!user) {
-				res.StatusCodes.NOT_FOUND.json({ message: "User not found" });
+				return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
 			}
 
 			if (!(await bcrypt.compare(oldPassword, user.password))) {
-				res.StatusCodes.UNAUTHORIZED.json({ message: "Invalid old password" });
+				return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid old password" });
 			}
 
 			const salt = await bcrypt.genSalt(13);
 			const hashedPassword = await bcrypt.hash(newPassword, salt);
 
 			await User.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
+			await verificationCodeModel.findOneAndDelete({ code, type: 'change-password' });
+
 			res.status(StatusCodes.OK).json({ message: "Password changed successfully" });
 		}
 		catch (error) {

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import GenerateHelper from "../../../helpers/generate.helper.js";
 
 const verificationCodeSchema = new mongoose.Schema({
-	gmail: {
+	email: {
 		type: String,
 		required: true
 	},

@@ -5,24 +5,24 @@ import SendMailHelper from '../../../helpers/sendMail.helper.js';
 class VerificationCodeController {
 	static async sendVerificationCode(req, res) {
 		try {
-			const { gmail, type } = req.body;
-			if (!gmail || !type) {
+			const { email, type } = req.body;
+			if (!email || !type) {
 				return res.status(StatusCodes.BAD_REQUEST).json({
 					message: 'Missing required fields'
 				});
 			}
 
-			await verificationCodeModel.findOneAndDelete({ gmail, type });
+			await verificationCodeModel.findOneAndDelete({ email, type });
 
 			const verificationCode = new verificationCodeModel({
-				gmail,
+				email,
 				type
 			});
 
 			await verificationCode.save();
 
 			const sendMailHelper = new SendMailHelper();
-			sendMailHelper.sendVerificationCode(gmail, verificationCode.code, type);
+			sendMailHelper.sendVerificationCode(email, verificationCode.code, type);
 
 			res.status(StatusCodes.CREATED).json({
 				message: 'Verification code sent'
