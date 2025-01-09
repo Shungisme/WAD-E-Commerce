@@ -16,6 +16,7 @@ import { AccountPopover } from "../components/account-popover";
 import { Iconify } from "../../components/iconify/iconify";
 import { Main } from "./main";
 import { layoutClasses } from "../classes";
+import ThemeToggle from "../../components/toggleThemeComponent";
 
 export type DashboardLayoutProps = {
   sx?: SxProps<Theme>;
@@ -83,8 +84,7 @@ export const DashboardLayout = ({
             ),
             rightArea: (
               <Box gap={1} display="flex" alignItems="center">
-                {/* <Searchbar /> */}
-                {/* <NotificationsPopover data={_notifications} /> */}
+                <ThemeToggle />
                 <AccountPopover
                   data={[
                     {

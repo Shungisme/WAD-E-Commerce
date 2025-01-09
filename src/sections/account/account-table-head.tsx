@@ -5,6 +5,7 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  useTheme,
 } from "@mui/material";
 import { visuallyHidden } from "./utils";
 
@@ -27,10 +28,20 @@ export function AccountTableHead({
   numSelected,
   onSelectAllRows,
 }: AccountTableHeadProps) {
+  const theme = useTheme();
+
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+        <TableCell
+          padding="checkbox"
+          sx={{
+            bgcolor:
+              theme.palette.mode === "light"
+                ? theme.palette.background.neutral
+                : theme.palette.background.paper,
+          }}
+        >
           <Checkbox
             indeterminate={rowCount > 0 && numSelected === rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
@@ -45,7 +56,14 @@ export function AccountTableHead({
             key={headCell.id}
             align={headCell.align || "left"}
             sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ width: headCell.width, minWidth: headCell.minWidth }}
+            sx={{
+              width: headCell.width,
+              minWidth: headCell.minWidth,
+              bgcolor:
+                theme.palette.mode === "light"
+                  ? theme.palette.background.neutral
+                  : theme.palette.background.paper,
+            }}
           >
             <TableSortLabel
               hideSortIcon

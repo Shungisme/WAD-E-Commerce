@@ -71,7 +71,7 @@ export function ProductFilters({
                 cursor: "pointer",
                 p: 1,
                 "&:hover": {
-                  backgroundColor: theme.palette.grey[300],
+                  backgroundColor: "primary.main",
                 },
               }}
             >
