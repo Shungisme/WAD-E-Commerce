@@ -75,7 +75,6 @@ const AuthProvider = ({ children }: TProps) => {
         clearLocalData();
         clearCartInLocalStorage();
         navigate(ROUTES_CONSTANT.HOME_PAGE, { replace: true });
-        return res;
       })
       .catch((error) => {
         console.log("error at handle logout in auth context");

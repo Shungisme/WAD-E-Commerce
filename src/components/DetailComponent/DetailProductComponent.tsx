@@ -62,7 +62,7 @@ const DetailProductComponent = ({ item }: TProps) => {
           </>
         )}
         <Typography>
-          <strong>Còn lại:</strong> {item?.remaingItem}
+          <strong>Còn lại:</strong> {item?.quantity}
         </Typography>
         <Typography>
           <strong> Loại hàng:</strong> {item?.categoryTitle}
