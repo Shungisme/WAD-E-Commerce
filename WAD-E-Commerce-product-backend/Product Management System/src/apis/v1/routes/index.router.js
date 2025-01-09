@@ -5,6 +5,8 @@ import roleRouter from '../routes/role.router.js';
 import productCategoryRouter from '../routes/product-category.router.js';
 import cartRouter from '../routes/cart.router.js';
 import orderRouter from '../routes/order.router.js';
+import verificationCodeRouter from '../routes/verification-code.router.js';
+
 import { isAuthorized } from '../middlewares/auth.middleware.js';
 
 const RouterV1 = (app) => {
@@ -16,7 +18,7 @@ const RouterV1 = (app) => {
 	app.use(`/${version}/roles`, roleRouter);
 	app.use(`/${version}/carts`, cartRouter);
 	app.use(`/${version}/orders`, orderRouter);
-
+	app.use(`/${version}/verification-codes`, verificationCodeRouter);
 }
 
 export default RouterV1;
