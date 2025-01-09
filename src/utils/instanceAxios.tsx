@@ -1,6 +1,11 @@
 import axios from "axios";
-import { ReactNode } from "react";
-import { clearCartInLocalStorage, clearLocalData, getDataFromLocalStorage, setDataInLocalStorage } from "./localStorage";
+import { ReactNode, useEffect } from "react";
+import {
+  clearCartInLocalStorage,
+  clearLocalData,
+  getDataFromLocalStorage,
+  setDataInLocalStorage,
+} from "./localStorage";
 import { useAuth } from "../hooks/useAuth";
 import { decodeJwt } from "./decodeJWT";
 import { newAccessToken } from "../services/auth";
@@ -17,6 +22,33 @@ export const instanceAxios = axios.create({ baseURL: BASE_URL });
 const InstanceAxiosProvider = ({ children }: TProps) => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const { accessToken, refreshToken } = getDataFromLocalStorage();
+
+      if (!accessToken || !refreshToken) {
+        setUser(null);
+        clearLocalData();
+        clearCartInLocalStorage();
+        navigate(ROUTES_CONSTANT.HOME_PAGE, { replace: true });
+        return Promise.reject(new Error("No access or refresh token"));
+      }
+
+      const decondeRefresh = decodeJwt(refreshToken);
+      const refreshExpired =
+        decondeRefresh.exp && decondeRefresh.exp * 1000 < Date.now();
+      if (refreshExpired) {
+        setUser(null);
+        clearLocalData();
+        clearCartInLocalStorage();
+        navigate(ROUTES_CONSTANT.HOME_PAGE, { replace: true });
+        return Promise.reject(new Error("Refresh token has expired"));
+      }
+    }, 5000 * 60);
+
+    return () => clearInterval(interval);
+  }, []);
 
   instanceAxios.interceptors.request.use(
     async (request: any) => {
