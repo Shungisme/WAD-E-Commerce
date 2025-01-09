@@ -94,6 +94,12 @@ class UserController {
 	static async updateUser(req, res) {
 		try {
 			const { id } = req.params;
+
+			if (req.body.password) {
+				const salt = await bcrypt.genSalt(13);
+				req.body.password = await bcrypt.hash(req.body.password, salt);
+			}
+
 			const user = await User.findByIdAndUpdate(id, req.body, { new: true });
 			if (!user) return res.status(StatusCodes.NOT_FOUND).json({
 				message: 'User not found'
