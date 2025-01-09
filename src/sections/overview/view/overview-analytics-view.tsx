@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import { DashboardContent } from "../../../layouts/dashboard/main";
 import { AnalyticsWidgetSummary } from "../analytics-widget-summary";
-import { AnalyticsOrdersPie } from "../analytics-current-visits";
-import { AnalyticsOrdersBar } from "../anaylytics-website-visits";
-import { AnalyticsOrdersHorizontalBar } from "../analytics-conversion-rates";
-import { AnalyticsOrdersRadar } from "../analytics-current-subject";
+import { AnalyticsOrdersPie } from "../analytics-orders-pie";
+import { AnalyticsOrdersBar } from "../analytics-orders-bar";
+import { AnalyticsOrdersHorizontalBar } from "../analytics-orders-horizontal-bar";
+import { AnalyticsOrdersRadar } from "../analytics-orders-radar";
 import useStatistics from "../../../hooks/use-statistics";
 import { useMemo } from "react";
 import { Iconify } from "../../../components/iconify/iconify";
@@ -70,7 +70,10 @@ export function OverviewAnalyticsView() {
             minWidth: 120,
             "& .MuiOutlinedInput-root": {
               borderRadius: 1,
-              backgroundColor: (theme) => theme.palette.background.neutral,
+              backgroundColor: (theme) =>
+                theme.palette.mode === "light"
+                  ? theme.palette.background.neutral
+                  : theme.palette.background.paper,
               transition: (theme) =>
                 theme.transitions.create(["box-shadow", "background-color"]),
               "&:hover": {
@@ -146,7 +149,7 @@ export function OverviewAnalyticsView() {
           )
         )}
 
-        <Grid2 size={{ xs: 12, md: 6, lg: 4 }}>
+        <Grid2 size={{ xs: 12, md: 6, lg: 5 }}>
           <AnalyticsOrdersPie
             title="Orders pie chart"
             chart={{
@@ -163,7 +166,7 @@ export function OverviewAnalyticsView() {
           />
         </Grid2>
 
-        <Grid2 size={{ xs: 12, md: 6, lg: 8 }}>
+        <Grid2 size={{ xs: 12, md: 6, lg: 7 }}>
           <AnalyticsOrdersBar
             title="Orders bar chart"
             subheader="Details of Orders"

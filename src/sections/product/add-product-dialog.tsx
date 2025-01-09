@@ -191,7 +191,7 @@ export default function AddProductDialog({
             fontSize: (theme) => theme.typography.h6,
           }}
         >
-          Edit Product
+          Add Product
         </Typography>
       </DialogTitle>
 
@@ -510,7 +510,7 @@ export default function AddProductDialog({
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
           <Button variant="contained" type="submit">
-            Save Changes
+            Create Product
           </Button>
         </DialogActions>
       </form>
