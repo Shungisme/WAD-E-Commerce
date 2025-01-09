@@ -152,9 +152,6 @@ const NavigationComponent = () => {
             <Typography>
               <strong>Name: </strong> {user?.name}
             </Typography>
-            <Typography>
-              <strong>Role: </strong> {user?.role}
-            </Typography>
           </Box>
           <Divider />
           <Button
