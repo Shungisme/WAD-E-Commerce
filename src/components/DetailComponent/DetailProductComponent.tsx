@@ -62,9 +62,12 @@ const DetailProductComponent = ({ item }: TProps) => {
           </>
         )}
         <Typography>
-          Loại hàng: <strong>{item?.categoryTitle}</strong>
+          <strong>Còn lại:</strong> {item?.remaingItem}
         </Typography>
-        <Typography>{item?.description}</Typography>
+        <Typography>
+          <strong> Loại hàng:</strong> {item?.categoryTitle}
+        </Typography>
+        <Typography><strong>Chi tiết: </strong> {item?.description}</Typography>
         <Button onClick={() => handleAddProductToCart()} variant="contained">
           Thêm vào giỏ hàng
         </Button>
