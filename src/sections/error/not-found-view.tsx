@@ -39,9 +39,6 @@ export const NotFoundView = () => {
           size="large"
           variant="contained"
           color="inherit"
-          // sx={{
-          //   bgcolor: "info.main",
-          // }}
         >
           Go to home
         </Button>

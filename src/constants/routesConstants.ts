@@ -5,6 +5,7 @@ export const ROUTES_CONSTANT = {
   DETAIL_PRODUCT_PAGE: "detail",
   FILTER_PAGE: "filter",
   GOOGLE_RETURN: "users/oauth/google",
+  CHECKOUT: "/checkout",
 };
 
 export const ROUTES_ADMIN_CONSTANT = {

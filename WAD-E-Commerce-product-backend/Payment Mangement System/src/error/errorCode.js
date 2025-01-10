@@ -12,7 +12,7 @@ const HttpStatus = {
   SERVICE_UNAVAILABLE: 503,
 };
 
-export const ErrorCode = {
+const ErrorCode = {
   UNAUTHORIZED: {
     message: "Unauthorized",
     statusCode: HttpStatus.UNAUTHORIZED,
@@ -55,3 +55,5 @@ export const ErrorCode = {
     desc: "Something went wrong",
   },
 };
+
+module.exports = ErrorCode;

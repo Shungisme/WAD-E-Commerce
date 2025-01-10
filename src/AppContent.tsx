@@ -8,6 +8,7 @@ import CartPage from "./pages/CartPage";
 import DetailPage from "./pages/DetailPage";
 import FilterPage from "./pages/FilterPage";
 import GoogleReturnPage from "./pages/GoogleReturnPage";
+import { CheckoutPage } from "./routes/sections";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -37,6 +38,7 @@ const AppContent: React.FC = () => {
           path={ROUTES_CONSTANT.GOOGLE_RETURN}
           element={<GoogleReturnPage />}
         />
+        <Route path={ROUTES_CONSTANT.CHECKOUT} element={<CheckoutPage />} />
       </Routes>
     </motion.div>
   );

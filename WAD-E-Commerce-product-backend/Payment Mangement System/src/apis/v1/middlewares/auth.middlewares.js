@@ -17,7 +17,7 @@ const jwtVerifier = (req, res, next) => {
   try {
     const iat = jwt.decode(token).iat;
 
-    if (Date.now() - iat > duration) {
+    if (Date.now() - iat * 1000 > duration) {
       return res.status(401).json(new ApplicationError(ec.INVALID_TOKEN));
     }
 

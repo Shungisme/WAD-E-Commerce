@@ -10,7 +10,7 @@ import {
   TableCell,
   TableRow,
 } from "@mui/material";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Label } from "../../components/label/label";
 import { Iconify } from "../../components/iconify/iconify";
 import EditAccountDialog from "./edit-account-dialog";
@@ -34,6 +34,7 @@ export type AccountTableRowProps = {
   onSelectRow: () => void;
   onEditRow: (account: AccountProps) => void;
   onDeleteRow: (account: AccountProps) => void;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export function AccountTableRow({
@@ -42,6 +43,7 @@ export function AccountTableRow({
   onSelectRow,
   onEditRow,
   onDeleteRow,
+  setIsLoading,
 }: AccountTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
     null
@@ -145,6 +147,7 @@ export function AccountTableRow({
       </Popover>
 
       <EditAccountDialog
+        setIsLoading={setIsLoading}
         open={openEditDialog}
         onClose={() => {
           setOpenEditDialog(false);
