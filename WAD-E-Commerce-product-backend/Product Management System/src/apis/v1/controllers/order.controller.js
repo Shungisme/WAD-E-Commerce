@@ -99,7 +99,6 @@ class OrderController {
   }
 
   static async createOrder(req, res) {
-    debugger;
     try {
       const user = req.userInformation;
       const cart = await Cart.findOne({ userId: user._id }).lean();

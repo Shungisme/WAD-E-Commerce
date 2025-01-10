@@ -137,6 +137,26 @@ class UserController {
 		}
 	}
 
+	static async updateProfile(req, res) {
+		try {
+			const { id } = req.params;
+			const { name, avatar } = req.body;
+
+			const user = await User.findByIdAndUpdate(id, { name, avatar, }, { new: true });
+			if (!user) return res.status(StatusCodes.NOT_FOUND).json({
+				message: 'User not found'
+			});
+			res.status(StatusCodes.OK).json({
+				user
+			});
+		}
+		catch (error) {
+			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: error.message
+			});
+		}
+	}
+
 	static async deleteUser(req, res) {
 		try {
 			const { id } = req.params;

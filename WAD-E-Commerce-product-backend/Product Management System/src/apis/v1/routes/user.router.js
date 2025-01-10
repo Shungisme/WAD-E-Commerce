@@ -7,7 +7,8 @@ const router = Router();
 
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);
-router.patch('/update/:id', isAuthorized, UserController.updateUser);
+router.patch('/update/:id', isAuthorized, isAdmin, UserController.updateUser);
+router.patch('/update-profile/:id', isAuthorized, UserController.updateProfile);
 router.post('/change-password', isAuthorized, UserController.changePassword);
 router.post('/logout', UserController.logout);
 router.post('/refresh', UserController.refreshToken);
