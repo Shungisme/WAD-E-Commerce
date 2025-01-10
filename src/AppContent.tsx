@@ -8,6 +8,7 @@ import DetailPage from "./pages/DetailPage";
 import FilterPage from "./pages/FilterPage";
 import GoogleReturnPage from "./pages/GoogleReturnPage";
 import { renderFallback } from "./routes/sections";
+import { CheckoutPage } from "./routes/sections";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 
@@ -47,6 +48,7 @@ const AppContent: React.FC = () => {
           path={ROUTES_CONSTANT.GOOGLE_RETURN}
           element={<GoogleReturnPage />}
         />
+        <Route path={ROUTES_CONSTANT.CHECKOUT} element={<CheckoutPage />} />
       </Routes>
     </motion.div>
   );

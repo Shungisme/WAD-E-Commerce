@@ -1,4 +1,9 @@
-import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { createContext, ReactNode } from "react";
 import {
   getAllCategories,
@@ -15,11 +20,18 @@ interface Props {
 interface ProductContextAdminType {
   getCategories: UseQueryResult<CategoryProps[], Error> | null;
   getMegaMenuCategories: UseQueryResult<any, Error> | null;
+  addProduct: UseMutationResult<
+    any,
+    unknown,
+    { product: Partial<ProductItemProps> },
+    unknown
+  > | null;
 }
 
 const initialize: ProductContextAdminType = {
   getCategories: null,
   getMegaMenuCategories: null,
+  addProduct: null,
 };
 
 export const ProductContextAdmin =
@@ -70,6 +82,7 @@ export default function ProductProviderAdmin({ children }: Props) {
       value={{
         getCategories,
         getMegaMenuCategories,
+        addProduct,
       }}
     >
       {children}

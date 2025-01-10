@@ -35,6 +35,7 @@ export type AddProductDialogProps = {
       "_id" | "createdAt" | "updatedAt" | "slug" | "categoryTitle"
     >
   ) => void;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const cloudinaryConfig = {
@@ -83,6 +84,7 @@ export default function AddProductDialog({
   open,
   onClose,
   onCreate,
+  setIsLoading,
 }: AddProductDialogProps) {
   const { getCategories } = useProductsAdmin();
 
@@ -105,16 +107,14 @@ export default function AddProductDialog({
         "_id" | "createdAt" | "updatedAt" | "slug" | "categoryTitle"
       >
     ) => {
-      const images = [];
-
-      for (let i = 0; i < values.images.length; i++) {
-        const image = await uploadImageCloudinary(values.images[i]);
-
-        images.push(image.secure_url);
-      }
+      setIsLoading(true);
+      const images = await Promise.all(
+        values.images.map(
+          async (image) => (await uploadImageCloudinary(image)).secure_url
+        )
+      );
 
       const thumbnail = await uploadImageCloudinary(values.thumbnail);
-
       onCreate({
         ...values,
         thumbnail: thumbnail.secure_url,

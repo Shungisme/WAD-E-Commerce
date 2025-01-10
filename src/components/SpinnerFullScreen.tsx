@@ -14,7 +14,7 @@ const SpinnerFullScreen = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        zIndex: 1300,
+        zIndex: 50000,
       }}
     >
       <CircularProgress size={60} thickness={5} color="primary" />

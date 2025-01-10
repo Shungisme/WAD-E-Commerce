@@ -31,6 +31,7 @@ export type EditProductDialogProps = {
   onClose: () => void;
   product: ProductItemProps;
   onSave: (product: ProductItemProps) => void;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const cloudinaryConfig = {
@@ -80,6 +81,7 @@ export default function EditAccountDialog({
   onClose,
   product,
   onSave,
+  setIsLoading,
 }: EditProductDialogProps) {
   const { getCategories } = useProductsAdmin();
 
@@ -89,18 +91,15 @@ export default function EditAccountDialog({
     },
     validationSchema,
     onSubmit: async (values) => {
-      const images = [];
-
-      for (let i = 0; i < values.images.length; i++) {
-        const image = await uploadImageCloudinary(values.images[i]);
-
-        images.push(image.secure_url);
-      }
+      setIsLoading(true);
+      const images = await Promise.all(
+        values.images.map(
+          async (image) => (await uploadImageCloudinary(image)).secure_url
+        )
+      );
 
       const thumbnail = await uploadImageCloudinary(values.thumbnail);
-
       onSave({ ...values, thumbnail: thumbnail.secure_url, images: images });
-
       onClose();
     },
   });

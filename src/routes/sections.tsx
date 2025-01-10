@@ -22,6 +22,7 @@ export const CategoriesPageAdmin = lazy(
 export const SignInPageAdmin = lazy(() => import("../pages/sign-in"));
 export const ProductsPageAdmin = lazy(() => import("../pages/products-admin"));
 export const Page404 = lazy(() => import("../pages/page-not-found"));
+export const CheckoutPage = lazy(() => import("../pages/checkout"));
 
 export const renderFallback = (
   <Box

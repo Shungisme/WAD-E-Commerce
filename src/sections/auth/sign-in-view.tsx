@@ -12,6 +12,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import useAuthAdmin from "../../hooks/use-auth-admin";
+import SpinnerFullScreen from "../../components/SpinnerFullScreen";
 
 const validationSchema = new Yup.ObjectSchema({
   email: Yup.string()
@@ -20,7 +21,7 @@ const validationSchema = new Yup.ObjectSchema({
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
     .matches(
-      /[!@#$%^&*_]/,
+      /[!@#\$%\^&\*_]/,
       "Password must contain at least one special character"
     )
     .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
@@ -33,6 +34,7 @@ export const SignInView = () => {
   const router = useRouter();
   const { loginAdmin } = useAuthAdmin();
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -42,10 +44,13 @@ export const SignInView = () => {
     validationSchema: validationSchema,
     onSubmit: async (value) => {
       try {
+        setIsLoading(true);
         await loginAdmin(value);
         router.replace("/admin");
       } catch (error) {
         setOpenSnackbar(true);
+      } finally {
+        setIsLoading(false);
       }
     },
   });
@@ -115,6 +120,7 @@ export const SignInView = () => {
 
   return (
     <>
+      {isLoading && <SpinnerFullScreen />}
       <Box
         gap={1.5}
         display="flex"
