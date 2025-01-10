@@ -28,6 +28,7 @@ export type EditAccountDialogProps = {
   onClose: () => void;
   account: AccountProps;
   onSave: (account: AccountProps) => void;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const cloudinaryConfig = {
@@ -41,7 +42,7 @@ const validationSchema = new Yup.ObjectSchema({
     .oneOf(["admin", "user"], "Invalid role")
     .required("Role is required"),
   status: Yup.string()
-    .oneOf(["active", "inactive"], "Invalid status")
+    .oneOf(["active", "inactive", "unverified"], "Invalid status")
     .required("Status is required"),
   avatar: Yup.mixed().required("Avatar is required"),
 });
@@ -51,6 +52,7 @@ export default function EditAccountDialog({
   onClose,
   account,
   onSave,
+  setIsLoading,
 }: EditAccountDialogProps) {
   const formik = useFormik({
     initialValues: {
@@ -59,6 +61,7 @@ export default function EditAccountDialog({
     validationSchema,
     onSubmit: async (values) => {
       if (!values?.avatar) return;
+      setIsLoading(true);
 
       const formData = new FormData();
       formData.append("file", values?.avatar);
@@ -226,6 +229,7 @@ export default function EditAccountDialog({
               >
                 <MenuItem value="active">Active</MenuItem>
                 <MenuItem value="inactive">Inactive</MenuItem>
+                <MenuItem value="unverified">Unverified</MenuItem>
               </Select>
 
               {formik.errors.status && formik.touched.status && (

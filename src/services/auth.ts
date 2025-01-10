@@ -187,7 +187,7 @@ export const addUserApi = async (user: TUser) => {
       },
     });
 
-    await updateUserApi({ ...user, _id: response.data._id });
+    await updateUserApi({ ...user, _id: response.data._id, status: "active" });
 
     return { message: "Account created successfully" };
   } catch (error) {
