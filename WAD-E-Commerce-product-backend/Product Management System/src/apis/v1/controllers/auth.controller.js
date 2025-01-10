@@ -1,7 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import passport from "../../../configs/passport.js";
 import JWTHelper from "../../../helpers/jwt.helper.js";
-import { Avatar } from "@mui/material";
 
 class AuthController {
 	static auth = (req, res) => {
