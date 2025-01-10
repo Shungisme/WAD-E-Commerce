@@ -33,13 +33,16 @@ import { useQuery } from "@tanstack/react-query";
 import SpinnerFullScreen from "../SpinnerFullScreen";
 import { getAllCategories } from "../../services/categories";
 import { useCart } from "../../hooks/useCart";
+import ModalComponent from "../ModalComponent";
+import UpdateProfileComponent from "./ForNavigation/UpdateProfileComponent";
+import ChangePasswordComponent from "./ForNavigation/ChangePasswordComponent";
 
 const NavigationComponent = () => {
   const [isSticky, setIsSticky] = useState(false);
   const { user, logoutAuth } = useAuth();
   const { myCart } = useCart();
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
-  const [openForgotPassword, setOpenForgotPassword] = useState(false);
+  const [openChangePassword, setOpenChangePassword] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -156,8 +159,8 @@ const NavigationComponent = () => {
             </Typography>
           </Box>
           <Stack>
-            <Button>Cập nhật thông tin</Button>
-            <Button>Đổi mật khẩu</Button>
+            <Button onClick={() => setOpenModalUpdate(true)}>Cập nhật thông tin</Button>
+            <Button onClick={() => setOpenChangePassword(true)}>Đổi mật khẩu</Button>
           </Stack>
           <Divider />
           <Button
@@ -177,6 +180,12 @@ const NavigationComponent = () => {
   return (
     <>
       {categories.isFetching && <SpinnerFullScreen />}
+      <ModalComponent open={openModalUpdate} setOpen={setOpenModalUpdate}>
+        <UpdateProfileComponent/>
+      </ModalComponent>
+      <ModalComponent open={openChangePassword} setOpen={setOpenChangePassword}>
+        <ChangePasswordComponent setOpenParent={setOpenChangePassword}/>
+      </ModalComponent>
       <Box>
         <Box
           sx={{

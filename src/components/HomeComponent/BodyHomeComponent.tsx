@@ -4,6 +4,7 @@ import InformationComponent from "./ForBody/Information";
 import SmallCarousel from "../SmallCarouselComponent";
 import { useQuery } from "@tanstack/react-query";
 import { getProductsByCategory } from "../../services/products";
+import SpinnerFullScreen from "../SpinnerFullScreen";
 
 const BodyHomeComponent = () => {
   const shoesProducts = useQuery({
@@ -78,6 +79,7 @@ const BodyHomeComponent = () => {
 
   return (
     <>
+    {(shoesProducts?.isLoading || shirtProducts?.isLoading || trousersProducts?.isLoading || accessoriesProducts?.isLoading || presentsProducts?.isLoading ) && <SpinnerFullScreen/>}
       <Box
         sx={{
           display: "flex",

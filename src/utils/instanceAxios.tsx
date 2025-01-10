@@ -32,7 +32,7 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
         clearLocalData();
         clearCartInLocalStorage();
         navigate(ROUTES_CONSTANT.HOME_PAGE, { replace: true });
-        return Promise.reject(new Error("No access or refresh token"));
+        return 
       }
 
       const decondeRefresh = decodeJwt(refreshToken);

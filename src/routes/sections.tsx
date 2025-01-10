@@ -23,7 +23,7 @@ export const SignInPageAdmin = lazy(() => import("../pages/sign-in"));
 export const ProductsPageAdmin = lazy(() => import("../pages/products-admin"));
 export const Page404 = lazy(() => import("../pages/page-not-found"));
 
-const renderFallback = (
+export const renderFallback = (
   <Box
     display="flex"
     alignItems="center"
@@ -96,15 +96,15 @@ export const Router = () => {
       path: "*",
       element: (
         <>
-          <InstanceAxiosProvider>
-            <AuthProvider>
+          <AuthProvider>
+            <InstanceAxiosProvider>
               <CartProvider>
                 <NavigationComponent />
                 <AppContent />
                 <FooterComponent />
               </CartProvider>
-            </AuthProvider>
-          </InstanceAxiosProvider>
+            </InstanceAxiosProvider>
+          </AuthProvider>
         </>
       ),
     },
