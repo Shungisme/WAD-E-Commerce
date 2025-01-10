@@ -280,7 +280,7 @@ export const changePassword = async ({
 }) => {
   try {
     const url = BASE_URL + "change-password";
-    const {accessToken} = getDataFromLocalStorage()
+    const { accessToken } = getDataFromLocalStorage();
     const response = await instanceAxios(url, {
       method: "POST",
       data: {
@@ -288,9 +288,9 @@ export const changePassword = async ({
         newPassword,
         code,
       },
-      headers:{
-        Authorization:`Bearer ${accessToken}`
-      }
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
     return response?.data;
   } catch (error) {
@@ -298,21 +298,38 @@ export const changePassword = async ({
   }
 };
 
-
 export const verifyCodeAccount = async (email: string, code: string) => {
   try {
-    const url = BASE_URL+ "verification-codes/verify"
-    const response = await axios(url,{
-      method:"POST",
-      data:{
+    const url = BASE_URL + "verification-codes/verify";
+    const response = await axios(url, {
+      method: "POST",
+      data: {
         email,
-        code
-      }
-    })
+        code,
+      },
+    });
 
-    return response?.data
+    return response?.data;
   } catch (error) {
     console.log("Error at verifyCodeAccount");
     throw error;
   }
-}
+};
+
+export const updateProfile = async (id: string, data: any) => {
+  try {
+    const url = BASE_URL + "/update-profile/" + id;
+    const { accessToken } = getDataFromLocalStorage();
+    const response = await instanceAxios(url, {
+      method:"PATCH",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      data: data,
+    });
+    return response?.data;
+  } catch (error) {
+    console.log("Error at update Profle");
+    throw error;
+  }
+};
