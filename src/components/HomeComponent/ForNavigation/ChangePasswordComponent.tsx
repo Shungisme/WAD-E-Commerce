@@ -41,17 +41,15 @@ const schema = yup
   })
   .required();
 
-
 interface TProps {
-  setOpenParent:  React.Dispatch<React.SetStateAction<boolean>>
+  setOpenParent: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
-const ChangePasswordComponent = ({setOpenParent}:TProps) => {
+const ChangePasswordComponent = ({ setOpenParent }: TProps) => {
   const [showOldPassword, setShowOldPassword] = useState<boolean>(false);
   const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const {showSnackbar} = useSnackbar()
+  const { showSnackbar } = useSnackbar();
   const { logoutAuth } = useAuth();
 
   const { user } = useAuth();
@@ -67,7 +65,21 @@ const ChangePasswordComponent = ({setOpenParent}:TProps) => {
       setOpenModal(true);
     },
     onError: () => {
-      showSnackbar("Đổi mật khẩu thất bại",'error')
+      showSnackbar("Đổi mật khẩu thất bại", "error");
+    },
+  });
+
+  const code = useMutation({
+    mutationKey: ["take-code"],
+    mutationFn: async (email: string) => {
+      const response = await receciveCode(email, "change-password");
+      return response;
+    },
+    onSuccess: () => {
+      showSnackbar("Đã gửi code thành công", "success");
+    },
+    onError: () => {
+      showSnackbar("Gửi code thất bại", "error");
     },
   });
 
@@ -90,23 +102,17 @@ const ChangePasswordComponent = ({setOpenParent}:TProps) => {
   };
 
   const takeCode = async () => {
-    const response = await receciveCode(user?.email || "", "change-password");
-    if (response?.message === "Verification code sent") {
-   
-    } else {
-     
-    }
+    await code.mutate(user?.email || "");
   };
 
   const handleClose = async () => {
-
     await logoutAuth();
     setOpenParent(false);
   };
 
   return (
     <>
-      {mutate?.isPending && <SpinnerFullScreen/>}
+      {mutate?.isPending && <SpinnerFullScreen />}
       <AnnouceModalComponent
         header="Thông báo"
         bodyContent="Bạn đã đổi mật khẩu thành công. Vui lòng đăng nhập lại"
@@ -116,7 +122,7 @@ const ChangePasswordComponent = ({setOpenParent}:TProps) => {
         setOpen={setOpenModal}
       />
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
-        <Stack alignItems={"center"} gap={2}>
+        <Stack alignItems={"center"} gap={2} width={"100%"}>
           <Typography variant="h3" textAlign={"center"}>
             Đổi mật khẩu
           </Typography>
@@ -220,7 +226,7 @@ const ChangePasswordComponent = ({setOpenParent}:TProps) => {
             )}
           </Stack>
 
-          <Box>
+          <Box width={"100%"}>
             <Box width={"100%"} display={"flex"} alignItems={"center"} gap={2}>
               <Controller
                 control={control}

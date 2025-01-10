@@ -99,7 +99,7 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
     <>
       {mutation.isPending && <SpinnerFullScreen />}
       <ModalComponent open={openModal} setOpen={setOpenModal}>
-        <RegisterCodeModalComponent setOpenParent={setOpenModal} email={getValues("email")} />
+        <RegisterCodeModalComponent setOpenParent={setOpenModal} email={getValues("email")} type="verify"/>
       </ModalComponent>
       <AnnouceModalComponent
         header="Thông báo"

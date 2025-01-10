@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   clearCartInLocalStorage,
   clearLocalData,
@@ -11,6 +11,7 @@ import { decodeJwt } from "./decodeJWT";
 import { newAccessToken } from "../services/auth";
 import { ROUTES_CONSTANT } from "../constants/routesConstants";
 import { useNavigate } from "react-router-dom";
+import AnnouceModalComponent from "../components/AnnouceModalComponent";
 
 interface TProps {
   children: ReactNode;
@@ -22,6 +23,7 @@ export const instanceAxios = axios.create({ baseURL: BASE_URL });
 const InstanceAxiosProvider = ({ children }: TProps) => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
+  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,13 +34,14 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
         clearLocalData();
         clearCartInLocalStorage();
         navigate(ROUTES_CONSTANT.HOME_PAGE, { replace: true });
-        return 
+        return;
       }
 
       const decondeRefresh = decodeJwt(refreshToken);
       const refreshExpired =
         decondeRefresh.exp && decondeRefresh.exp * 1000 < Date.now();
       if (refreshExpired) {
+        setOpen(true)
         setUser(null);
         clearLocalData();
         clearCartInLocalStorage();
@@ -100,7 +103,19 @@ const InstanceAxiosProvider = ({ children }: TProps) => {
     }
   );
 
-  return <>{children}</>;
+  return (
+    <>
+      <AnnouceModalComponent
+        open={open}
+        setOpen={setOpen}
+        bodyContent="Bạn đã hết phiên đăng nhập. Vui lòng đăng nhập lại"
+        header="Thông báo"
+        doCancel={() => setOpen(false)}
+        doOk={() => setOpen(false)}
+      />
+      {children}
+    </>
+  );
 };
 
 export default InstanceAxiosProvider;
