@@ -9,8 +9,11 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { verifyCodeAccount } from "../../../services/auth";
+import { resetPassword, verifyCodeAccount } from "../../../services/auth";
 import { useSnackbar } from "../../../hooks/snackbar";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import AnnouceModalComponent from "../../AnnouceModalComponent";
 
 const schema = yup
   .object({
@@ -21,10 +24,12 @@ const schema = yup
 interface TProps {
   email: string;
   setOpenParent: React.Dispatch<React.SetStateAction<boolean>>;
+  type: "reset" | "verify";
 }
 
-const RegisterCodeModalComponent = ({ email, setOpenParent }: TProps) => {
+const RegisterCodeModalComponent = ({ email, setOpenParent, type }: TProps) => {
   const { showSnackbar } = useSnackbar();
+  const [open, setOpen] = useState<boolean>(false);
 
   const {
     control,
@@ -38,22 +43,51 @@ const RegisterCodeModalComponent = ({ email, setOpenParent }: TProps) => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: { code: string }) => {
-    const response = await verifyCodeAccount(email, data?.code);
-    if (response?.message === "Verification successful") {
+  const mutation = useMutation({
+    mutationKey: ["verify-code"],
+    mutationFn: async (data: any) => {
+      if (type === "reset") {
+        const response = await resetPassword(data?.email, data?.code);
+        return response;
+      } else {
+        const response = await verifyCodeAccount(data?.email, data?.code);
+        return response;
+      }
+    },
+    onSuccess: () => {
       setOpenParent(false);
+      if(type === "reset"){
+        showSnackbar("Xác thực thành công. Vui lòng kiểm tra email để nhận mật khảu mới", "success");
+        return
+      }
       showSnackbar("Xác thực thành công", "success");
-    } else {
+    },
+    onError: () => {
       showSnackbar("Xác thực thất bại", "error");
-    }
+    },
+  });
+
+  const onSubmit = async (data: any) => {
+    await mutation.mutate({
+      email: email,
+      code: data?.code,
+    });
   };
 
   return (
     <>
+      <AnnouceModalComponent
+        open={open}
+        setOpen={setOpen}
+        bodyContent="Vui lòng kiểm tra email để lấy mật khẩu mới"
+        header="Thông báo"
+        doCancel={() => setOpen(false)}
+        doOk={() => setOpen(false)}
+      />
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
         <Stack width={"100%"} gap={2}>
           <Typography variant="h3" textAlign={"center"}>
-            Xác thực đăng ký
+            Xác thực
           </Typography>
           <Controller
             control={control}

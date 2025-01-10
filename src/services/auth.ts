@@ -333,3 +333,22 @@ export const updateProfile = async (id: string, data: any) => {
     throw error;
   }
 };
+
+
+export const resetPassword = async (email:string, code: string) => {
+  try {
+    const url =  BASE_URL + 'reset-password';
+    const response = await axios(url,{
+      method:"POST",
+      data:{
+        email,
+        code
+      }
+    }) 
+
+    return response?.data
+  } catch (error) {
+    console.log("Error at resetPassword");
+    throw error;
+  }
+}

@@ -9,6 +9,13 @@ import {
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useMutation } from "@tanstack/react-query";
+import { receciveCode } from "../../../services/auth";
+import SpinnerFullScreen from "../../SpinnerFullScreen";
+import ModalComponent from "../../ModalComponent";
+import RegisterCodeModalComponent from "./RegisterCodeModal";
+import { useState } from "react";
+import { useSnackbar } from "../../../hooks/snackbar";
 
 interface ForgotForm {
   email: string;
@@ -29,11 +36,14 @@ const schema = yup
 
 const ForgotPasswordComponent = ({ navigateToComponent }: TProps) => {
   const theme = useTheme();
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const {showSnackbar} = useSnackbar()
 
   const {
     handleSubmit,
     formState: { errors },
     control,
+    getValues,
   } = useForm<ForgotForm>({
     defaultValues: {
       email: "",
@@ -42,16 +52,43 @@ const ForgotPasswordComponent = ({ navigateToComponent }: TProps) => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<ForgotForm> = (data) => {};
+  const mutation = useMutation({
+    mutationKey: ["reset-password-key"],
+    mutationFn: async (email: any) => {
+      const response = await receciveCode(email, "reset-password");
+      return response;
+    },
+    onSuccess: () => {
+      setOpenModal(true);
+      showSnackbar("Mã code đã được gửi vào mail của bạn","success")
+      
+    },
+    onError: () => {
+      showSnackbar("Gửi code thất bại. Xin thử lại",'success')
+    },
+  });
+
+  const onSubmit: SubmitHandler<ForgotForm> = async (data) => {
+    await mutation?.mutate(data?.email);
+  };
+
 
   return (
     <>
+      {mutation?.isPending && <SpinnerFullScreen />}
+      <ModalComponent open={openModal} setOpen={setOpenModal}>
+        <RegisterCodeModalComponent
+          setOpenParent={setOpenModal}
+          email={getValues("email")}
+          type="reset"
+        />
+      </ModalComponent>
       <CardContent>
         <Typography fontSize={"1.1rem"} fontWeight={"bold"}>
-          Đăng nhập tài khoản
+          Quên mật khẩu
         </Typography>
         <Typography fontSize={"0.8rem"}>
-          Nhập email và mật khẩu của bạn
+          Quên mật khẩu đã có chúng tôi lo
         </Typography>
       </CardContent>
 
@@ -104,11 +141,7 @@ const ForgotPasswordComponent = ({ navigateToComponent }: TProps) => {
             </Typography>
           )}
 
-          <Button
-            variant="contained"
-            fullWidth
-            type="submit"
-          >
+          <Button variant="contained" fullWidth type="submit">
             Khôi phục
           </Button>
         </form>

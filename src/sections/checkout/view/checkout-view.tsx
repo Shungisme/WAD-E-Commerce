@@ -19,7 +19,6 @@ import { Refresh as RefreshIcon } from "@mui/icons-material";
 import { formatCurrency, formatPercent } from "../../../utils/format-number";
 import { RouterLink } from "../../../routes/components/router-link";
 import { useCheckout } from "../../../hooks/use-checkout";
-import { useRouter } from "../../../hooks/use-router";
 
 export type ProductItemInOrderProps = {
   productId: string;
