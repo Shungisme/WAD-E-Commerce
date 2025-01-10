@@ -46,7 +46,7 @@ const validationSchema = new Yup.ObjectSchema({
     .required("Title is required"),
   description: Yup.string()
     .min(6, "Description must be at least 6 characters")
-    .max(255, "Description must be at most 255 characters")
+    .max(100000, "Description must be at most 255 characters")
     .required("Description is required"),
   thumbnail: Yup.mixed().required("Thumbnail is required"),
   price: Yup.number().min(0).required("Price is required"),

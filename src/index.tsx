@@ -7,6 +7,7 @@ import { store } from "./stores/store";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { SnackbarProvider } from "./contexts/snackBarContext";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +18,9 @@ root.render(
   <Provider store={store}>
     <QueryClientProvider client={queryClient}>
       <Suspense>
-        <App />
+        <SnackbarProvider>
+          <App />
+        </SnackbarProvider>
       </Suspense>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
