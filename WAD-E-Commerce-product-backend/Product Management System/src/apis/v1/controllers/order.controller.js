@@ -12,21 +12,19 @@ import path from 'path';
 const projectRoot = process.cwd();
 console.log('projectRoot', projectRoot);
 
-// Certificate configuration
 const createHttpsAgent = () => {
 	try {
 		const cert = fs.readFileSync(path.join(projectRoot, 'src', 'cert', 'cert.pem'));
 		return new https.Agent({
 			ca: cert,
-			rejectUnauthorized: false, // Disable certificate verification for self-signed cert
-			checkServerIdentity: () => undefined // Bypass hostname verification
+			rejectUnauthorized: false,
+			checkServerIdentity: () => undefined
 		});
 	} catch (error) {
 		console.warn('Certificate not found or invalid:', error.message);
 	}
 };
 
-// Create axios instance with proper certificate handling
 const axiosInstance = axios.create({
 	httpsAgent: createHttpsAgent()
 });
@@ -105,11 +103,11 @@ class OrderController {
 			const user = req.userInformation;
 			const cart = await Cart.findOne({ userId: user._id }).lean();
 
-			// if (!cart || cart.products.length === 0) {
-			// 	return res.status(StatusCodes.BAD_REQUEST).json({
-			// 		error: 'Cart is empty'
-			// 	});
-			// }
+			if (!cart || cart.products.length === 0) {
+				return res.status(StatusCodes.BAD_REQUEST).json({
+					error: 'Cart is empty'
+				});
+			}
 
 			const products = await Promise.all(
 				cart.products.map(async (item) => {
@@ -318,7 +316,7 @@ class OrderController {
 			const user = req.userInformation;
 			const token = await JWTHelper.generateTokenForPaymentSystem({ userId: user._id, email: user.email }, process.env.SYSTEM_SIGNER_KEY);
 
-			await axios.get(`${process.env.PAYMENT_URL}/otps`, {
+			await axiosInstance.get(`${process.env.PAYMENT_URL}/otps`, {
 				headers: {
 					'payment-system-auth': `${token}`
 				}
@@ -343,7 +341,7 @@ class OrderController {
 			const user = req.userInformation;
 			const token = await JWTHelper.generateTokenForPaymentSystem({ userId: user._id, email: user.email }, process.env.SYSTEM_SIGNER_KEY);
 
-			await axios.post(`${process.env.PAYMENT_URL}/payments`,
+			await axiosInstance.post(`${process.env.PAYMENT_URL}/payments`,
 				{
 					totalAmount: order.totalAmount,
 					orderId: req.body.orderId,
