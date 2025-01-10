@@ -73,7 +73,7 @@ export const getMeAuth = async () => {
           const newToken = await newAccessToken(refreshToken);
           setDataInLocalStorage(newToken, refreshToken);
 
-          const response = await axios(url, {
+          const response = await instanceAxios(url, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${newToken}`,
