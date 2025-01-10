@@ -10,6 +10,7 @@ router.post('/register', UserController.register);
 router.patch('/update/:id', isAuthorized, isAdmin, UserController.updateUser);
 router.patch('/update-profile/:id', isAuthorized, UserController.updateProfile);
 router.post('/change-password', isAuthorized, UserController.changePassword);
+router.post('/reset-password', UserController.resetPassword);
 router.post('/logout', UserController.logout);
 router.post('/refresh', UserController.refreshToken);
 router.get('/current-user', isAuthorized, UserController.getCurrentUser);

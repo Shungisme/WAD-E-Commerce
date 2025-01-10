@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import verificationCodeModel from '../models/verification-code.model.js';
 import SendMailHelper from '../../../helpers/sendMail.helper.js';
 import GenerateHelper from '../../../helpers/generate.helper.js';
+import { console } from 'inspector';
 
 class UserController {
 	static async login(req, res) {
@@ -211,6 +212,37 @@ class UserController {
 			await verificationCodeModel.findOneAndDelete({ code, type: 'change-password' });
 
 			res.status(StatusCodes.OK).json({ message: "Password changed successfully" });
+		}
+		catch (error) {
+			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+		}
+	}
+
+	static async resetPassword(req, res) {
+		try {
+			const { email, code } = req.body;
+
+			if (!email || !code) {
+				return res.status(StatusCodes.BAD_REQUEST).json({ message: "Missing required fields" });
+			}
+
+			const checkCode = await verificationCodeModel.findOne({ email, code, type: 'reset-password' });
+			if (!checkCode) {
+				return res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid verification code" });
+			}
+
+			const newRandomPassword = GenerateHelper.generateRandomPassword(8);
+			const salt = await bcrypt.genSalt(13);
+			const hashedPassword = await bcrypt.hash(newRandomPassword, salt);
+
+			console.log(newRandomPassword);
+			console.log(hashedPassword);
+			await User.findOneAndUpdate({ email }, { password: hashedPassword });
+
+			const sendMailHelper = new SendMailHelper();
+			sendMailHelper.sendResetPassword(email, newRandomPassword);
+
+			res.status(StatusCodes.OK).json({ message: "Password reset successfully" });
 		}
 		catch (error) {
 			res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
