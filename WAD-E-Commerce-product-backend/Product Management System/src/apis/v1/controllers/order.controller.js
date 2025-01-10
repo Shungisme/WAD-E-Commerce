@@ -5,6 +5,30 @@ import ProductCategory from '../models/product-category.model.js';
 import Cart from '../models/cart.model.js';
 import axios from 'axios';
 import JWTHelper from '../../../helpers/jwt.helper.js';
+import https from 'https';
+import fs from 'fs';
+import path from 'path';
+
+const projectRoot = process.cwd();
+console.log('projectRoot', projectRoot);
+
+const createHttpsAgent = () => {
+	try {
+		const cert = fs.readFileSync(path.join(projectRoot, 'src', 'cert', 'cert.pem'));
+		return new https.Agent({
+			ca: cert,
+			rejectUnauthorized: false,
+			checkServerIdentity: () => undefined
+		});
+	} catch (error) {
+		console.warn('Certificate not found or invalid:', error.message);
+	}
+};
+
+const axiosInstance = axios.create({
+	httpsAgent: createHttpsAgent()
+});
+
 
 class OrderController {
 	static async getAllOrders(req, res) {
@@ -76,31 +100,39 @@ class OrderController {
 	static async createOrder(req, res) {
 		try {
 			const user = req.userInformation;
-			const cart = Cart.findOne({ userId: user._id }).lean();
-			const products = cart.products.map(item => {
-				const product = Product.findById(item.productId).select('title price discount thunmbnail').lean();
-				return {
-					productId: product._id,
-					quantity: item.quantity,
-					discount: product.discount,
-					price: product.price,
-					thumbnail: product.thumbnail,
-					title: product.title
-				};
-			});
+			const cart = await Cart.findOne({ userId: user._id }).lean();
+
+			if (!cart || cart.products.length === 0) {
+				return res.status(StatusCodes.BAD_REQUEST).json({
+					error: 'Cart is empty'
+				});
+			}
+
+			const products = await Promise.all(
+				cart.products.map(async (item) => {
+					const product = await Product.findById(item.productId).select('title price discount thunmbnail').lean();
+					return {
+						productId: product._id,
+						quantity: item.quantity,
+						discount: product.discount,
+						price: product.price,
+						thumbnail: product.thumbnail,
+						title: product.title
+					};
+				})
+			);
 
 			const totalAmount = products.reduce((total, item) => total + item.price * item.quantity * item.discount / 100, 0);
 			const totalQuantity = products.reduce((total, item) => total + item.quantity, 0);
 
 			const orderData = {
 				userId: user._id,
-				products: {
-					$each: products.map(item => ({
+				products:
+					products.map(item => ({
 						productId: item.productId,
 						quantity: item.quantity,
 						discount: item.discount,
 					})),
-				},
 				totalAmount,
 				totalQuantity,
 			};
@@ -111,18 +143,26 @@ class OrderController {
 
 			await Cart.updateOne({ userId: user._id }, { products: [] });
 
-			const token = await JWTHelper.generateTokenForPaymentSystem({ userId: user._id, email: user.email }, process.env.SYSTEM_SIGNER_KEY);
+			const token = await JWTHelper.generateTokenForPaymentSystem(
+				{ userId: user._id, email: user.email }
+				, process.env.SYSTEM_SIGNER_KEY
+			);
 
-			const userPaymentInformation = await axios.get(`${PAYMENT_URL}/users`, {
+			const response = await axiosInstance.get(
+				`${process.env.PAYMENT_URL}/users`, {
 				headers: {
 					'payment-system-auth': `${token}`
 				}
 			});
+
+			console.log(response.data);
+			console.log(response);
 			return res.status(StatusCodes.CREATED).json({
 				order,
 				products,
-				userPaymentInformation
+				userPaymentInformation: response.data
 			});
+
 		} catch (error) {
 			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
 				error: error.message
@@ -275,7 +315,7 @@ class OrderController {
 			const user = req.userInformation;
 			const token = await JWTHelper.generateTokenForPaymentSystem({ userId: user._id, email: user.email }, process.env.SYSTEM_SIGNER_KEY);
 
-			await axios.get(`${PAYMENT_URL}/otps`, {
+			await axiosInstance.get(`${process.env.PAYMENT_URL}/otps`, {
 				headers: {
 					'payment-system-auth': `${token}`
 				}
@@ -300,7 +340,7 @@ class OrderController {
 			const user = req.userInformation;
 			const token = await JWTHelper.generateTokenForPaymentSystem({ userId: user._id, email: user.email }, process.env.SYSTEM_SIGNER_KEY);
 
-			await axios.post(`${PAYMENT_URL}/payments`,
+			await axiosInstance.post(`${process.env.PAYMENT_URL}/payments`,
 				{
 					totalAmount: order.totalAmount,
 					orderId: req.body.orderId,
