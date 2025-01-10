@@ -17,18 +17,20 @@ import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import AnnouceModalComponent from "../components/AnnouceModalComponent";
 import { Helmet } from "react-helmet";
+import { useRouter } from "../hooks/use-router";
 
 const CartPage = () => {
   const theme = useTheme();
   const { myCart, handleChangeQuantity, handleDelete, totalMoney } = useCart();
   const { user } = useAuth();
   const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
 
   const handlePayment = () => {
     if (!user) {
       setOpenModal(true);
     } else {
-      //do payment in this block
+      router.push("/checkout");
     }
   };
 

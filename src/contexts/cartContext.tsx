@@ -265,7 +265,7 @@ const CartProvider = ({ children }: TProps) => {
       newProducts[index].quantity = input;
     }
 
-    await changeDataInCart?.mutate({
+    await changeDataInCart?.mutateAsync({
       userId: user?._id || "",
       products: newProducts,
     });
@@ -314,7 +314,10 @@ const CartProvider = ({ children }: TProps) => {
       }
     }
 
-    await addCart?.mutate({ userId: user?._id || "", products: [...data] });
+    await addCart?.mutateAsync({
+      userId: user?._id || "",
+      products: [...data],
+    });
   };
 
   const handleDelete = async (productItem: any) => {
@@ -331,7 +334,7 @@ const CartProvider = ({ children }: TProps) => {
       (item: any) => item?.productId !== productItem?.productId
     );
 
-    await changeDataInCart?.mutate({
+    await changeDataInCart?.mutateAsync({
       userId: user?._id || "",
       products: newProducts,
     });

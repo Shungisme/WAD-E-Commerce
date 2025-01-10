@@ -8,6 +8,8 @@ const getUserPaymentAccount = async (req, res, next) => {
   const decodedTokenUser = req.decodedToken;
   try {
     let user = await User.findByPk(decodedTokenUser.userId);
+
+    console.log(user);
     if (!user) {
       user = await User.create({
         id: decodedTokenUser.userId,
