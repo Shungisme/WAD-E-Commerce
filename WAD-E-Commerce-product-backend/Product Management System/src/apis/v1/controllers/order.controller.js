@@ -334,7 +334,7 @@ class OrderController {
 
 	static async checkout(req, res) {
 		try {
-			const orderId = req.body.orderId;
+			const { orderId, address, phoneNumber } = req.body;
 			const order = await Order.findById(orderId);
 
 			const user = req.userInformation;
@@ -353,7 +353,7 @@ class OrderController {
 				}
 			);
 
-			await Order.updateOne({ _id: orderId }, { status: 'completed' });
+			await Order.updateOne({ _id: orderId }, { status: 'completed', address, phoneNumber });
 
 			return res.status(StatusCodes.OK).json({
 				message: 'Payment successful'
