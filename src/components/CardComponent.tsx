@@ -1,4 +1,11 @@
-import { Box, Card, CardContent, CardMedia, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { PRODUCT } from "../types/productType";
 import { toVND } from "../utils/convertNumberToVND";
 import { toDiscountPrice } from "../utils/toDiscountPrice";
@@ -18,11 +25,13 @@ const CardComponent = ({ item }: TProps) => {
       <Card
         sx={{
           cursor: "pointer",
-          height:"100%",
-          width:"100%"
+          height: "100%",
+          width: "100%",
+          boxShadow: 0,
+          border: `1.5px solid`,
         }}
-        component={'div'}
-        onClick={() => navigate(`/detail?content=${slugify(item.title)}`)}
+        component={"div"}
+        onClick={() => navigate(`/detail?content=${item?.slug}`)}
       >
         <Box position={"relative"}>
           <CardMedia
@@ -60,9 +69,10 @@ const CardComponent = ({ item }: TProps) => {
               WebkitLineClamp: 2,
               overflow: "hidden",
               textOverflow: "ellipsis",
+              height: "2rem",
             }}
             mb={2}
-            fontSize={"1.2rem"}
+            fontSize={"1.1rem"}
             letterSpacing={1.3}
             fontWeight={500}
           >
@@ -71,7 +81,7 @@ const CardComponent = ({ item }: TProps) => {
           <Box
             sx={{
               display: "flex",
-              gap: 2,
+              gap: 1,
             }}
           >
             <Typography fontWeight={"bold"} color={theme.palette.primary.main}>
@@ -84,7 +94,7 @@ const CardComponent = ({ item }: TProps) => {
                     textDecoration: "line-through",
                   }}
                 >
-                  {item.price}
+                  {toVND(item.price)}
                 </Typography>
               </>
             )}

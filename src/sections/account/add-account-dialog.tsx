@@ -27,6 +27,7 @@ export type AddAccountDialogProps = {
   open: boolean;
   onClose: () => void;
   onCreate: (account: AccountProps) => void;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const cloudinaryConfig = {
@@ -59,6 +60,7 @@ export default function AddAccountDialog({
   open,
   onClose,
   onCreate,
+  setIsLoading,
 }: AddAccountDialogProps) {
   const formik = useFormik({
     initialValues: {
@@ -72,6 +74,7 @@ export default function AddAccountDialog({
     onSubmit: async (value: AccountProps) => {
       if (!value.avatar) return;
 
+      setIsLoading(true);
       const formData = new FormData();
 
       formData.append("file", value.avatar);

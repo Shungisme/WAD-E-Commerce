@@ -43,7 +43,13 @@ export type ProductItemProps = {
   categoryTitle: string;
 };
 
-export function ProductItem({ product }: { product: ProductItemProps }) {
+export function ProductItem({
+  product,
+  setIsAdding,
+}: {
+  product: ProductItemProps;
+  setIsAdding: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
     null
   );
@@ -68,8 +74,9 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
     (product: ProductItemProps) => {
       setOpenEditDialog(false);
       setOpenPopover(null);
-
-      dispatch(updateProductAsync(product));
+      dispatch(updateProductAsync(product))
+        .then(() => setIsAdding(false))
+        .catch(() => setIsAdding(false));
     },
     [dispatch]
   );
@@ -78,8 +85,10 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
     (product: ProductItemProps) => {
       setOpenDeleteDialog(false);
       setOpenPopover(null);
-
-      dispatch(deleteProductAsync(product._id));
+      setIsAdding(true);
+      dispatch(deleteProductAsync(product._id))
+        .then(() => setIsAdding(false))
+        .catch(() => setIsAdding(false));
     },
     [dispatch]
   );
@@ -266,6 +275,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
       </Popover>
 
       <EditProductDialog
+        setIsLoading={setIsAdding}
         open={openEditDialog}
         onClose={() => {
           setOpenEditDialog(false);

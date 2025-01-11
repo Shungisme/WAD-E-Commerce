@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Badge,
   Box,
   Button,
@@ -28,15 +29,20 @@ import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { ROUTES_CONSTANT } from "../../constants/routesConstants";
 import { useAuth } from "../../hooks/useAuth";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import SpinnerFullScreen from "../SpinnerFullScreen";
 import { getAllCategories } from "../../services/categories";
 import { useCart } from "../../hooks/useCart";
+import ModalComponent from "../ModalComponent";
+import UpdateProfileComponent from "./ForNavigation/UpdateProfileComponent";
+import ChangePasswordComponent from "./ForNavigation/ChangePasswordComponent";
 
 const NavigationComponent = () => {
   const [isSticky, setIsSticky] = useState(false);
   const { user, logoutAuth } = useAuth();
   const { myCart } = useCart();
+  const [openModalUpdate, setOpenModalUpdate] = useState(false);
+  const [openChangePassword, setOpenChangePassword] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,12 +74,10 @@ const NavigationComponent = () => {
   const navigate = useNavigate();
   const hoverShopTab = useHover();
 
-
-
   const categories = useQuery({
     queryKey: ["categories"],
     queryFn: getAllCategories,
-    staleTime: 5 * 60 * 1000
+    staleTime: 5 * 60 * 1000,
   });
 
   const renderItemInCarouselHeaderContent = () => {
@@ -81,7 +85,7 @@ const NavigationComponent = () => {
       return (
         <>
           <div
-            key={"category: "+ index}
+            key={"category: " + index}
             style={{
               color:
                 theme.palette.mode === "dark"
@@ -117,7 +121,7 @@ const NavigationComponent = () => {
                   textTransform: "capitalize",
                   fontSize: "12px",
                 }}
-                onClick={() => navigate(ROUTES_CONSTANT.FILTER_PAGE)}
+                onClick={() => navigate(`/${ROUTES_CONSTANT.FILTER_PAGE}`)}
               >
                 Shop
               </Button>
@@ -153,14 +157,15 @@ const NavigationComponent = () => {
             <Typography>
               <strong>Name: </strong> {user?.name}
             </Typography>
-            <Typography>
-              <strong>Role: </strong> {user?.role}
-            </Typography>
           </Box>
+          <Stack>
+            <Button onClick={() => setOpenModalUpdate(true)}>Cập nhật thông tin</Button>
+            <Button onClick={() => setOpenChangePassword(true)}>Đổi mật khẩu</Button>
+          </Stack>
           <Divider />
           <Button
             onClick={async () => {
-              await logoutAuth()
+              await logoutAuth();
             }}
             variant="contained"
             fullWidth
@@ -174,7 +179,13 @@ const NavigationComponent = () => {
 
   return (
     <>
-      {(categories.isFetching) && <SpinnerFullScreen />}
+      {categories.isFetching && <SpinnerFullScreen />}
+      <ModalComponent open={openModalUpdate} setOpen={setOpenModalUpdate}>
+        <UpdateProfileComponent/>
+      </ModalComponent>
+      <ModalComponent open={openChangePassword} setOpen={setOpenChangePassword}>
+        <ChangePasswordComponent setOpenParent={setOpenChangePassword}/>
+      </ModalComponent>
       <Box>
         <Box
           sx={{
@@ -371,7 +382,7 @@ const NavigationComponent = () => {
                       py: 1.5,
                     }}
                     component={"div"}
-                    onClick={() => navigate(ROUTES_CONSTANT.FILTER_PAGE)}
+                    onClick={() => navigate(`/${ROUTES_CONSTANT.FILTER_PAGE}`)}
                   >
                     Cửa hàng
                   </Typography>
@@ -398,16 +409,7 @@ const NavigationComponent = () => {
                       width: "100%",
                     },
                   }}
-                >
-                  <Typography
-                    sx={{
-                      cursor: "pointer",
-                      py: 1.5,
-                    }}
-                  >
-                    Hỗ trợ
-                  </Typography>
-                </Box>
+                ></Box>
               </Box>
             </Box>
 
@@ -444,8 +446,14 @@ const NavigationComponent = () => {
                     contentDrop={renderHasLogin()}
                     dropdownKey={nameComponent}
                   >
-                    <IconifyIcon icon={"ph:user-light"} fontSize={"1.5rem"} />
-                    <Typography fontSize={"0.8rem"}>{user?.name}</Typography>
+                    <Avatar
+                      sx={{
+                        width: "2.3rem",
+                        height: "2.3rem",
+                      }}
+                      alt={user?.name ?? "Anonymous"}
+                      src={user?.avatar ?? undefined}
+                    />
                   </DropdownComponent>
                 </>
               ) : (
@@ -454,8 +462,14 @@ const NavigationComponent = () => {
                     contentDrop={renderComponentAuthentication()}
                     dropdownKey={nameComponent}
                   >
-                    <IconifyIcon icon={"ph:user-light"} fontSize={"1.5rem"} />
-                    <Typography fontSize={"0.8rem"}>Tài khoản</Typography>
+                    <Avatar
+                      sx={{
+                        width: "2.3rem",
+                        height: "2.3rem",
+                      }}
+                      alt={"Anonymous"}
+                      src={undefined}
+                    />
                   </DropdownComponent>
                 </>
               )}

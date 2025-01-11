@@ -12,12 +12,14 @@ export const filterAsync = createAsyncThunk(
       limit,
       search,
       sort,
+      status
     }: {
       categorySlug?: string;
       page?: number;
       limit?: number;
       search?: string;
       sort?: string;
+      status?: string
     },
     { rejectWithValue }
   ) => {
@@ -28,6 +30,7 @@ export const filterAsync = createAsyncThunk(
         limit,
         search,
         sort,
+        status
       });
       return {
         data: response,
@@ -37,6 +40,7 @@ export const filterAsync = createAsyncThunk(
           limit,
           search,
           sort,
+          status
         },
       };
     } catch (error) {

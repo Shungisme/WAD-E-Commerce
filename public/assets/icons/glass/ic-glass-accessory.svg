@@ -1,0 +1,112 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <!-- Túi xách -->
+    <path d="M100 100
+             C120 80 180 80 200 100
+             L220 150
+             L180 200
+             L120 200
+             L80 150
+             Z" 
+          fill="url(#bag-gradient)"/>
+    
+    <!-- Quai túi -->
+    <path d="M120 100
+             C140 60 160 60 180 100"
+          fill="none"
+          stroke="url(#strap-gradient)"
+          stroke-width="10"
+          stroke-linecap="round"/>
+    
+    <!-- Khóa túi -->
+    <circle cx="150" cy="130" r="8" fill="url(#lock-gradient)"/>
+    
+    <!-- Mắt kính -->
+    <path d="M250 100
+             C270 100 290 100 310 100
+             C330 100 330 120 310 120
+             C290 120 270 120 250 120
+             C230 120 230 100 250 100Z"
+          fill="url(#glasses-gradient)"/>
+    
+    <!-- Tròng kính -->
+    <circle cx="270" cy="110" r="15" fill="url(#lens-gradient)"/>
+    <circle cx="310" cy="110" r="15" fill="url(#lens-gradient)"/>
+    
+    <!-- Dây đeo kính -->
+    <path d="M250 110 L230 110
+             M330 110 L350 110"
+          stroke="url(#strap-gradient)"
+          stroke-width="3"/>
+    
+    <!-- Icon thư (envelope) -->
+    <path d="M250 160
+             L350 160
+             L350 220
+             L250 220
+             Z
+             M250 160
+             L300 190
+             L350 160
+             M250 220
+             L280 190
+             M350 220
+             L320 190"
+          fill="none"
+          stroke="url(#envelope-gradient)"
+          stroke-width="4"/>
+    
+    <!-- Định nghĩa gradients -->
+    <defs>
+        <linearGradient id="bag-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFAC82"/>
+            <stop offset="100%" stop-color="#FF5630"/>
+        </linearGradient>
+        
+        <linearGradient id="strap-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#FF5630"/>
+            <stop offset="100%" stop-color="#B71D18"/>
+        </linearGradient>
+        
+        <linearGradient id="glasses-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFAC82"/>
+            <stop offset="100%" stop-color="#FF5630"/>
+        </linearGradient>
+        
+        <linearGradient id="lens-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="white" stop-opacity="0.16"/>
+            <stop offset="100%" stop-color="white" stop-opacity="0.64"/>
+        </linearGradient>
+        
+        <linearGradient id="lock-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FF5630"/>
+            <stop offset="100%" stop-color="#B71D18"/>
+        </linearGradient>
+        
+        <linearGradient id="envelope-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFAC82"/>
+            <stop offset="100%" stop-color="#FF5630"/>
+        </linearGradient>
+    </defs>
+    
+    <!-- Overlay effects -->
+    <g opacity="0.48">
+        <!-- Túi xách overlay -->
+        <path d="M100 100
+                 C120 80 180 80 200 100
+                 L220 150
+                 L180 200
+                 L120 200
+                 L80 150
+                 Z" 
+              fill="url(#strap-gradient)"/>
+        
+        <!-- Mắt kính overlay -->
+        <path d="M250 100
+                 C270 100 290 100 310 100
+                 C330 100 330 120 310 120
+                 C290 120 270 120 250 120
+                 C230 120 230 100 250 100Z"
+              fill="url(#strap-gradient)"
+              opacity="0.48"/>
+    </g>
+</svg>

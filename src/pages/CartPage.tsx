@@ -3,7 +3,6 @@ import {
   Button,
   Divider,
   Grid,
-  Grid2,
   IconButton,
   Stack,
   Typography,
@@ -17,29 +16,32 @@ import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import AnnouceModalComponent from "../components/AnnouceModalComponent";
 import { Helmet } from "react-helmet";
+import { useRouter } from "../hooks/use-router";
 
 const CartPage = () => {
   const theme = useTheme();
   const { myCart, handleChangeQuantity, handleDelete, totalMoney } = useCart();
   const { user } = useAuth();
   const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
 
   const handlePayment = () => {
     if (!user) {
       setOpenModal(true);
     } else {
-      //do payment in this block
+      router.push("/checkout");
     }
   };
 
   const renderProduct = () => {
     return myCart?.data?.products?.map((item: any, index: any) => {
       const price = toDiscountPrice(item);
-      const quantity = item.quantity;
+      const quantity = item?.quantity;
+
       return (
         <>
-          <Grid2
-            key={item.productId}
+          <Grid
+            key={item?.productId}
             width={"100%"}
             container
             spacing={5}
@@ -94,6 +96,15 @@ const CartPage = () => {
                   }}
                 >
                   {item?.title}
+                </Typography>
+                <Typography
+                  component={"div"}
+                  sx={{
+                    letterSpacing: "1.5px",
+                    fontWeight: 500,
+                  }}
+                >
+                  Còn lại: {item?.remainingQuantity}
                 </Typography>
                 {item.discount > 0 ? (
                   <>
@@ -187,7 +198,7 @@ const CartPage = () => {
                 </Box>
               </Box>
             </Grid>
-          </Grid2>
+          </Grid>
           {index < myCart?.data?.products?.length - 1 && (
             <Divider sx={{ width: "100%", my: 3 }} />
           )}
@@ -225,7 +236,7 @@ const CartPage = () => {
       >
         {myCart?.data?.products?.length !== 0 ? (
           <>
-            <Grid2 container justifyContent={"space-around"}>
+            <Grid container justifyContent={"space-around"} spacing={3}>
               <Grid item xs={8} width={"60%"}>
                 <Box
                   sx={{
@@ -327,7 +338,7 @@ const CartPage = () => {
                   </Button>
                 </Box>
               </Grid>
-            </Grid2>
+            </Grid>
           </>
         ) : (
           <>

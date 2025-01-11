@@ -17,6 +17,8 @@ import { TUser } from "../../../types/userType";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../../hooks/useAuth";
 import SpinnerFullScreen from "../../SpinnerFullScreen";
+import ModalComponent from "../../ModalComponent";
+import LoginResendModalComponent from "./LoginResendModal";
 
 interface LoginForm {
   email: string;
@@ -36,7 +38,7 @@ const schema = yup
     password: yup
       .string()
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*_])(?=.{8,})/,
         "Phải chứa 8 ký tự, một chữ hoa, một chữ thường, một số và một ký tự đặc biệt"
       )
       .required("Vui lòng nhập mật khẩu"),
@@ -47,11 +49,13 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
   const theme = useTheme();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { loginAuth } = useAuth();
+  const [openSnackBar, setOpenSnackBar] = useState<boolean>(false);
 
   const {
     handleSubmit,
     formState: { errors },
     control,
+    getValues,
   } = useForm<LoginForm>({
     defaultValues: {
       email: "",
@@ -67,16 +71,26 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
       const response = await loginAuth(data);
       return response;
     },
+    onError: async (res: any) => {
+      if (res?.status === 403) {
+        setOpenSnackBar(true);
+      }
+    },
   });
 
   const onSubmit: SubmitHandler<any> = async (data: TUser) => {
-    const response = await loginAuth(data);
-    return response;
+    await mutation.mutate(data);
   };
 
   return (
     <>
       {mutation.isPending && <SpinnerFullScreen />}
+      <ModalComponent open={openSnackBar} setOpen={setOpenSnackBar}>
+        <LoginResendModalComponent
+          setOpenParent={setOpenSnackBar}
+          email={getValues("email")}
+        />
+      </ModalComponent>
       <CardContent>
         <Typography fontSize={"1.1rem"} fontWeight={"bold"}>
           Đăng nhập tài khoản
@@ -183,8 +197,8 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
                     }}
                     icon={
                       showPassword
-                        ? "ic:sharp-visibility"
-                        : "material-symbols:visibility-off"
+                        ? "material-symbols:visibility-off"
+                        : "ic:sharp-visibility"
                     }
                   />
                 </IconButton>

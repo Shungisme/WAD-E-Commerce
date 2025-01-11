@@ -35,6 +35,7 @@ export type AddProductDialogProps = {
       "_id" | "createdAt" | "updatedAt" | "slug" | "categoryTitle"
     >
   ) => void;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const cloudinaryConfig = {
@@ -45,11 +46,11 @@ const cloudinaryConfig = {
 const validationSchema = new Yup.ObjectSchema({
   title: Yup.string()
     .min(6, "Title must be at least 6 characters")
-    .max(255, "Title must be at most 255 characters")
+    .max(10000, "Title must be at most 255 characters")
     .required("Title is required"),
   description: Yup.string()
     .min(6, "Description must be at least 6 characters")
-    .max(255, "Description must be at most 255 characters")
+    .max(10000, "Description must be at most 255 characters")
     .required("Description is required"),
   thumbnail: Yup.mixed().required("Thumbnail is required"),
   price: Yup.number().min(0).required("Price is required"),
@@ -83,6 +84,7 @@ export default function AddProductDialog({
   open,
   onClose,
   onCreate,
+  setIsLoading,
 }: AddProductDialogProps) {
   const { getCategories } = useProductsAdmin();
 
@@ -105,16 +107,14 @@ export default function AddProductDialog({
         "_id" | "createdAt" | "updatedAt" | "slug" | "categoryTitle"
       >
     ) => {
-      const images = [];
-
-      for (let i = 0; i < values.images.length; i++) {
-        const image = await uploadImageCloudinary(values.images[i]);
-
-        images.push(image.secure_url);
-      }
+      setIsLoading(true);
+      const images = await Promise.all(
+        values.images.map(
+          async (image) => (await uploadImageCloudinary(image)).secure_url
+        )
+      );
 
       const thumbnail = await uploadImageCloudinary(values.thumbnail);
-
       onCreate({
         ...values,
         thumbnail: thumbnail.secure_url,
@@ -191,7 +191,7 @@ export default function AddProductDialog({
             fontSize: (theme) => theme.typography.h6,
           }}
         >
-          Edit Product
+          Add Product
         </Typography>
       </DialogTitle>
 
@@ -510,7 +510,7 @@ export default function AddProductDialog({
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
           <Button variant="contained" type="submit">
-            Save Changes
+            Create Product
           </Button>
         </DialogActions>
       </form>

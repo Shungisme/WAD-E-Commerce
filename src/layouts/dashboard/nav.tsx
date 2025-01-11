@@ -15,6 +15,7 @@ import { Logo } from "../../components/logo/logo";
 import { Scrollbar } from "../../components/scrollbar/scrollbar";
 import { RouterLink } from "../../routes/components/router-link";
 import { varAlpha } from "../../theme/styles/utils";
+import { useTheme as getTheme } from "../../hooks/useTheme";
 
 export type NavContentProps = {
   data: {
@@ -37,6 +38,7 @@ export const NavDesktop = ({
   layoutQuery,
 }: NavContentProps & { layoutQuery: Breakpoint }) => {
   const theme = useTheme();
+  const { mode, toggleMode } = getTheme();
 
   return (
     <Box
@@ -49,7 +51,10 @@ export const NavDesktop = ({
         display: "none",
         position: "fixed",
         flexDirection: "column",
-        bgcolor: theme.palette.common.white,
+        bgcolor:
+          mode === "light"
+            ? theme.palette.common.white
+            : theme.palette.common.black,
         zIndex: 1101,
         width: 300,
         [theme.breakpoints.up(layoutQuery)]: {
@@ -74,6 +79,7 @@ export const NavMobile = ({
   onClose: () => void;
 }) => {
   const pathname = usePathname();
+  const { mode, toggleMode } = getTheme();
 
   useEffect(() => {
     if (open) {
@@ -90,7 +96,7 @@ export const NavMobile = ({
           pt: 2.5,
           px: 2.5,
           overflow: "unset",
-          bgcolor: "common.white",
+          bgcolor: mode === "light" ? "common.white" : "common.black",
           width: 320,
           ...sx,
         },

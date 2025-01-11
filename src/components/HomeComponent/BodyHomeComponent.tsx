@@ -4,6 +4,7 @@ import InformationComponent from "./ForBody/Information";
 import SmallCarousel from "../SmallCarouselComponent";
 import { useQuery } from "@tanstack/react-query";
 import { getProductsByCategory } from "../../services/products";
+import SpinnerFullScreen from "../SpinnerFullScreen";
 
 const BodyHomeComponent = () => {
   const shoesProducts = useQuery({
@@ -13,6 +14,7 @@ const BodyHomeComponent = () => {
         categorySlug: "san-pham-giay",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -26,6 +28,7 @@ const BodyHomeComponent = () => {
         categorySlug: "san-pham-ao",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -39,6 +42,7 @@ const BodyHomeComponent = () => {
         categorySlug: "san-pham-quan",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -52,6 +56,7 @@ const BodyHomeComponent = () => {
         categorySlug: "phu-kien",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -65,6 +70,7 @@ const BodyHomeComponent = () => {
         categorySlug: "qua-luu-niem",
         page: 1,
         limit: 6,
+        status: "active",
       });
       return response;
     },
@@ -73,6 +79,7 @@ const BodyHomeComponent = () => {
 
   return (
     <>
+    {(shoesProducts?.isLoading || shirtProducts?.isLoading || trousersProducts?.isLoading || accessoriesProducts?.isLoading || presentsProducts?.isLoading ) && <SpinnerFullScreen/>}
       <Box
         sx={{
           display: "flex",
@@ -85,7 +92,7 @@ const BodyHomeComponent = () => {
       >
         <MainCarousel />
         <InformationComponent />
-        <Box sx={{ width: "100%"}}>
+        <Box sx={{ width: "100%" }}>
           <SmallCarousel
             items={shoesProducts?.data?.products}
             type="Sản phẩm giày"

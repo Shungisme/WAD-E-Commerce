@@ -8,6 +8,10 @@ import {
   useTheme,
 } from "@mui/material";
 import IconifyIcon from "../iconifyIcon";
+import React from "react";
+
+
+
 
 const FooterComponent = () => {
   const theme = useTheme();
@@ -158,4 +162,4 @@ const FooterComponent = () => {
   );
 };
 
-export default FooterComponent;
+export default React.memo(FooterComponent);

@@ -187,7 +187,7 @@ export const addUserApi = async (user: TUser) => {
       },
     });
 
-    await updateUserApi({ ...user, _id: response.data._id });
+    await updateUserApi({ ...user, _id: response.data._id, status: "active" });
 
     return { message: "Account created successfully" };
   } catch (error) {
@@ -250,3 +250,105 @@ export const deleteUserApi = async (userId: string) => {
     throw error;
   }
 };
+
+export const receciveCode = async (email: string, type: string) => {
+  try {
+    const url = BASE_URL + "verification-codes";
+    const response = await axios(url, {
+      method: "POST",
+      data: {
+        email,
+        type,
+      },
+    });
+
+    return response?.data;
+  } catch (error) {
+    console.log("error at receciveCodeChangePassword");
+    throw error;
+  }
+};
+
+export const changePassword = async ({
+  oldPassword,
+  newPassword,
+  code,
+}: {
+  oldPassword: string;
+  newPassword: string;
+  code: string;
+}) => {
+  try {
+    const url = BASE_URL + "change-password";
+    const { accessToken } = getDataFromLocalStorage();
+    const response = await instanceAxios(url, {
+      method: "POST",
+      data: {
+        oldPassword,
+        newPassword,
+        code,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response?.data;
+  } catch (error) {
+    console.log("error at changePassword in service");
+  }
+};
+
+export const verifyCodeAccount = async (email: string, code: string) => {
+  try {
+    const url = BASE_URL + "verification-codes/verify";
+    const response = await axios(url, {
+      method: "POST",
+      data: {
+        email,
+        code,
+      },
+    });
+
+    return response?.data;
+  } catch (error) {
+    console.log("Error at verifyCodeAccount");
+    throw error;
+  }
+};
+
+export const updateProfile = async (id: string, data: any) => {
+  try {
+    const url = BASE_URL + "/update-profile/" + id;
+    const { accessToken } = getDataFromLocalStorage();
+    const response = await instanceAxios(url, {
+      method:"PATCH",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      data: data,
+    });
+    return response?.data;
+  } catch (error) {
+    console.log("Error at update Profle");
+    throw error;
+  }
+};
+
+
+export const resetPassword = async (email:string, code: string) => {
+  try {
+    const url =  BASE_URL + 'reset-password';
+    const response = await axios(url,{
+      method:"POST",
+      data:{
+        email,
+        code
+      }
+    }) 
+
+    return response?.data
+  } catch (error) {
+    console.log("Error at resetPassword");
+    throw error;
+  }
+}

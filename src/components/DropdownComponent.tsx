@@ -1,7 +1,8 @@
-import { Box, Card, useTheme } from "@mui/material";
-import { CSSProperties, ReactNode, useRef, useState } from "react";
+import { Box, Card } from "@mui/material";
+import { CSSProperties, ReactNode, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import useClickOutSide from "../hooks/useClickOutSide";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 interface TProps {
   children: ReactNode;
@@ -18,10 +19,16 @@ const DropdownComponent = ({
 }: TProps) => {
   const [clickDropDown, setClickDropDown] = useState<boolean>(false);
   const clickRef = useRef<HTMLDivElement | null>(null);
+  const location = useLocation();
+
   useClickOutSide({
     elementRef: clickRef,
     callback: () => setClickDropDown(false),
   });
+
+  useEffect(() => {
+    setClickDropDown(false);
+  }, [location.pathname]);
 
   return (
     <>

@@ -48,6 +48,7 @@ const CartDropDownComponent = () => {
               >
                 <Box
                   onClick={() =>
+                    
                     navigate(`/detail?content=${slugify(item?.title)}`)
                   }
                   sx={{
@@ -206,7 +207,7 @@ const CartDropDownComponent = () => {
         </Box>
       </CardContent>
       <Button
-        onClick={() => navigate(ROUTES_CONSTANT.CART_PAGE)}
+        onClick={() => navigate(`/${ROUTES_CONSTANT.CART_PAGE}`)}
         variant="contained"
         fullWidth
       >

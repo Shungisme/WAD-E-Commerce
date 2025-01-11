@@ -1,14 +1,13 @@
-import { Card, CardHeader, CardProps, Divider, useTheme } from "@mui/material";
+import { alpha, Card, CardHeader, CardProps, useTheme } from "@mui/material";
 import { Chart, ChartOptions } from "../../components/chart/chart";
 import { useChart } from "../../components/chart/use-chart";
-import { ChartLegends } from "../../components/chart/chart-legends";
 
 type Props = CardProps & {
   title?: string;
   subheader?: string;
   chart: {
     colors?: string[];
-    categories: string[];
+    categories?: string[];
     series: {
       name: string;
       data: number[];
@@ -17,7 +16,7 @@ type Props = CardProps & {
   };
 };
 
-export function AnalyticsCurrentSubject({
+export function AnalyticsOrdersBar({
   title,
   subheader,
   chart,
@@ -26,21 +25,25 @@ export function AnalyticsCurrentSubject({
   const theme = useTheme();
 
   const chartColors = chart.colors ?? [
-    theme.palette.primary.main,
-    theme.palette.warning.main,
-    theme.palette.info.main,
+    theme.palette.primary.dark,
+    alpha(theme.palette.primary.light, 0.64),
   ];
 
   const chartOptions = useChart({
     colors: chartColors,
-    stroke: { width: 2 },
-    fill: { opacity: 0.48 },
+    stroke: {
+      width: 2,
+      colors: ["transparent"],
+    },
     xaxis: {
       categories: chart.categories,
-      labels: {
-        style: {
-          colors: [...Array(6)].map(() => theme.palette.text.secondary),
-        },
+    },
+    legend: {
+      show: true,
+    },
+    tooltip: {
+      y: {
+        formatter: (value: number) => `${value} visits`,
       },
     },
     ...chart.options,
@@ -51,20 +54,11 @@ export function AnalyticsCurrentSubject({
       <CardHeader title={title} subheader={subheader} />
 
       <Chart
-        type="radar"
+        type="bar"
         series={chart.series}
         options={chartOptions}
-        width={300}
-        height={300}
-        sx={{ my: 1, mx: "auto" }}
-      />
-
-      <Divider sx={{ borderStyle: "dashed" }} />
-
-      <ChartLegends
-        labels={chart.series.map((item) => item.name)}
-        colors={chartOptions?.colors}
-        sx={{ p: 3, justifyContent: "center" }}
+        height={364}
+        sx={{ py: 2.5, pl: 1, pr: 2.5 }}
       />
     </Card>
   );

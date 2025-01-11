@@ -10,6 +10,7 @@ import {
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
 import IconifyIcon from "./iconifyIcon";
+import ReactDOM from "react-dom";
 
 interface TProps {
   header: string;
@@ -37,56 +38,55 @@ const AnnouceModalComponent = (props: TProps) => {
 
   const handleOnclose = () => setOpen(false);
 
-  return (
-    <>
-      <Modal
-        open={open}
-        onClose={handleOnclose}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{ backdrop: { timeout: 500 } }}
-      >
-        <Fade in={open}>
-          <Box sx={style}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <IconButton onClick={handleOnclose}>
-                <IconifyIcon fontSize={"1rem"} icon={"twemoji:cross-mark"} />
-              </IconButton>
-            </Box>
-            <Stack direction={"column"} gap={2}>
-              <Typography
-                sx={{
-                  textTransform: "uppercase",
-                }}
-                fontSize={"1.5rem"}
-                fontWeight={500}
-                letterSpacing={3}
-                textAlign={"center"}
-              >
-                {header}
-              </Typography>
-              <Divider />
-              <Typography>{bodyContent}</Typography>
-              <Divider />
-              <Stack direction={"row"} justifyContent={"space-between"}>
-                <Button onClick={doCancel} variant="contained">
-                  Thoát
-                </Button>
-                <Button onClick={doOk} variant="contained">
-                  Ok
-                </Button>
-              </Stack>
-            </Stack>
+  return ReactDOM.createPortal(
+    <Modal
+      open={open}
+      onClose={handleOnclose}
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{ backdrop: { timeout: 500 } }}
+    >
+      <Fade in={open}>
+        <Box sx={style}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <IconButton onClick={handleOnclose}>
+              <IconifyIcon fontSize={"1rem"} icon={"twemoji:cross-mark"} />
+            </IconButton>
           </Box>
-        </Fade>
-      </Modal>
-    </>
+          <Stack direction={"column"} gap={2}>
+            <Typography
+              sx={{
+                textTransform: "uppercase",
+              }}
+              fontSize={"1.5rem"}
+              fontWeight={500}
+              letterSpacing={3}
+              textAlign={"center"}
+            >
+              {header}
+            </Typography>
+            <Divider />
+            <Typography>{bodyContent}</Typography>
+            <Divider />
+            <Stack direction={"row"} justifyContent={"space-between"}>
+              <Button onClick={doCancel} variant="contained">
+                Thoát
+              </Button>
+              <Button onClick={doOk} variant="contained">
+                Ok
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
+      </Fade>
+    </Modal>,
+    document.body
   );
 };
 

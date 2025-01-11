@@ -17,6 +17,8 @@ import AnnouceModalComponent from "../../AnnouceModalComponent";
 import IconifyIcon from "../../iconifyIcon";
 import { useMutation } from "@tanstack/react-query";
 import SpinnerFullScreen from "../../SpinnerFullScreen";
+import ModalComponent from "../../ModalComponent";
+import RegisterCodeModalComponent from "./RegisterCodeModal";
 
 interface RegisterForm {
   name: string;
@@ -57,11 +59,13 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
   const [annouceContent, setAnnouceContent] = useState<string>("");
+  const [openModal, setOpenModal] = useState<boolean>(false);
 
   const {
     handleSubmit,
     formState: { errors },
     control,
+    getValues
   } = useForm<RegisterForm>({
     defaultValues: {
       name: "",
@@ -84,8 +88,7 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
   const onSubmit: SubmitHandler<RegisterForm> = async (data: TUser) => {
     const response = await mutation.mutateAsync(data);
     if (response) {
-      setOpen(true);
-      setAnnouceContent("Bạn đã đăng ký thành công");
+      setOpenModal(true);
     } else {
       setOpen(true);
       setAnnouceContent("Bạn đã đăng ký thất bại");
@@ -95,6 +98,9 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
   return (
     <>
       {mutation.isPending && <SpinnerFullScreen />}
+      <ModalComponent open={openModal} setOpen={setOpenModal}>
+        <RegisterCodeModalComponent setOpenParent={setOpenModal} email={getValues("email")} type="verify"/>
+      </ModalComponent>
       <AnnouceModalComponent
         header="Thông báo"
         bodyContent={annouceContent}
@@ -246,8 +252,8 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
                     }}
                     icon={
                       showPassword
-                        ? "ic:sharp-visibility"
-                        : "material-symbols:visibility-off"
+                        ? "material-symbols:visibility-off"
+                        : "ic:sharp-visibility"
                     }
                   />
                 </IconButton>
@@ -312,8 +318,8 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
                     }}
                     icon={
                       showConfirmPassword
-                        ? "ic:sharp-visibility"
-                        : "material-symbols:visibility-off"
+                        ? "material-symbols:visibility-off"
+                        : "ic:sharp-visibility"
                     }
                   />
                 </IconButton>

@@ -12,6 +12,8 @@ import {
 import { bgBlur } from "../../theme/styles";
 import { varAlpha } from "../../theme/styles/utils";
 import { layoutClasses } from "../classes";
+import { useTheme as getTheme } from "../../hooks/useTheme";
+import { alpha } from "@mui/material";
 
 export type HeaderSectionProps = AppBarProps & {
   layoutQuery: Breakpoint;
@@ -36,11 +38,15 @@ export const HeaderSection = ({
   ...other
 }: HeaderSectionProps) => {
   const theme = useTheme();
+  const { mode, toggleMode } = getTheme();
 
   const toolbarStyles = {
     default: {
       ...bgBlur({
-        color: varAlpha(theme.palette.background.defaultChannel, 0.8),
+        color:
+          mode === "light"
+            ? varAlpha(theme.palette.background.defaultChannel, 0.8)
+            : alpha(theme.palette.background.default, 0.8),
       }),
       minHeight: "auto",
       height: 64,

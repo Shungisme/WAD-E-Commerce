@@ -69,14 +69,12 @@ const AuthProvider = ({ children }: TProps) => {
   };
 
   const handleLogout = async () => {
-    console.log("Hello logout");
     await logoutAuth()
       .then((res) => {
         setUser(null);
         clearLocalData();
         clearCartInLocalStorage();
         navigate(ROUTES_CONSTANT.HOME_PAGE, { replace: true });
-        return res;
       })
       .catch((error) => {
         console.log("error at handle logout in auth context");

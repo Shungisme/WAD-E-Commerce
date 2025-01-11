@@ -1,191 +1,201 @@
-import { Grid2, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  Grid2,
+  InputAdornment,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 import { DashboardContent } from "../../../layouts/dashboard/main";
 import { AnalyticsWidgetSummary } from "../analytics-widget-summary";
-import { AnalyticsCurrentVisits } from "../analytics-current-visits";
-import { AnalyticsWebsiteVisits } from "../anaylytics-website-visits";
-import { AnalyticsConversionRates } from "../analytics-conversion-rates";
-import { AnalyticsCurrentSubject } from "../analytics-current-subject";
-import { AnalyticsOrderTimeline } from "../analytics-order-timeline";
-import { _timeline } from "../../../mocks/_data";
+import { AnalyticsOrdersPie } from "../analytics-orders-pie";
+import { AnalyticsOrdersBar } from "../analytics-orders-bar";
+import { AnalyticsOrdersHorizontalBar } from "../analytics-orders-horizontal-bar";
+import { AnalyticsOrdersRadar } from "../analytics-orders-radar";
+import useStatistics from "../../../hooks/use-statistics";
+import { useMemo } from "react";
+import { Iconify } from "../../../components/iconify/iconify";
+
+const CATEGORY_OPTIONS: Record<
+  string,
+  {
+    color: "primary" | "error" | "secondary" | "warning" | "success" | "info";
+    icon: string;
+  }
+> = {
+  "Sản phẩm giày": {
+    color: "primary",
+    icon: "/assets/icons/glass/ic-glass-shoe.svg",
+  },
+  "Sản phẩm áo": {
+    color: "warning",
+    icon: "/assets/icons/glass/ic-glass-shirt.svg",
+  },
+  "Sản phẩm quần": {
+    color: "secondary",
+    icon: "/assets/icons/glass/ic-glass-trousers.svg",
+  },
+  "Phụ kiện": {
+    color: "error",
+    icon: "/assets/icons/glass/ic-glass-accessory.svg",
+  },
+  "Quà lưu niệm": {
+    color: "success",
+    icon: "/assets/icons/glass/ic-glass-souvenir.svg",
+  },
+};
 
 export function OverviewAnalyticsView() {
+  const { getStatistics, year, setYear } = useStatistics();
+
+  const getCurrentYear = useMemo(() => {
+    return new Date().getFullYear();
+  }, []);
+
   return (
     <DashboardContent maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-        Statistic 📊
-      </Typography>
+      <Box
+        sx={{
+          mb: { xs: 3, md: 5 },
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography variant="h4">Statistic 📊</Typography>
+
+        <FormControl
+          sx={{
+            minWidth: 120,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 1,
+              backgroundColor: (theme) =>
+                theme.palette.mode === "light"
+                  ? theme.palette.background.neutral
+                  : theme.palette.background.paper,
+              transition: (theme) =>
+                theme.transitions.create(["box-shadow", "background-color"]),
+              "&:hover": {
+                backgroundColor: "background.paper",
+              },
+            },
+          }}
+        >
+          <Select
+            value={year}
+            onChange={(e) => setYear((prev) => Number(e.target.value))}
+            displayEmpty
+            startAdornment={
+              <InputAdornment position="start">
+                <Iconify
+                  icon="solar:calendar-date-bold"
+                  sx={{ color: "text.secondary", ml: 1 }}
+                />
+              </InputAdornment>
+            }
+          >
+            {[...Array(6)].map((_, index) => {
+              const yearOption = getCurrentYear - index;
+              return (
+                <MenuItem
+                  key={yearOption}
+                  value={yearOption}
+                  sx={{
+                    typography: "body2",
+                    "&:hover": {
+                      backgroundColor: "action.hover",
+                    },
+                  }}
+                >
+                  {yearOption}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      </Box>
 
       <Grid2 container spacing={3}>
-        <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="Weekly sales"
-            percent={2.6}
-            total={714000}
-            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-bag.svg" />}
+        {getStatistics?.data?.month?.series?.map(
+          (category: any, index: number) => (
+            <Grid2 key={category?.name} size={{ xs: 12, sm: 6, md: 4 }}>
+              <AnalyticsWidgetSummary
+                title={category.name}
+                percent={
+                  ((category.data[category.data.length - 1] -
+                    category.data[0]) /
+                    category.data[0]) *
+                  100
+                }
+                total={category.data.reduce((a: number, b: number) => a + b, 0)}
+                icon={
+                  <img
+                    alt={category.name}
+                    src={CATEGORY_OPTIONS[category.name]?.icon}
+                  />
+                }
+                color={
+                  CATEGORY_OPTIONS[
+                    category?.name as keyof typeof CATEGORY_OPTIONS
+                  ]?.color
+                }
+                chart={{
+                  categories: getStatistics?.data?.month?.categories,
+                  series: category.data,
+                }}
+              />
+            </Grid2>
+          )
+        )}
+
+        <Grid2 size={{ xs: 12, md: 6, lg: 5 }}>
+          <AnalyticsOrdersPie
+            title="Orders pie chart"
             chart={{
-              categories: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-              ],
-              series: [22, 8, 35, 50, 82, 84, 77, 12],
+              series:
+                getStatistics?.data?.year?.categories?.map(
+                  (category: string, index: number) => {
+                    return {
+                      label: category,
+                      value: getStatistics?.data?.year?.series[index],
+                    };
+                  }
+                ) ?? [],
             }}
           />
         </Grid2>
 
-        <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="New users"
-            percent={-0.1}
-            total={1352831}
-            color="secondary"
-            icon={
-              <img alt="icon" src="/assets/icons/glass/ic-glass-users.svg" />
-            }
+        <Grid2 size={{ xs: 12, md: 6, lg: 7 }}>
+          <AnalyticsOrdersBar
+            title="Orders bar chart"
+            subheader="Details of Orders"
             chart={{
-              categories: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-              ],
-              series: [56, 47, 40, 62, 73, 30, 23, 54],
-            }}
-          />
-        </Grid2>
-
-        <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="Purchase orders"
-            percent={2.8}
-            total={1723315}
-            color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-buy.svg" />}
-            chart={{
-              categories: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-              ],
-              series: [40, 70, 50, 28, 70, 75, 7, 64],
-            }}
-          />
-        </Grid2>
-
-        <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="Messages"
-            percent={3.6}
-            total={234}
-            color="error"
-            icon={
-              <img alt="icon" src="/assets/icons/glass/ic-glass-message.svg" />
-            }
-            chart={{
-              categories: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-              ],
-              series: [56, 30, 23, 54, 47, 40, 62, 73],
-            }}
-          />
-        </Grid2>
-
-        <Grid2 size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsCurrentVisits
-            title="Current visits"
-            chart={{
-              series: [
-                { label: "America", value: 3500 },
-                { label: "Asia", value: 2500 },
-                { label: "Europe", value: 1500 },
-                { label: "Africa", value: 500 },
-              ],
+              categories: getStatistics?.data?.month?.categories ?? [],
+              series: getStatistics?.data?.month?.series ?? [],
             }}
           />
         </Grid2>
 
         <Grid2 size={{ xs: 12, md: 6, lg: 8 }}>
-          <AnalyticsWebsiteVisits
-            title="Website visits"
-            subheader="(+43%) than last year"
+          <AnalyticsOrdersHorizontalBar
+            title="Orders horizontal bar chart"
+            subheader="Details of Orders"
             chart={{
-              categories: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-              ],
-              series: [
-                { name: "Team A", data: [43, 33, 22, 37, 67, 68, 37, 24, 55] },
-                { name: "Team B", data: [51, 70, 47, 67, 40, 37, 24, 70, 24] },
-              ],
-            }}
-          />
-        </Grid2>
-
-        <Grid2 size={{ xs: 12, md: 6, lg: 8 }}>
-          <AnalyticsConversionRates
-            title="Conversion rates"
-            subheader="(+43%) than last year"
-            chart={{
-              categories: ["Italy", "Japan", "China", "Canada", "France"],
-              series: [
-                { name: "2022", data: [44, 55, 41, 64, 22] },
-                { name: "2023", data: [53, 32, 33, 52, 13] },
-              ],
+              categories: getStatistics?.data?.month?.categories ?? [],
+              series: getStatistics?.data?.month?.series ?? [],
             }}
           />
         </Grid2>
 
         <Grid2 size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsCurrentSubject
-            title="Current subject"
+          <AnalyticsOrdersRadar
+            title="Orders radar chart"
             chart={{
-              categories: [
-                "English",
-                "History",
-                "Physics",
-                "Geography",
-                "Chinese",
-                "Math",
-              ],
-              series: [
-                { name: "Series 1", data: [80, 50, 30, 40, 100, 20] },
-                { name: "Series 2", data: [20, 30, 40, 80, 20, 80] },
-                { name: "Series 3", data: [44, 76, 78, 13, 43, 10] },
-              ],
+              categories: getStatistics?.data?.month?.categories ?? [],
+              series: getStatistics?.data?.month?.series ?? [],
             }}
           />
-        </Grid2>
-
-        <Grid2 size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsOrderTimeline title="Order timeline" list={_timeline} />
         </Grid2>
       </Grid2>
     </DashboardContent>

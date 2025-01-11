@@ -1,34 +1,35 @@
-import { StatusCodes } from 'http-status-codes';
-import Order from '../models/order.model.js';
-import Product from '../models/product.model.js';
-import ProductCategory from '../models/product-category.model.js';
-import Cart from '../models/cart.model.js';
-import axios from 'axios';
-import JWTHelper from '../../../helpers/jwt.helper.js';
-import https from 'https';
-import fs from 'fs';
-import path from 'path';
+import { StatusCodes } from "http-status-codes";
+import Order from "../models/order.model.js";
+import Product from "../models/product.model.js";
+import ProductCategory from "../models/product-category.model.js";
+import Cart from "../models/cart.model.js";
+import axios from "axios";
+import JWTHelper from "../../../helpers/jwt.helper.js";
+import https from "https";
+import fs from "fs";
+import path from "path";
 
 const projectRoot = process.cwd();
-console.log('projectRoot', projectRoot);
+console.log("projectRoot", projectRoot);
 
 const createHttpsAgent = () => {
-	try {
-		const cert = fs.readFileSync(path.join(projectRoot, 'src', 'cert', 'cert.pem'));
-		return new https.Agent({
-			ca: cert,
-			rejectUnauthorized: false,
-			checkServerIdentity: () => undefined
-		});
-	} catch (error) {
-		console.warn('Certificate not found or invalid:', error.message);
-	}
+  try {
+    const cert = fs.readFileSync(
+      path.join(projectRoot, "src", "cert", "cert.pem")
+    );
+    return new https.Agent({
+      ca: cert,
+      rejectUnauthorized: false,
+      checkServerIdentity: () => undefined,
+    });
+  } catch (error) {
+    console.warn("Certificate not found or invalid:", error.message);
+  }
 };
 
 const axiosInstance = axios.create({
-	httpsAgent: createHttpsAgent()
+  httpsAgent: createHttpsAgent(),
 });
-
 
 class OrderController {
 	static async getAllOrders(req, res) {

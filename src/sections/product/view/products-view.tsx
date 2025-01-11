@@ -45,6 +45,7 @@ export function ProductsView() {
 
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   const { getMegaMenuCategories } = useProductsAdmin();
 
@@ -153,14 +154,16 @@ export function ProductsView() {
   const handleAddProduct = useCallback(
     (product: Partial<ProductItemProps>) => {
       setOpenAddDialog(false);
-      dispatch(createProductAsync(product));
+      dispatch(createProductAsync(product))
+        .then(() => setIsAdding(false))
+        .catch(() => setIsAdding(false));
     },
     [dispatch]
   );
 
   return (
     <>
-      {isLoading && <SpinnerFullScreen />}
+      {(isLoading || isAdding) && <SpinnerFullScreen />}
       <DashboardContent>
         <Box display="flex" alignItems="center" mb={5}>
           <Typography variant="h4" flexGrow={1}>
@@ -179,6 +182,7 @@ export function ProductsView() {
           </Button>
         </Box>
         <Box
+          gap={1}
           display="flex"
           alignItems="center"
           flexWrap="wrap-reverse"
@@ -239,7 +243,7 @@ export function ProductsView() {
                 md: 3,
               }}
             >
-              <ProductItem product={product} />
+              <ProductItem product={product} setIsAdding={setIsAdding} />
             </Grid2>
           ))}
         </Grid2>
@@ -264,7 +268,9 @@ export function ProductsView() {
             defaultPage={1}
           />
         </Stack>
+
         <AddProductDialog
+          setIsLoading={setIsAdding}
           open={openAddDialog}
           onClose={() => {
             setOpenAddDialog(false);

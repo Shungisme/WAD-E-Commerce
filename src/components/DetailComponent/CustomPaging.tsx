@@ -1,6 +1,6 @@
 import { Box, useTheme } from "@mui/material";
 import { PRODUCT } from "../../types/productType";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TProps {
   item: PRODUCT;
@@ -9,6 +9,10 @@ interface TProps {
 const CustomPaging = ({ item }: TProps) => {
   const [heroImage, setHeroImage] = useState<string>(item?.thumbnail);
   const theme = useTheme();
+
+  useEffect(() => {
+    setHeroImage(item?.thumbnail);
+  }, [item]);
 
   const renderListImages = () => {
     return item?.images?.map((item, index) => {
