@@ -345,7 +345,7 @@ const LayoutFilter = ({ children }: TProps) => {
                   mt: 2,
                 }}
               >
-                {data.length && (
+                {data.length > 0 && (
                   <PaginationComponent
                     page={currentPage || 0}
                     totalPages={totalPages || 0}
