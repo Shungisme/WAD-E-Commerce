@@ -116,7 +116,11 @@ const CartProvider = ({ children }: TProps) => {
                 productsOfResponse[index].remainingQuantity;
             }
           } else {
-            productsOfResponse[index].quantity = data[i].quantity;
+            if(productsOfResponse[index].quantity >= data[i].remainingQuantity){
+              productsOfResponse[index].quantity = data[i].remainingQuantity;
+            } else {
+              productsOfResponse[index].quantity = data[i].quantity;
+            }
           }
         }
         setTotalMoney(totalPrice(productsOfResponse));
@@ -305,7 +309,9 @@ const CartProvider = ({ children }: TProps) => {
         (item: any) => item?.productId === detailProduct?._id
       );
       if (index !== -1) {
-        data[index].quantity = data[index].quantity + 1;
+        if(data[index].quantity < data[index].remainingQuantity){
+          data[index].quantity = data[index].quantity + 1;
+        }
       } else {
         data.push({
           productId: detailProduct?._id,
