@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <>
       <Helmet>
-        <title>Checkout</title>
+        <title>Thanh toán</title>
         <meta name="description" content="Checkout" />
       </Helmet>
 
