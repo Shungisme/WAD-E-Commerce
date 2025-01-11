@@ -14,15 +14,17 @@ interface Props {
   children: ReactNode;
 }
 
+interface CheckoutProps {
+  orderId: string;
+  otp: string;
+  address: string;
+  phoneNumber: string;
+}
+
 interface CheckoutContextType {
   createOrder: UseQueryResult<any, Error> | null;
   getOTP: UseMutationResult<any, Error, void, unknown> | null;
-  checkoutOrder: UseMutationResult<
-    any,
-    Error,
-    { orderId: string; otp: string },
-    unknown
-  > | null;
+  checkoutOrder: UseMutationResult<any, Error, CheckoutProps, unknown> | null;
 }
 
 const initialize: CheckoutContextType = {
@@ -67,12 +69,9 @@ export default function CheckoutProvider({ children }: Props) {
 
   const checkoutOrder = useMutation({
     mutationKey: ["checkout-order", user?._id],
-    mutationFn: async ({ orderId, otp }: { orderId: string; otp: string }) => {
+    mutationFn: async (checkout: CheckoutProps) => {
       try {
-        const response = await postCheckoutApi({
-          orderId,
-          otp,
-        });
+        const response = await postCheckoutApi(checkout);
         return response;
       } catch (error) {
         console.log("error at checkoutOrder in checkout context");

@@ -14,6 +14,7 @@ import {
   IconButton,
   Badge,
   Container,
+  Snackbar,
 } from "@mui/material";
 import { Refresh as RefreshIcon } from "@mui/icons-material";
 import { formatCurrency, formatPercent } from "../../../utils/format-number";
@@ -60,6 +61,8 @@ export type CheckoutInfoProps = {
 export const CheckoutView = () => {
   const [timeLeft, setTimeLeft] = useState(10 * 60);
   const [otp, setOtp] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [resendDisabled, setResendDisabled] = useState(false);
@@ -123,11 +126,11 @@ export const CheckoutView = () => {
     setIsLoading(true);
     try {
       await getOTP?.mutateAsync();
-      setMessage("OTP sent successfully");
+      setMessage("OTP đã được gửi. Vui lòng kiểm tra email.");
       setResendDisabled(true);
       setResendTimer(30);
     } catch (err) {
-      setError("Failed to get OTP. Please try again.");
+      setError("Lấy OTP thất bại. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);
     }
@@ -135,7 +138,23 @@ export const CheckoutView = () => {
 
   const handleCheckout = async () => {
     if (!otp) {
-      setError("Please enter OTP");
+      setError("Vui lòng nhập OTP.");
+      return;
+    }
+    if (!address) {
+      setError("Vui lòng nhập địa chỉ.");
+      return;
+    }
+    if (!phoneNumber) {
+      setError("Vui lòng nhập số điện thoại.");
+      return;
+    }
+    if (
+      !RegExp(
+        /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/
+      ).test(phoneNumber)
+    ) {
+      setError("Vui lòng nhập số điện thoại hợp lệ.");
       return;
     }
 
@@ -144,11 +163,13 @@ export const CheckoutView = () => {
       await checkoutOrder?.mutateAsync({
         orderId: createOrder?.data?.order?._id,
         otp,
+        address,
+        phoneNumber,
       });
       setError("");
       setPaymentSuccess(true);
     } catch (err) {
-      setError("Checkout failed. Please try again.");
+      setError("Thanh toán thất bại. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);
     }
@@ -167,7 +188,7 @@ export const CheckoutView = () => {
         }}
       >
         <Typography variant="h3" sx={{ mb: 2 }} color="success">
-          You have successfully completed the payment!
+          Bạn đã thanh toán thành công!!!
         </Typography>
 
         <Box
@@ -187,7 +208,7 @@ export const CheckoutView = () => {
           variant="contained"
           color="primary"
         >
-          Go to home
+          Về trang chủ
         </Button>
       </Container>
     );
@@ -206,7 +227,7 @@ export const CheckoutView = () => {
         }}
       >
         <Typography variant="h3" sx={{ mb: 2 }} color="error">
-          Your session has expired!
+          Phiên thanh toán đã hết hạn!!!
         </Typography>
 
         <Box
@@ -226,7 +247,7 @@ export const CheckoutView = () => {
           variant="contained"
           color="primary"
         >
-          Go to home
+          Về trang chủ
         </Button>
       </Container>
     );
@@ -298,7 +319,7 @@ export const CheckoutView = () => {
                   {product.title}
                 </Typography>
                 <Typography color="text.secondary">
-                  Quantity: {product.quantity}
+                  Số lượng: {product.quantity}
                 </Typography>
                 <Typography color="primary" fontWeight="bold">
                   {formatCurrency(product.price)}
@@ -315,13 +336,13 @@ export const CheckoutView = () => {
     <Box sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
       <Stack spacing={1}>
         <Typography variant="subtitle1">
-          Total Quantity:{" "}
+          Tổng số lượng: &nbsp;
           <Typography component="span" fontWeight="bold">
-            {createOrder?.data?.order.totalQuantity} items
+            {createOrder?.data?.order.totalQuantity} sản phẩm
           </Typography>
         </Typography>
         <Typography variant="h6" color="primary">
-          Total Amount:{" "}
+          Tổng giá trị: &nbsp;
           <Typography component="span" fontWeight="bold">
             {formatCurrency(createOrder?.data?.order.totalAmount)}
           </Typography>
@@ -331,14 +352,13 @@ export const CheckoutView = () => {
   );
 
   const renderOtp = (
-    <Box sx={{ mt: 3 }}>
+    <Box sx={{ mt: 1, mb: 2 }}>
       <TextField
-        label="Enter OTP"
+        label="Nhập OTP"
         variant="outlined"
         fullWidth
         value={otp}
         onChange={(e) => setOtp(e.target.value)}
-        sx={{ mb: 2 }}
         InputProps={{
           endAdornment: (
             <IconButton
@@ -353,16 +373,69 @@ export const CheckoutView = () => {
       />
       {resendDisabled && (
         <Typography variant="caption" color="text.secondary">
-          Resend available in {resendTimer}s
+          Gửi lại sau {resendTimer}s
         </Typography>
       )}
+    </Box>
+  );
+
+  const renderInputAddress = (
+    <Box sx={{ mt: 1 }}>
+      <TextField
+        label="Nhập địa chỉ"
+        variant="outlined"
+        fullWidth
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+    </Box>
+  );
+
+  const renderPhoneNumber = (
+    <Box sx={{ mt: 1 }}>
+      <TextField
+        label="Nhập số điện thoại"
+        variant="outlined"
+        fullWidth
+        value={phoneNumber}
+        type="number"
+        onChange={(e) => setPhoneNumber(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+    </Box>
+  );
+
+  const accountBalance = (
+    <Box sx={{ textAlign: "center" }}>
+      <Typography
+        fontWeight="bold"
+        color="primary"
+        fontSize="1.5rem"
+        sx={{ mb: 3 }}
+      >
+        Số dư: &nbsp;
+        {formatCurrency(createOrder?.data?.userPaymentInformation?.balance, {
+          notation: "compact",
+        }).replace(/[A-Z]/g, (match) => match.toLowerCase())}
+      </Typography>
     </Box>
   );
 
   return (
     <>
       <Box sx={{ maxWidth: 1200, mx: "auto", p: 2 }}>
-        {formatTime(timeLeft)}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+          }}
+        >
+          {formatTime(timeLeft)}
+          {accountBalance}
+        </Box>
+
         <Grid container spacing={3}>
           <Grid item xs={12} md={7}>
             <Paper
@@ -375,7 +448,7 @@ export const CheckoutView = () => {
             >
               <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
                 <Typography variant="h6" fontWeight="bold">
-                  Order Details
+                  Chi tiết đơn hàng
                 </Typography>
               </Box>
 
@@ -395,20 +468,24 @@ export const CheckoutView = () => {
               }}
             >
               <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Verification
+                Xác minh
               </Typography>
 
               {renderOtp}
 
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Địa chỉ
+              </Typography>
+              {renderInputAddress}
+
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Số điện thoại
+              </Typography>
+              {renderPhoneNumber}
+
               {error && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {error}
-                </Alert>
-              )}
-
-              {!error && message && (
-                <Alert severity="success" sx={{ mt: 2 }}>
-                  {message}
                 </Alert>
               )}
 
@@ -418,7 +495,7 @@ export const CheckoutView = () => {
                   fullWidth
                   size="large"
                   onClick={handleCheckout}
-                  disabled={isLoading || !otp}
+                  disabled={isLoading || !otp || !address || !phoneNumber}
                   sx={{
                     height: "50px",
                     textTransform: "none",
@@ -428,7 +505,7 @@ export const CheckoutView = () => {
                   {isLoading ? (
                     <CircularProgress size={24} />
                   ) : (
-                    "Complete Checkout"
+                    "Hoàn tất thanh toán"
                   )}
                 </Button>
               </Box>
@@ -436,6 +513,16 @@ export const CheckoutView = () => {
           </Grid>
         </Grid>
       </Box>
+
+      <Snackbar
+        open={!!message}
+        autoHideDuration={3000}
+        onClose={() => setMessage("")}
+      >
+        <Alert severity="success" sx={{ mt: 2 }}>
+          {message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
