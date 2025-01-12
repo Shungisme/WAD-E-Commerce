@@ -116,7 +116,9 @@ const CartProvider = ({ children }: TProps) => {
                 productsOfResponse[index].remainingQuantity;
             }
           } else {
-            if(productsOfResponse[index].quantity >= data[i].remainingQuantity){
+            if (
+              productsOfResponse[index].quantity >= data[i].remainingQuantity
+            ) {
               productsOfResponse[index].quantity = data[i].remainingQuantity;
             } else {
               productsOfResponse[index].quantity = data[i].quantity;
@@ -298,7 +300,9 @@ const CartProvider = ({ children }: TProps) => {
         data = [...cart, tmp];
       } else {
         if (cart[index]) {
-          cart[index].quantity++;
+          console.log(detailProduct)
+          if (cart[index].quantity < detailProduct?.quantity)
+            cart[index].quantity++;
         }
         data = JSON.parse(JSON.stringify(cart));
       }
@@ -309,7 +313,7 @@ const CartProvider = ({ children }: TProps) => {
         (item: any) => item?.productId === detailProduct?._id
       );
       if (index !== -1) {
-        if(data[index].quantity < data[index].remainingQuantity){
+        if (data[index].quantity < data[index].remainingQuantity) {
           data[index].quantity = data[index].quantity + 1;
         }
       } else {
