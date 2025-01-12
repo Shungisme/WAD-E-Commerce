@@ -1,4 +1,5 @@
 import { Alert, Snackbar, SnackbarCloseReason, useTheme } from "@mui/material";
+import { memo } from "react";
 import ReactDOM from "react-dom";
 
 interface TProps {
@@ -40,4 +41,4 @@ const SnackBarComponent = ({ open, setOpen, content, severity }: TProps) => {
   );
 };
 
-export default SnackBarComponent;
+export default memo(SnackBarComponent);

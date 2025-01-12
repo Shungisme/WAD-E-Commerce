@@ -12,7 +12,7 @@ import * as yup from "yup";
 import { resetPassword, verifyCodeAccount } from "../../../services/auth";
 import { useSnackbar } from "../../../hooks/snackbar";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { memo, useState } from "react";
 import AnnouceModalComponent from "../../AnnouceModalComponent";
 
 const schema = yup
@@ -122,4 +122,4 @@ const RegisterCodeModalComponent = ({ email, setOpenParent, type }: TProps) => {
   );
 };
 
-export default RegisterCodeModalComponent;
+export default memo(RegisterCodeModalComponent);

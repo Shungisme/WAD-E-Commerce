@@ -46,4 +46,4 @@ const ModalComponent = ({ children, open, setOpen }: TProps) => {
   );
 };
 
-export default ModalComponent;
+export default React.memo(ModalComponent);

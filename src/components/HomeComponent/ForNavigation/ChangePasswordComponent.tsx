@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import IconifyIcon from "../../iconifyIcon";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { changePassword, receciveCode } from "../../../services/auth";
 import * as yup from "yup";
@@ -265,4 +265,4 @@ const ChangePasswordComponent = ({ setOpenParent }: TProps) => {
   );
 };
 
-export default ChangePasswordComponent;
+export default memo(ChangePasswordComponent);

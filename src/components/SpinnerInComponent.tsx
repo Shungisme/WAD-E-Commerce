@@ -1,4 +1,5 @@
 import { CircularProgress, Box } from "@mui/material";
+import { memo } from "react";
 
 const SpinnerInComponent = () => {
   return (
@@ -25,4 +26,4 @@ const SpinnerInComponent = () => {
   );
 };
 
-export default SpinnerInComponent;
+export default memo(SpinnerInComponent);

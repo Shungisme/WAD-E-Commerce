@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuth } from "../../../hooks/useAuth";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useSnackbar } from "../../../hooks/snackbar";
 import { useMutation } from "@tanstack/react-query";
 import { updateProfile } from "../../../services/auth";
@@ -168,4 +168,4 @@ const UpdateProfileComponent = () => {
   );
 };
 
-export default UpdateProfileComponent;
+export default memo(UpdateProfileComponent);

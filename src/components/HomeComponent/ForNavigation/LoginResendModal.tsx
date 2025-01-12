@@ -11,6 +11,7 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { receciveCode, verifyCodeAccount } from "../../../services/auth";
 import { useSnackbar } from "../../../hooks/snackbar";
+import { memo } from "react";
 
 const schema = yup
   .object({
@@ -106,4 +107,4 @@ const LoginResendModalComponent = ({ email, setOpenParent }: TProps) => {
   );
 };
 
-export default LoginResendModalComponent;
+export default memo(LoginResendModalComponent);

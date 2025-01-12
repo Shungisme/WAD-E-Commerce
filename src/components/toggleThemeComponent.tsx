@@ -1,5 +1,5 @@
 // src/components/ThemeToggle.tsx
-import React from 'react';
+import React, { memo } from 'react';
 import Switch from '@mui/material/Switch';
 import FormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel';
 import { useTheme } from '../hooks/useTheme';
@@ -20,4 +20,4 @@ const ThemeToggle: React.FC<ThemeToggleProps> = (props) => {
   );
 };
 
-export default ThemeToggle;
+export default memo(ThemeToggle);

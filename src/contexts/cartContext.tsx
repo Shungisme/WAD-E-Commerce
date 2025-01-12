@@ -185,7 +185,7 @@ const CartProvider = ({ children }: TProps) => {
       queryClient.setQueryData(["get-cart"], context?.previousData);
     },
     onSettled: async () => {
-      queryClient.refetchQueries({
+      queryClient.invalidateQueries({
         queryKey: ["get-cart", user?._id],
       });
     },
@@ -237,7 +237,7 @@ const CartProvider = ({ children }: TProps) => {
       );
     },
     onSettled: () => {
-      queryClient.refetchQueries({ queryKey: ["get-cart", user?._id] });
+      queryClient.invalidateQueries({ queryKey: ["get-cart", user?._id] });
     },
   });
 

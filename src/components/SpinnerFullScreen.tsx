@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom";
 import { CircularProgress, Box } from "@mui/material";
+import { memo } from "react";
 
 const SpinnerFullScreen = () => {
   return ReactDOM.createPortal(
@@ -23,4 +24,4 @@ const SpinnerFullScreen = () => {
   );
 };
 
-export default SpinnerFullScreen;
+export default memo(SpinnerFullScreen);
