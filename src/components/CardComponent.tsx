@@ -10,7 +10,6 @@ import { PRODUCT } from "../types/productType";
 import { toVND } from "../utils/convertNumberToVND";
 import { toDiscountPrice } from "../utils/toDiscountPrice";
 import { useNavigate } from "react-router-dom";
-import { slugify } from "../utils/slugify";
 
 interface TProps {
   item: PRODUCT;

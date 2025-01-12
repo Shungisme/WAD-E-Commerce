@@ -60,58 +60,77 @@ const SearchDropDownComponent = ({ input }: TProps) => {
   const renderProducts = () => {
     return getSearchData?.data?.pages
       ?.flatMap((page: any) => page.products)
-      .map((item: any, index: any) => (
-        <Box
-          key={item?._id}
-          onClick={() => navigate(`/detail?content=${slugify(item?.title)}`)}
-        >
-          <Grid
-            sx={{
-              "&:hover": {
-                backgroundColor: theme.palette.primary.main,
-              },
-              p: 1,
-            }}
-            container
-            maxWidth={"100%"}
+      .map((item: any, index: any) => {
+        return (
+          <Box
+            key={item?._id}
+            onClick={() => navigate(`/detail?content=${item?.slug}`)}
           >
-            <Grid item xs={3}>
-              <Box
-                sx={{
-                  width: "5rem",
-                  height: "5rem",
-                }}
-                component={"img"}
-                src={item?.thumbnail}
-              />
-            </Grid>
-
-            <Grid item xs={5}>
-              <Box>
-                <Typography
+            <Grid
+              sx={{
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.main,
+                },
+                p: 1,
+              }}
+              container
+              maxWidth={"100%"}
+            >
+              <Grid item xs={3}>
+                <Box
                   sx={{
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    WebkitBoxOrient: "vertical",
-                    WebkitLineClamp: 2,
-                    fontSize: "0.8rem",
-                    textAlign: "left",
+                    width: "5rem",
+                    height: "5rem",
                   }}
-                >
-                  {item?.title}
-                </Typography>
-              </Box>
-            </Grid>
+                  component={"img"}
+                  src={item?.thumbnail}
+                />
+              </Grid>
 
-            <Grid item xs={4}>
-              <Stack
-                direction={"column"}
-                alignItems={"center"}
-                justifyContent={"center"}
-              >
-                {item?.discount > 0 ? (
-                  <>
+              <Grid item xs={5}>
+                <Box>
+                  <Typography
+                    sx={{
+                      display: "-webkit-box",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      WebkitBoxOrient: "vertical",
+                      WebkitLineClamp: 2,
+                      fontSize: "0.8rem",
+                      textAlign: "left",
+                    }}
+                  >
+                    {item?.title}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              <Grid item xs={4}>
+                <Stack
+                  direction={"column"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  {item?.discount > 0 ? (
+                    <>
+                      <Typography
+                        sx={{
+                          fontWeight: "bolder",
+                          fontSize: "0.7rem",
+                        }}
+                      >
+                        {toVND(toDiscountPrice(item))}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          textDecoration: "line-through",
+                          fontSize: "0.7rem",
+                        }}
+                      >
+                        {toVND(item?.price)}
+                      </Typography>
+                    </>
+                  ) : (
                     <Typography
                       sx={{
                         fontWeight: "bolder",
@@ -120,34 +139,17 @@ const SearchDropDownComponent = ({ input }: TProps) => {
                     >
                       {toVND(toDiscountPrice(item))}
                     </Typography>
-                    <Typography
-                      sx={{
-                        textDecoration: "line-through",
-                        fontSize: "0.7rem",
-                      }}
-                    >
-                      {toVND(item?.price)}
-                    </Typography>
-                  </>
-                ) : (
-                  <Typography
-                    sx={{
-                      fontWeight: "bolder",
-                      fontSize: "0.7rem",
-                    }}
-                  >
-                    {toVND(toDiscountPrice(item))}
-                  </Typography>
-                )}
-              </Stack>
+                  )}
+                </Stack>
+              </Grid>
             </Grid>
-          </Grid>
-          {index !==
-            getSearchData?.data?.pages?.flatMap((page: any) => page.products)
-              ?.length -
-              1 && <Divider />}
-        </Box>
-      ));
+            {index !==
+              getSearchData?.data?.pages?.flatMap((page: any) => page.products)
+                ?.length -
+                1 && <Divider />}
+          </Box>
+        );
+      });
   };
 
   return (

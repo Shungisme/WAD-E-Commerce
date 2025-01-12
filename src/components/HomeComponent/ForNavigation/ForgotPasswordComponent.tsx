@@ -14,7 +14,7 @@ import { receciveCode } from "../../../services/auth";
 import SpinnerFullScreen from "../../SpinnerFullScreen";
 import ModalComponent from "../../ModalComponent";
 import RegisterCodeModalComponent from "./RegisterCodeModal";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useSnackbar } from "../../../hooks/snackbar";
 
 interface ForgotForm {
@@ -161,4 +161,4 @@ const ForgotPasswordComponent = ({ navigateToComponent }: TProps) => {
   );
 };
 
-export default ForgotPasswordComponent;
+export default memo(ForgotPasswordComponent);

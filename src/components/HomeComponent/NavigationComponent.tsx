@@ -85,7 +85,7 @@ const NavigationComponent = () => {
       return (
         <>
           <div
-            key={"category: " + index}
+            key={`category-${index}`}
             style={{
               color:
                 theme.palette.mode === "dark"

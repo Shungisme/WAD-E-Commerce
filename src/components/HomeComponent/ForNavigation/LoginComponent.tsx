@@ -11,7 +11,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import IconifyIcon from "../../iconifyIcon";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { getAuthGoogleUrl } from "../../../services/auth";
 import { TUser } from "../../../types/userType";
 import { useMutation } from "@tanstack/react-query";
@@ -259,4 +259,4 @@ const LoginComponent = ({ navigateToComponent }: TProps) => {
   );
 };
 
-export default LoginComponent;
+export default memo(LoginComponent);

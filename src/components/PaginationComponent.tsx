@@ -8,6 +8,7 @@ import {
     Stack,
   } from "@mui/material";
   import { PERPAGE_OPITONS } from "../pages/FilterPage";
+import { memo } from "react";
   
   interface TProps {
     page: number;
@@ -60,5 +61,5 @@ import {
     );
   };
   
-  export default PaginationComponent;
+  export default memo(PaginationComponent);
   

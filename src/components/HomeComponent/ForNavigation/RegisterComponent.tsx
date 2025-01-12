@@ -12,7 +12,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { TUser } from "../../../types/userType";
 import { registerUserAPI } from "../../../services/auth";
-import { useState } from "react";
+import { memo, useState } from "react";
 import AnnouceModalComponent from "../../AnnouceModalComponent";
 import IconifyIcon from "../../iconifyIcon";
 import { useMutation } from "@tanstack/react-query";
@@ -358,4 +358,4 @@ const RegisterComponent = ({ navigateToComponent }: TProps) => {
   );
 };
 
-export default RegisterComponent;
+export default memo(RegisterComponent);
