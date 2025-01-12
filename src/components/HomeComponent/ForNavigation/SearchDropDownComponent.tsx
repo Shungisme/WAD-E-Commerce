@@ -13,7 +13,6 @@ import {
 import { toVND } from "../../../utils/convertNumberToVND";
 import { toDiscountPrice } from "../../../utils/toDiscountPrice";
 import { useNavigate } from "react-router-dom";
-import { slugify } from "../../../utils/slugify";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 
@@ -100,7 +99,7 @@ const SearchDropDownComponent = ({ input }: TProps) => {
                       textAlign: "left",
                     }}
                   >
-                    {item?.title}
+                    {item?.title.trim()}
                   </Typography>
                 </Box>
               </Grid>
