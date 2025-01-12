@@ -300,7 +300,6 @@ const CartProvider = ({ children }: TProps) => {
         data = [...cart, tmp];
       } else {
         if (cart[index]) {
-          console.log(detailProduct)
           if (cart[index].quantity < detailProduct?.quantity)
             cart[index].quantity++;
         }
