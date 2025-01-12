@@ -19,6 +19,7 @@ const ProductInCartComponent = ({ item }: TProps) => {
   const theme = useTheme();
   const { handleChangeQuantity, handleDelete } = useCart();
 
+
   return (
     <>
       <Grid
@@ -75,7 +76,7 @@ const ProductInCartComponent = ({ item }: TProps) => {
               }}
               fontWeight={500}
             >
-              {item?.title}
+              {item?.title.trim()}
             </Typography>
             <Box
               sx={{
@@ -138,9 +139,4 @@ const ProductInCartComponent = ({ item }: TProps) => {
   );
 };
 
-export default memo(ProductInCartComponent, (prevProps, nextProps) => {
-  return (
-    prevProps.item.productId === nextProps.item.productId &&
-    prevProps.item.quantity === nextProps.item.quantity
-  );
-});
+export default memo(ProductInCartComponent);
