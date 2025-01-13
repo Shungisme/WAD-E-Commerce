@@ -7,6 +7,7 @@ const router = Router();
 
 router.get('/', OrderController.getAllOrders);
 router.get('/statistics', isAuthorized, isAdmin, OrderController.getStatistics);
+router.get('/payments', isAuthorized, isAdmin, OrderController.getAllPayments);
 router.get('/:id', OrderController.getOrderById);
 
 router.post('/create', isAuthorized, OrderController.createOrder);

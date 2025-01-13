@@ -57,7 +57,7 @@ if (profile === "dev") {
     await init();
   });
 } else {
-  app.listen(PORT, '0.0.0.0', async () => {
+  app.listen(PORT, "0.0.0.0", async () => {
     console.log(`Server started on port ${PORT}`);
     await mysqlConnection();
     await init();
