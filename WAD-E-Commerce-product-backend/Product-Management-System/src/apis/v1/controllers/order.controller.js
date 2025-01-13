@@ -8,6 +8,7 @@ import JWTHelper from "../../../helpers/jwt.helper.js";
 import https from "https";
 import fs from "fs";
 import path from "path";
+import User from "../models/user.model.js"
 
 const projectRoot = process.cwd();
 console.log("projectRoot", projectRoot);
@@ -167,6 +168,39 @@ class OrderController {
 		} catch (error) {
 			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
 				error: error.message
+			});
+		}
+	}
+
+	static async getAllPayments(req, res) {
+		try {
+			const user = req.userInformation;
+
+			const token = await JWTHelper.generateTokenForPaymentSystem(
+				{ userId: user._id, email: user.email }
+				, process.env.SYSTEM_SIGNER_KEY
+			);
+
+			const response = await axiosInstance.get(
+				`${process.env.PAYMENT_URL}/payments`, {
+				headers: {
+					'payment-system-auth': `${token}`
+				}
+			});
+			
+			const payments = await Promise.all(
+				response.data.payments.map(async (payment) => {
+					const user = await User.findById(payment.userId);
+					console.log(user);
+					return { ...payment, user };
+				})
+			);
+	
+			return res.status(StatusCodes.OK).json({ payments });
+		} catch (err) {
+			console.error(err);
+			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				error: err.message
 			});
 		}
 	}

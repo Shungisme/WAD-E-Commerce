@@ -59,4 +59,17 @@ const createPayment = async (req, res, next) => {
   }
 };
 
-module.exports = createPayment;
+const getAllPayments = async (req, res, next) => {
+  try {
+    const payments = await Payment.findAll();
+    res.status(200).json({ payments });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+}
+
+module.exports = {
+  createPayment,
+  getAllPayments,
+};
