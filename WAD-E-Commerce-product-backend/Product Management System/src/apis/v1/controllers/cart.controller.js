@@ -53,6 +53,7 @@ class CartController {
             price: product?.price || 0,
             discount: product?.discount || 0,
             thumbnail: product?.thumbnail || "",
+            slug: product?.slug || "",
             remainingQuantity: product?.quantity || 0,
           };
         })
