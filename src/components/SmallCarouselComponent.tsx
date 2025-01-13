@@ -20,17 +20,16 @@ const SmallCarousel = ({ items, type }: TProps) => {
   const renderCarousel = () => {
     return items?.map((item) => {
       return (
-        <>
-          <div
-            style={{
-              maxWidth: "22rem",
-              height: "34rem",
-              margin: "0 auto",
-            }}
-          >
-            <CardComponent item={item} key={item?._id} />
-          </div>
-        </>
+        <div
+          style={{
+            maxWidth: "22rem",
+            height: "34rem",
+            margin: "0 auto",
+          }}
+          key={item?._id}
+        >
+          <CardComponent item={item} />
+        </div>
       );
     });
   };

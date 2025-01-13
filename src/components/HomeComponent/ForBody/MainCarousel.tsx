@@ -3,7 +3,7 @@ import CarouselComponent from "../../CarouselComponent";
 import { CAROUSEL_MAIN } from "../../../constants/carouselContants";
 import { useNavigate } from "react-router-dom";
 import IconifyIcon from "../../iconifyIcon";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 interface CarouselSettings {
   dots: boolean;
@@ -50,9 +50,8 @@ const MainCarousel = () => {
   const renderCarouselMain = () => {
     return CAROUSEL_MAIN().map((item, index) => {
       return (
-        <div>
+        <div key={`MainCarousel-${index}`}>
           <Box
-            key={"MainCarousel" + index}
             onClick={() => navigate(item.link)}
             className="cursor-pointer relative w-screen h-[42rem]"
           >
@@ -121,4 +120,4 @@ const MainCarousel = () => {
   );
 };
 
-export default MainCarousel;
+export default memo(MainCarousel);

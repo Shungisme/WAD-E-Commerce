@@ -1,9 +1,22 @@
+import { styled } from "@mui/material";
 import { forwardRef, ReactNode } from "react";
 import Slider from "react-slick";
 
 interface TProps {
   children: ReactNode;
 }
+
+const CustomSlider = styled('div')(({ theme }) => ({
+  '& .slick-list': {
+    margin: '0 -7px',
+    '& .slick-slide > div': {
+      padding: '0 10px',
+    }
+  },
+  width: '95%', 
+  margin: '0 auto'  
+}));
+
 
 const SmallCarouselComponent = forwardRef<Slider, TProps>((props, ref) => {
   const { children, ...rest } = props;
@@ -17,11 +30,11 @@ const SmallCarouselComponent = forwardRef<Slider, TProps>((props, ref) => {
   };
 
   return (
-    <div className="slider-container">
+    <CustomSlider className="slider-container">
       <Slider ref={ref} {...settings} {...rest}>
         {children}
       </Slider>
-    </div>
+    </CustomSlider>
   );
 });
 

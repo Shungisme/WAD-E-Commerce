@@ -12,6 +12,7 @@ import * as yup from "yup";
 import { receciveCode, verifyCodeAccount } from "../../../services/auth";
 import { useSnackbar } from "../../../hooks/snackbar";
 import { memo } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 const schema = yup
   .object({
@@ -39,29 +40,52 @@ const LoginResendModalComponent = ({ email, setOpenParent }: TProps) => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: { code: string }) => {
-    const response = await verifyCodeAccount(email, data?.code);
-    if (response?.message === "Verification successful") {
+  const mutationVerifyCode = useMutation({
+    mutationKey: ["verify-code-login"],
+    mutationFn: async ({ email, code }: { email: string; code: string }) => {
+      const response = await verifyCodeAccount(email, code);
+      return response;
+    },
+    onSuccess: () => {
       setOpenParent(false);
       showSnackbar("Xác thực thành công. Vui lòng đăng nhập lại", "success");
-    } else {
+    },
+    onError: () => {
       showSnackbar("Xác thực thất bại", "error");
-    }
+    },
+  });
+
+  const mutationResend = useMutation({
+    mutationKey: ["resend-login"],
+    mutationFn: async ({ email, type }: { email: string; type: string }) => {
+      const response = await receciveCode(email, "verify");
+      return response;
+    },
+    onSuccess: () => {
+      showSnackbar("Đã gửi mã thành công", "success");
+    },
+    onError: () => {
+      showSnackbar("Gửi mã thất bại", "error");
+    },
+  });
+
+  const onSubmit = async (data: { code: string }) => {
+    await mutationVerifyCode.mutate({ email, code: data?.code });
   };
 
   const handleResend = async () => {
-    const response = await receciveCode(email,'verify');
-    if(response){
-        showSnackbar("Đã gửi mã thành công",'success')
-    } else {
-        showSnackbar("Gửi mã thất bại",'error')
-    }
+    await mutationResend.mutate({ email, type: "verify" });
   };
 
   return (
     <>
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
-        <Stack width={"100%"} gap={2} justifyContent={"center"} alignItems={"center"}>
+        <Stack
+          width={"100%"}
+          gap={2}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
           <Typography variant="h3" textAlign={"center"}>
             Gửi lại mã
           </Typography>
@@ -72,7 +96,12 @@ const LoginResendModalComponent = ({ email, setOpenParent }: TProps) => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <>
-                <Box width={"100%"} display={"flex"} justifyContent={"center"} gap={1}>
+                <Box
+                  width={"100%"}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  gap={1}
+                >
                   <TextField
                     sx={{
                       width: "70%",
@@ -87,9 +116,13 @@ const LoginResendModalComponent = ({ email, setOpenParent }: TProps) => {
                       {errors.code.message}
                     </FormHelperText>
                   )}
-                  <Button sx={{
-                    width: "30%"
-                  }} onClick={() => handleResend()} variant="contained">
+                  <Button
+                    sx={{
+                      width: "30%",
+                    }}
+                    onClick={() => handleResend()}
+                    variant="contained"
+                  >
                     Gửi lại
                   </Button>
                 </Box>

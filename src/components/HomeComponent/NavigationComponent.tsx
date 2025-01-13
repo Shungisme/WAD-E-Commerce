@@ -12,15 +12,13 @@ import {
 import IconifyIcon from "../iconifyIcon";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import LoginComponent from "./ForNavigation/LoginComponent";
 import RegisterComponent from "./ForNavigation/RegisterComponent";
 import ForgotPasswordComponent from "./ForNavigation/ForgotPasswordComponent";
 import { useNavigate } from "react-router-dom";
 import ThemeToggle from "../toggleThemeComponent";
-import CarouselComponent from "../CarouselComponent";
 import DropdownComponent from "../DropdownComponent";
-import { headerContentCarousel } from "../../constants/headerContentCarousel";
 import CartDropDownComponent from "./ForNavigation/CartDropDownComponent";
 import SearchComponent from "./ForNavigation/SearchComponent";
 import useHover from "../../hooks/useHover";
@@ -55,19 +53,6 @@ const NavigationComponent = () => {
     };
   }, []);
 
-  const settings = useMemo(() => {
-    return {
-      dots: false,
-      fade: true,
-      infinite: true,
-      speed: 500,
-      autoplay: true,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      waitForAnimate: false,
-    };
-  }, []);
-
   const [nameComponent, setNameComponent] = useState<string>("login");
 
   const theme = useTheme();
@@ -79,58 +64,6 @@ const NavigationComponent = () => {
     queryFn: getAllCategories,
     staleTime: 5 * 60 * 1000,
   });
-
-  const renderItemInCarouselHeaderContent = () => {
-    return headerContentCarousel().map((item, index) => {
-      return (
-        <>
-          <div
-            key={`category-${index}`}
-            style={{
-              color:
-                theme.palette.mode === "dark"
-                  ? theme.palette.common.black
-                  : theme.palette.common.white,
-              backgroundColor:
-                theme.palette.mode === "dark"
-                  ? theme.palette.common.white
-                  : theme.palette.common.black,
-              padding: "10px",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              <Typography
-                fontWeight={"semibold"}
-                fontSize={"12px"}
-                display={"inline-block"}
-              >
-                {item.content}
-              </Typography>
-              <Button
-                variant="contained"
-                sx={{
-                  height: "27px",
-                  width: "15px",
-                  textTransform: "capitalize",
-                  fontSize: "12px",
-                }}
-                onClick={() => navigate(`/${ROUTES_CONSTANT.FILTER_PAGE}`)}
-              >
-                Shop
-              </Button>
-            </Box>
-          </div>
-        </>
-      );
-    });
-  };
 
   const renderComponentAuthentication = () => {
     if (nameComponent === "login") {
@@ -159,8 +92,12 @@ const NavigationComponent = () => {
             </Typography>
           </Box>
           <Stack>
-            <Button onClick={() => setOpenModalUpdate(true)}>Cập nhật thông tin</Button>
-            <Button onClick={() => setOpenChangePassword(true)}>Đổi mật khẩu</Button>
+            <Button onClick={() => setOpenModalUpdate(true)}>
+              Cập nhật thông tin
+            </Button>
+            <Button onClick={() => setOpenChangePassword(true)}>
+              Đổi mật khẩu
+            </Button>
           </Stack>
           <Divider />
           <Button
@@ -181,102 +118,12 @@ const NavigationComponent = () => {
     <>
       {categories.isFetching && <SpinnerFullScreen />}
       <ModalComponent open={openModalUpdate} setOpen={setOpenModalUpdate}>
-        <UpdateProfileComponent/>
+        <UpdateProfileComponent />
       </ModalComponent>
       <ModalComponent open={openChangePassword} setOpen={setOpenChangePassword}>
-        <ChangePasswordComponent setOpenParent={setOpenChangePassword}/>
+        <ChangePasswordComponent setOpenParent={setOpenChangePassword} />
       </ModalComponent>
       <Box>
-        <Box
-          sx={{
-            width: "100%",
-            backgroundColor: "#ebebeb",
-            "&:hover button": {
-              opacity: 1,
-            },
-            mx: "0 auto",
-            textAlign: "center",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              position: "relative",
-              width: "100%",
-            }}
-          >
-            <div
-              style={{
-                width: "100%",
-                position: "relative",
-              }}
-            >
-              <CarouselComponent settings={settings}>
-                {renderItemInCarouselHeaderContent()}
-              </CarouselComponent>
-
-              <IconButton
-                className="prev-arrow"
-                sx={{
-                  color:
-                    theme.palette.mode === "dark"
-                      ? theme.palette.common.black
-                      : theme.palette.common.white,
-                  position: "absolute",
-                  left: 0,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  zIndex: 1,
-                  opacity: 0,
-                  transition: "opacity 0.3s ease",
-                }}
-                onClick={() => {
-                  const prevButton = document.querySelector(
-                    ".slick-prev"
-                  ) as HTMLElement;
-                  if (prevButton) prevButton.click();
-                }}
-              >
-                <IconifyIcon
-                  icon={"ooui:next-rtl"}
-                  fontSize={15}
-                  fontWeight={"bold"}
-                />
-              </IconButton>
-
-              <IconButton
-                className="next-arrow"
-                sx={{
-                  color:
-                    theme.palette.mode === "dark"
-                      ? theme.palette.common.black
-                      : theme.palette.common.white,
-                  position: "absolute",
-                  right: 0,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  zIndex: 1,
-                  opacity: 0,
-                  transition: "opacity 0.3s ease",
-                }}
-                onClick={() => {
-                  const nextButton = document.querySelector(
-                    ".slick-next"
-                  ) as HTMLElement;
-                  if (nextButton) nextButton.click();
-                }}
-              >
-                <IconifyIcon
-                  fontWeight={"bold"}
-                  icon={"ooui:next-ltr"}
-                  fontSize={15}
-                />
-              </IconButton>
-            </div>
-          </Box>
-        </Box>
         <motion.div
           style={{
             position: isSticky ? "fixed" : "relative",
@@ -305,21 +152,15 @@ const NavigationComponent = () => {
                 gap: "1rem",
               }}
             >
-              <IconButton
+              <Avatar
                 sx={{
-                  backgroundColor: "rgb(120, 120, 120)",
-                  "&:hover": {
-                    backgroundColor: "rgb(60, 60, 60)",
-                  },
+                  cursor: "pointer",
+                  width: "3rem",
+                  height: "3rem",
                 }}
                 onClick={() => navigate(ROUTES_CONSTANT.HOME_PAGE)}
-              >
-                <IconifyIcon
-                  icon={"cbi:jenkins-logo"}
-                  fontSize={"2.5rem"}
-                  color="white"
-                />
-              </IconButton>
+                src={`/TTHP.png`}
+              />
 
               <Box
                 sx={{
