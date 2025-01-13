@@ -8,7 +8,7 @@
     + Database: MongoDB, MySQL
 
 ## DEMO
- - Link: (coming soon)
+ - Link: [WAD Ecommerce](https://wad-ecommerce.vercel.app/)
  - Account Admin
     + email: admin@gmail.com
     + password: Admin@123
