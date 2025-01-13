@@ -36,7 +36,7 @@ const CardComponent = ({ item }: TProps) => {
         <Box position={"relative"}>
           <CardMedia
             sx={{
-              height: "30rem",
+              height: "25rem",
               objectFit:"cover"
             }}
             image={item.thumbnail}
@@ -49,7 +49,6 @@ const CardComponent = ({ item }: TProps) => {
                 top: 0,
                 left: 0,
                 width: "3.5rem",
-                height: "2rem",
                 backgroundColor: theme.palette.primary.main,
                 color: theme.palette.common.white,
                 borderRadius: "0 0 18px 18px",
@@ -65,10 +64,9 @@ const CardComponent = ({ item }: TProps) => {
             sx={{
               display: "-webkit-box",
               WebkitBoxOrient: "vertical",
-              WebkitLineClamp: 2,
+              WebkitLineClamp: 1,
               overflow: "hidden",
               textOverflow: "ellipsis",
-              height: "2rem",
             }}
             mb={2}
             fontSize={"1.1rem"}
