@@ -1,10 +1,9 @@
 import { Box, Grid, IconButton, Typography, useTheme } from "@mui/material";
-import { slugify } from "../../../utils/slugify";
 import { useNavigate } from "react-router-dom";
 import IconifyIcon from "../../iconifyIcon";
 import { toVND } from "../../../utils/convertNumberToVND";
 import { toDiscountPrice } from "../../../utils/toDiscountPrice";
-import { memo, useMemo } from "react";
+import { useMemo } from "react";
 import { useCart } from "../../../hooks/useCart";
 
 interface TProps {
@@ -13,6 +12,7 @@ interface TProps {
 
 const ProductInCartComponent = ({ item }: TProps) => {
   const navigate = useNavigate();
+
   const quantity = useMemo(() => item.quantity, [item]);
   const price = useMemo(() => toDiscountPrice(item), [item]);
   const total = useMemo(() => quantity * price, [item]);
@@ -39,7 +39,7 @@ const ProductInCartComponent = ({ item }: TProps) => {
           >
             <Box
               onClick={() =>
-                navigate(`/detail?content=${slugify(item?.title)}`)
+                navigate(`/detail?content=${item?.slug}`)
               }
               sx={{
                 width: "100%",
@@ -76,7 +76,7 @@ const ProductInCartComponent = ({ item }: TProps) => {
               }}
               fontWeight={500}
             >
-              {item?.title.trim()}
+              {item?.title?.trim()}
             </Typography>
             <Box
               sx={{
@@ -139,4 +139,4 @@ const ProductInCartComponent = ({ item }: TProps) => {
   );
 };
 
-export default memo(ProductInCartComponent);
+export default (ProductInCartComponent);

@@ -188,6 +188,14 @@ const CartPage = () => {
                       if (quantity === 0) {
                         await handleChangeQuantity(item, "input", 1);
                       }
+
+                      if (quantity > item?.remainingQuantity) {
+                        await handleChangeQuantity(
+                          item,
+                          "input",
+                          item?.remainingQuantity
+                        );
+                      }
                     }}
                   />
                   <IconButton
@@ -212,10 +220,6 @@ const CartPage = () => {
       <Helmet>
         <title>Giỏ hàng của bạn</title>
         <meta name="description" content="Nơi hiển thị giỏ hàng hiện tại" />
-        <meta
-          property="og:image"
-          content="https://example.com/path-to-your-image.jpg"
-        />
       </Helmet>
 
       <AnnouceModalComponent
@@ -265,6 +269,8 @@ const CartPage = () => {
                       }`,
                       borderRadius: "6px",
                       width: "100%",
+                      maxHeight: "40rem",
+                      overflowY: "auto",
                     }}
                   >
                     <Box
