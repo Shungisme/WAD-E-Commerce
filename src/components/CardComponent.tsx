@@ -10,6 +10,7 @@ import { PRODUCT } from "../types/productType";
 import { toVND } from "../utils/convertNumberToVND";
 import { toDiscountPrice } from "../utils/toDiscountPrice";
 import { useNavigate } from "react-router-dom";
+import { Height } from "@mui/icons-material";
 
 interface TProps {
   item: PRODUCT;
@@ -34,13 +35,12 @@ const CardComponent = ({ item }: TProps) => {
       >
         <Box position={"relative"}>
           <CardMedia
-            component={"img"}
-            height={"2rem"}
-            image={item.thumbnail}
-            alt={item.title}
             sx={{
-              objectFit: "cover",
+              height: "30rem",
+              objectFit:"cover"
             }}
+            image={item.thumbnail}
+            title={item.title}
           />
           {item.discount !== 0 && (
             <Box
