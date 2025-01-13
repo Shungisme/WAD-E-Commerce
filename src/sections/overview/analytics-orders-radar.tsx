@@ -28,9 +28,9 @@ export function AnalyticsOrdersRadar({
   const chartColors = chart.colors ?? [
     theme.palette.primary.main,
     theme.palette.warning.main,
-    theme.palette.info.main,
-    theme.palette.success.main,
+    theme.palette.secondary.dark,
     theme.palette.error.main,
+    theme.palette.info.main,
   ];
 
   const chartOptions = useChart({

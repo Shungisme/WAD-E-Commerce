@@ -47,7 +47,13 @@ const CATEGORY_OPTIONS: Record<
 };
 
 export function OverviewAnalyticsView() {
-  const { getStatistics, year, setYear } = useStatistics();
+  const {
+    getStatistics,
+    getOldStatistics,
+    year,
+    compareOldYear,
+    handleChangeYear,
+  } = useStatistics();
 
   const getCurrentYear = useMemo(() => {
     return new Date().getFullYear();
@@ -84,7 +90,7 @@ export function OverviewAnalyticsView() {
         >
           <Select
             value={year}
-            onChange={(e) => setYear((prev) => Number(e.target.value))}
+            onChange={(e) => handleChangeYear(e.target.value as number)}
             displayEmpty
             startAdornment={
               <InputAdornment position="start">
@@ -123,9 +129,9 @@ export function OverviewAnalyticsView() {
               <AnalyticsWidgetSummary
                 title={category.name}
                 percent={
-                  ((category.data[category.data.length - 1] -
-                    category.data[0]) /
-                    category.data[0]) *
+                  ((getStatistics?.data?.year?.series[index] -
+                    getOldStatistics?.data?.year?.series[index]) /
+                    getOldStatistics?.data?.year?.series[index]) *
                   100
                 }
                 total={category.data.reduce((a: number, b: number) => a + b, 0)}
@@ -182,8 +188,8 @@ export function OverviewAnalyticsView() {
             title="Orders horizontal bar chart"
             subheader="Details of Orders"
             chart={{
-              categories: getStatistics?.data?.month?.categories ?? [],
-              series: getStatistics?.data?.month?.series ?? [],
+              categories: compareOldYear?.categories ?? [],
+              series: compareOldYear?.series ?? [],
             }}
           />
         </Grid2>

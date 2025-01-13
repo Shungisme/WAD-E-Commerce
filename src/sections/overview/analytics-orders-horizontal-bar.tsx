@@ -26,8 +26,8 @@ export function AnalyticsOrdersHorizontalBar({
   const theme = useTheme();
 
   const chartColors = chart.colors ?? [
-    theme.palette.primary.dark,
-    alpha(theme.palette.primary.dark, 0.24),
+    theme.palette.primary.main,
+    theme.palette.warning.main,
   ];
 
   const chartOptions = useChart({

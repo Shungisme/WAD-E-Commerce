@@ -25,8 +25,11 @@ export function AnalyticsOrdersBar({
   const theme = useTheme();
 
   const chartColors = chart.colors ?? [
-    theme.palette.primary.dark,
-    alpha(theme.palette.primary.light, 0.64),
+    theme.palette.primary.main,
+    theme.palette.warning.main,
+    theme.palette.secondary.dark,
+    theme.palette.error.main,
+    theme.palette.info.main,
   ];
 
   const chartOptions = useChart({
@@ -43,7 +46,7 @@ export function AnalyticsOrdersBar({
     },
     tooltip: {
       y: {
-        formatter: (value: number) => `${value} visits`,
+        formatter: (value: number) => `${value}`,
       },
     },
     ...chart.options,
