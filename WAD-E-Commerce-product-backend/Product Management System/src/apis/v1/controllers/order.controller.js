@@ -13,22 +13,22 @@ const projectRoot = process.cwd();
 console.log("projectRoot", projectRoot);
 
 const createHttpsAgent = () => {
-  try {
-    const cert = fs.readFileSync(
-      path.join(projectRoot, "src", "cert", "cert.pem")
-    );
-    return new https.Agent({
-      ca: cert,
-      rejectUnauthorized: false,
-      checkServerIdentity: () => undefined,
-    });
-  } catch (error) {
-    console.warn("Certificate not found or invalid:", error.message);
-  }
+	try {
+		const cert = fs.readFileSync(
+			path.join(projectRoot, "src", "cert", "cert.pem")
+		);
+		return new https.Agent({
+			ca: cert,
+			rejectUnauthorized: false,
+			checkServerIdentity: () => undefined,
+		});
+	} catch (error) {
+		console.warn("Certificate not found or invalid:", error.message);
+	}
 };
 
 const axiosInstance = axios.create({
-  httpsAgent: createHttpsAgent(),
+	httpsAgent: createHttpsAgent(),
 });
 
 class OrderController {
@@ -111,7 +111,7 @@ class OrderController {
 
 			const products = await Promise.all(
 				cart.products.map(async (item) => {
-					const product = await Product.findById(item.productId).select('title price discount thunmbnail').lean();
+					const product = await Product.findById(item.productId).select('title price discount thumbnail').lean();
 					return {
 						productId: product._id,
 						quantity: item.quantity,
@@ -123,7 +123,7 @@ class OrderController {
 				})
 			);
 
-			const totalAmount = products.reduce((total, item) => total + item.price * item.quantity * item.discount / 100, 0);
+			const totalAmount = products.reduce((total, item) => total + (item.price * item.quantity * (100 - item.discount)) / 100, 0);
 			const totalQuantity = products.reduce((total, item) => total + item.quantity, 0);
 
 			const orderData = {
