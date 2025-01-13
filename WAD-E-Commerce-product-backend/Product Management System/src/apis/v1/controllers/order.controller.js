@@ -28,7 +28,7 @@ const createHttpsAgent = () => {
 
 // Create axios instance with proper certificate handling
 const axiosInstance = axios.create({
-	httpsAgent: createHttpsAgent()
+	// httpsAgent: createHttpsAgent()
 });
 
 
@@ -167,6 +167,7 @@ class OrderController {
 			});
 
 		} catch (error) {
+			console.log(error);
 			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
 				error: error.message
 			});

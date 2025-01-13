@@ -14,6 +14,7 @@ const paymentRouter = require("./apis/v1/routes/payment.router");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3001;
+const profile = process.env.ENV_PROFILE || "dev";
 const ec = errorCode.ErrorCode;
 
 const app = express();
@@ -40,16 +41,25 @@ app.use((err, req, res, next) => {
   });
 });
 
-const sslServer = https.createServer(
-  {
-    key: fs.readFileSync(path.join(__dirname, "cert", "key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "cert", "cert.pem")),
-  },
-  app
-);
+if (profile === "dev") {
 
-sslServer.listen(PORT, async () => {
-  console.log(`Server started on port ${PORT}`);
-  await mysqlConnection();
-  await init();
-});
+  const sslServer = https.createServer(
+    {
+      key: fs.readFileSync(path.join(__dirname, "cert", "key.pem")),
+      cert: fs.readFileSync(path.join(__dirname, "cert", "cert.pem")),
+    },
+    app
+  );
+
+  sslServer.listen(PORT, async () => {
+    console.log(`Server started on port ${PORT}`);
+    await mysqlConnection();
+    await init();
+  });
+} else {
+  app.listen(PORT, '0.0.0.0', async () => {
+    console.log(`Server started on port ${PORT}`);
+    await mysqlConnection();
+    await init();
+  });
+}
