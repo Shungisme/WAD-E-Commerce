@@ -9,7 +9,7 @@
    - [Payment](#3-payment)
    - [Order Management](#4-order-management)
    - [Product Upload/Update](#5-product-uploadupdate)
-   - [Statistic] (#6-statistic)
+   - [Statistic](#6-statistic)
    - [Database Schema](#7-project-database)
 - [Demo](#iii-demo)
 
@@ -62,7 +62,7 @@
   ### 3. Payment
   
   - **Users can pay for their orders using our payment system:**
-  ![User Checkout](https://res.cloudinary.com/duf2t1pkp/image/upload/v1737264905/052750b7-5aef-4d01-bc98-a57a7f12ff85.png)
+  ![User Checkout](https://res.cloudinary.com/duf2t1pkp/image/upload/v1737265123/fc8238b8-a4b6-4684-a9f2-bee4a3211a35.png)
 
   ### 4. Order Management
   
